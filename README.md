@@ -299,7 +299,7 @@ Licença ainda não definida.
 
 ## Autor
 
-Projeto desenvolvido por **miyo** com apoio de desenvolvimento assistido por IA.
+Projeto desenvolvido por **miyo (Thaisa Vitória)** com apoio de desenvolvimento assistido por IA.
 
 ---
 
