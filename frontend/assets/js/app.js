@@ -8,6 +8,7 @@
 import { NEXUS_CONFIG } from './config.js';
 import { fetchClusterRows, fetchEventRows } from './api.js';
 import {
+  getDataFreshnessStatus,
   nexusState,
   setClusterRows,
   setEventRows,
@@ -20,9 +21,14 @@ import {
   renderClock,
   renderDashboard,
   renderDataError,
+  renderDataFreshnessIndicator,
   renderEventsPanel,
   renderEventsError,
 } from './ui.js';
+
+function updateDataFreshnessIndicator() {
+  renderDataFreshnessIndicator(getDataFreshnessStatus());
+}
 
 async function refreshClusterState() {
   try {
@@ -33,6 +39,8 @@ async function refreshClusterState() {
   } catch (error) {
     setFrontendError(error);
     renderDataError(error);
+  } finally {
+    updateDataFreshnessIndicator();
   }
 }
 
@@ -45,6 +53,8 @@ async function refreshEventsState() {
   } catch (error) {
     setEventsError(error);
     renderEventsError(error);
+  } finally {
+    updateDataFreshnessIndicator();
   }
 }
 
@@ -56,6 +66,8 @@ function startIntervals() {
 
 function initNexusDashboard() {
   renderClock();
+  updateDataFreshnessIndicator();
+
   bindNavigationState();
   bindEventsFilterControls(() => {
     renderEventsPanel(nexusState.eventRows, nexusState.eventsLastUpdate);
