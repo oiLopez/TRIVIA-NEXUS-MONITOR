@@ -2,9 +2,15 @@
 # NEXUS MONITOR - Git Ignore
 # ============================================================
 
-# Dados operacionais gerados pelos coletores
+# Dados operacionais atuais gerados por coletores
 backend/data/current/alertas_ativos.csv
+backend/data/current/operacao_servidores.csv
+backend/data/current/painel_sinotico.csv
+
+# Histórico operacional gerado por coletores
 backend/data/history/alertas_historico.csv
+backend/data/history/historico_migracoes.csv
+
 
 # Logs
 *.log
