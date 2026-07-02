@@ -133,6 +133,7 @@ check_files() {
         "backend/config/nexus_hosts.config"
 	"backend/core/nexus_paths.sh"
         "backend/core/nexus_db.sh"
+	"backend/core/nexus_logger.sh"
         "backend/collectors/collector_alertas.sh"
         "backend/collectors/collector_operacao_auto.sh"
         "backend/collectors/collector_rede_ab.sh"
