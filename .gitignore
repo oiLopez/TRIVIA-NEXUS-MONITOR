@@ -1,0 +1,44 @@
+# ============================================================
+# NEXUS MONITOR - Git Ignore
+# ============================================================
+
+# Logs
+*.log
+logs/
+backend/logs/*
+!backend/logs/.gitkeep
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Backups de editores
+*.bak
+*.old
+*.orig
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
+__pycache__/
+
+# Dados gerados automaticamente
+backend/data/history/*
+backend/data/samples/generated/*
+!backend/data/history/.gitkeep
+!backend/data/samples/.gitkeep
+
+# Arquivos sensíveis locais
+*.env
+.env
+.env.local
+
+# Configurações locais não versionadas
+local.config
+*.local
