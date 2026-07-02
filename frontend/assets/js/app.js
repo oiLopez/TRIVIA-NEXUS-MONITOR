@@ -16,6 +16,7 @@ import {
 } from './state.js';
 import {
   bindNavigationState,
+  bindEventsFilterControls,
   renderClock,
   renderDashboard,
   renderDataError,
@@ -56,6 +57,9 @@ function startIntervals() {
 function initNexusDashboard() {
   renderClock();
   bindNavigationState();
+  bindEventsFilterControls(() => {
+    renderEventsPanel(nexusState.eventRows, nexusState.eventsLastUpdate);
+  });
 
   refreshClusterState();
   refreshEventsState();
