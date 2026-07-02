@@ -800,3 +800,148 @@ body {
     grid-template-columns: 1fr; /* Zonas Móveis em 1 única coluna se a tela for muito fina */
   }
 }
+
+/* =========================================================
+   NEXUS MONITOR - Ajustes de saneamento frontend v0.1
+   Cole este bloco no FINAL do frontend/assets/css/style.css
+   ========================================================= */
+
+:root {
+  --line: #60A5FA;
+  --text: var(--text-main);
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
+.dashboard-header {
+  min-height: 86px;
+  padding: 22px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid var(--card-border);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-info h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.header-info p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.clock-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  background: var(--card-bg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+.clock-icon {
+  opacity: 0.82;
+}
+
+.card-inner {
+  width: 100%;
+}
+
+.card-mini {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-mini:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.status-standby::before {
+  background-color: #a0aec0;
+}
+
+.status-warn {
+  background-color: var(--warn-bg);
+  color: var(--warn-text);
+}
+
+.status-warn::before {
+  background-color: var(--warn-text);
+  box-shadow: 0 0 8px var(--warn-text);
+}
+
+.tel-crit {
+  color: var(--danger-text);
+}
+
+@media (max-width: 768px) {
+  body {
+    display: block;
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .nav-menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-header {
+    position: relative;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-container {
+    padding: 18px;
+  }
+
+  .alarm-grid-matrix {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ws-vertical-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+

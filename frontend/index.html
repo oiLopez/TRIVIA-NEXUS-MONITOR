@@ -4,24 +4,18 @@
   <meta charset="UTF-8">
   <meta http-equiv="cache-control" content="no-cache">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexus Monitor Enterprise - Linhas 11 e 12</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <title>NEXUS MONITOR - Linhas 11 Coral e 12 Safira</title>
 
-  
-  <link rel="stylesheet" href="/frontend/assets/css/style.css">
-  
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <script src="./assets/js/app.js" defer></script>
 </head>
 <body>
-<script src="assets/js/app.js"></script>
   <aside class="sidebar">
     <div class="brand">
       <h1>NEXUS MONITOR</h1>
       <span>Trivia Trens <b>v14.0</b></span>
     </div>
-    
+
     <nav class="nav-menu">
       <a href="#dashboard" class="active">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
@@ -41,8 +35,8 @@
       </a>
     </nav>
   </aside>
-  
-<main class="main-content">
+
+  <main class="main-content">
     <header class="dashboard-header">
       <div class="header-info">
         <h2>Painel de Alta Disponibilidade</h2>
@@ -57,7 +51,6 @@
     </header>
 
     <div class="top-summary-row">
-      
       <div class="summary-card health-card">
         <div class="card-inner">
           <div class="metric-info">
@@ -81,25 +74,23 @@
             <span class="alarm-tag">CRÍTICO</span>
           </div>
           <div class="alarm-box alto">
-            <span class="alarm-count" id="count-alto">2</span>
+            <span class="alarm-count" id="count-alto">0</span>
             <span class="alarm-tag">ALTO</span>
           </div>
           <div class="alarm-box medio">
-            <span class="alarm-count" id="count-medio">5</span>
+            <span class="alarm-count" id="count-medio">0</span>
             <span class="alarm-tag">MÉDIO</span>
           </div>
           <div class="alarm-box info">
-            <span class="alarm-count" id="count-info">12</span>
+            <span class="alarm-count" id="count-info">0</span>
             <span class="alarm-tag">INFO</span>
           </div>
         </div>
       </div>
-
     </div>
 
-<div class="dashboard-container">
+    <div class="dashboard-container">
       <div class="ha-cluster-layout">
-        
         <div class="site-column">
           <div class="node-hardware-premium">
             <div class="hardware-main-header">
@@ -118,19 +109,19 @@
             <div class="node-title">Control Domain 1 <span id="up-control1" class="uptime-tag"></span></div>
             <span id="status-control1" class="badge status-wait">Wait</span>
           </div>
-          
+
           <div class="node-ldom border-safira">
             <div class="ldom-main-header">
               <div class="node-title">LDOM 1 (Virtualização) <span id="up-ldom1" class="uptime-tag"></span></div>
               <span id="status-ldom1" class="badge status-wait">Wait</span>
             </div>
-            
+
             <div class="ldom-perf-bar">
               <div class="perf-text"><span>Uso de CPU Core</span><span id="ldom1-cpu-text">--%</span></div>
               <div class="perf-track"><div class="perf-fill color-safira" id="ldom1-cpu-bar" style="width: 0%"></div></div>
               <div class="perf-sub-metrics">Serviços Ativos em Uso: <strong id="ldom1-services-count">--</strong></div>
             </div>
-            
+
             <div class="zone-divider">SERVIDORES (FIXOS)</div>
             <div class="fixed-zones">
               <div class="card-mini"><span>SFT1 <span id="up-sft1-ldom1" class="uptime-tag"></span></span><span id="sft1-ldom1" class="badge status-wait">Wait</span></div>
@@ -152,7 +143,9 @@
         </div>
 
         <div class="ha-divider">
-          <div class="ha-line"></div><div class="ha-badge">HA SYNC</div><div class="ha-line"></div>
+          <div class="ha-line"></div>
+          <div class="ha-badge">HA SYNC</div>
+          <div class="ha-line"></div>
         </div>
 
         <div class="site-column">
@@ -173,19 +166,19 @@
             <div class="node-title">Control Domain 2 <span id="up-control2" class="uptime-tag"></span></div>
             <span id="status-control2" class="badge status-wait">Wait</span>
           </div>
-          
+
           <div class="node-ldom border-coral">
             <div class="ldom-main-header">
               <div class="node-title">LDOM 2 (Virtualização) <span id="up-ldom2" class="uptime-tag"></span></div>
               <span id="status-ldom2" class="badge status-wait">Wait</span>
             </div>
-            
+
             <div class="ldom-perf-bar">
               <div class="perf-text"><span>Uso de CPU Core</span><span id="ldom2-cpu-text">--%</span></div>
               <div class="perf-track"><div class="perf-fill color-coral" id="ldom2-cpu-bar" style="width: 0%"></div></div>
               <div class="perf-sub-metrics">Serviços Ativos em Uso: <strong id="ldom2-services-count">--</strong></div>
             </div>
-            
+
             <div class="zone-divider">SERVIDORES (FIXOS)</div>
             <div class="fixed-zones">
               <div class="card-mini"><span>SFT2 <span id="up-sft2-ldom2" class="uptime-tag"></span></span><span id="sft2-ldom2" class="badge status-wait">Wait</span></div>
@@ -219,23 +212,8 @@
             <div class="ws-card-row"><div class="ws-info"><div class="ws-name">WS25 <span id="up-ws25" class="uptime-tag"></span></div><div class="ws-app-desc">CONC (CPTM3)</div></div><span id="status-ws25" class="badge status-wait">Wait</span></div>
           </div>
         </div>
-
       </div>
     </div>
   </main>
-
-<script>
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('clock').textContent = now.toLocaleTimeString('pt-BR');
-    }
-    // Atualiza o relógio a cada 1 segundo (1000 milissegundos)
-    setInterval(updateClock, 1000);
-    updateClock(); // Executa imediatamente ao abrir a página
-  </script>
-
-  <script src="assets/js/app.js"></script>
-</body>
-</html>
 </body>
 </html>

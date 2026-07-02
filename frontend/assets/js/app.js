@@ -1,138 +1,323 @@
-const PATH_HA = '../backend/data/current/status_ldom.csv'; 
+/* =========================================================
+   NEXUS MONITOR - Dashboard Frontend v0.1
+   Ambiente alvo: servidor local/offline, HTML/CSS/JavaScript puro.
+   ========================================================= */
 
-async function loadClusterState() {
-    try {
-        const response = await fetch(PATH_HA + '?t=' + Date.now());
-        if (!response.ok) throw new Error(`Arquivo não encontrado! Status: ${response.status}`);
-        
-        const text = await response.text();
-        const lines = text.split('\n');
-        
-        let totalSistemas = 0;
-        let sistemasOperacionais = 0;
-        let alarmesCriticos = 0;
-        let alarmesAltos = 0;
-        let alarmesMedios = 0;
-        let alarmesInfo = 0;
+'use strict';
 
-        lines.forEach(line => {
-            const cols = line.split(';');
-            
-            if (cols.length >= 3 && !line.startsWith('hostname')) {
-                const hostname = cols[0].trim().toLowerCase();
-                const ldom = cols[1].trim().toLowerCase();
-                const status = cols[2].trim().toUpperCase();
-                const uptime = cols.length >= 4 ? cols[3].trim() : '-'; // RECUPERADO O UPTIME!
-                
-                let badge = null;
-                let upTag = null;
-                totalSistemas++;
+const NEXUS_CONFIG = Object.freeze({
+  statusLdomCsv: '../backend/data/current/status_ldom.csv',
+  refreshIntervalMs: 2000,
+  clockIntervalMs: 1000,
+});
 
-                // MAPEAMENTO DE IDs
-                if (ldom === 'infra' || ldom === 'ws') {
-                    badge = document.getElementById(`status-${hostname}`);
-                    upTag = document.getElementById(`up-${hostname}`);
-                } else {
-                    badge = document.getElementById(`${hostname}-${ldom}`);
-                    upTag = document.getElementById(`up-${hostname}-${ldom}`);
-                }
-                
-                // ATUALIZAÇÃO DOS BADGES
-                if (badge) {
-                    badge.textContent = status;
-                    badge.className = 'badge'; 
-                    
-                    if (status === 'ATIVO' || status === 'ONLINE') {
-                        badge.classList.add('status-ok');
-                        sistemasOperacionais++;
-                    } else if (status === 'STANDBY' || status === 'RESERVA') {
-                        badge.classList.add('status-standby');
-                        sistemasOperacionais++; 
-                        alarmesInfo++;           
-                    } else if (status === 'OFFLINE' || status === 'FALHA') {
-                        badge.classList.add('status-crit');
-                        alarmesCriticos++;       
-                    } else {
-                        badge.classList.add('status-wait');
-                    }
-                }
+const STATUS_GROUPS = Object.freeze({
+  ok: ['ATIVO', 'ONLINE', 'OK', 'UP'],
+  standby: ['STANDBY', 'RESERVA', 'BACKUP'],
+  warning: ['ALERTA', 'ALERT', 'WARN', 'WARNING', 'DEGRADED', 'DEGRADADO'],
+  critical: ['OFFLINE', 'FALHA', 'DOWN', 'CRITICAL', 'CRITICO', 'CRÍTICO'],
+});
 
-                // INJEÇÃO DO UPTIME EM TELA
-                if (upTag) {
-                    if (status !== 'OFFLINE' && status !== 'FALHA' && uptime !== '-') {
-                        upTag.textContent = `⏱ ${uptime}`;
-                        upTag.style.display = 'inline-block';
-                    } else {
-                        upTag.style.display = 'none';
-                    }
-                }
-
-                // TELEMETRIA ILOM (Apenas ilustrativo / Alimenta os cards visuais)
-                if (hostname === 'ilom1' || hostname === 'ilom2') {
-                    const isOnline = (status === 'ONLINE');
-                    const fans = document.getElementById(`${hostname}-fans`);
-                    const temp = document.getElementById(`${hostname}-temp`);
-                    const psu = document.getElementById(`${hostname}-psu`);
-                    const cooling = document.getElementById(`${hostname}-cooling`);
-
-                    if (fans) { fans.textContent = isOnline ? "OK (4200 RPM)" : "FALHA"; fans.className = isOnline ? "tel-ok" : "tel-crit"; }
-                    if (temp) {
-                        if (isOnline) {
-                            temp.textContent = hostname === 'ilom1' ? "38°C" : "41°C";
-                            temp.className = hostname === 'ilom1' ? "tel-ok" : "tel-alert";
-                            if (hostname === 'ilom2') alarmesMedios++; 
-                        } else {
-                            temp.textContent = "--°C"; temp.className = "tel-crit";
-                        }
-                    }
-                    if (psu) { psu.textContent = isOnline ? "A+B OK" : "FALHA"; psu.className = isOnline ? "tel-ok" : "tel-crit"; }
-                    if (cooling) { cooling.textContent = isOnline ? "100%" : "0%"; cooling.className = isOnline ? "tel-ok" : "tel-crit"; }
-                }
-
-                // TELEMETRIA LDOM (Apenas ilustrativo / Alimenta os cards visuais)
-                if (hostname === 'ldom1' || hostname === 'ldom2') {
-                    const isOnline = (status === 'ONLINE');
-                    const cpuText = document.getElementById(`${hostname}-cpu-text`);
-                    const cpuBar = document.getElementById(`${hostname}-cpu-bar`);
-                    const svcCount = document.getElementById(`${hostname}-services-count`);
-
-                    let cpuTarget = 0; let numServicos = "0 Sistemas";
-                    if (isOnline) {
-                        if (hostname === 'ldom1') { cpuTarget = 42; numServicos = "8 Sistemas"; } 
-                        else { cpuTarget = 12; numServicos = "2 Sistemas"; alarmesInfo++; }
-                    }
-                    if (cpuText) cpuText.textContent = `${cpuTarget}%`;
-                    if (cpuBar) cpuBar.style.width = `${cpuTarget}%`;
-                    if (svcCount) svcCount.textContent = numServicos;
-                }
-            }
-        });
-
-        // ATUALIZA PAINÉIS DE SUMÁRIO SUPERIORES
-        if (totalSistemas > 0) {
-            const percentualFuncional = ((sistemasOperacionais / totalSistemas) * 100).toFixed(1);
-            const healthText = document.getElementById('global-health-percentage');
-            const healthBar = document.querySelector('.progress-fill');
-            if (healthText) healthText.textContent = `${percentualFuncional}%`;
-            if (healthBar) healthBar.style.width = `${percentualFuncional}%`;
-        }
-
-        alarmesAltos = alarmesCriticos > 0 ? 1 : 0; 
-        
-        const elCrit = document.getElementById('count-crit');
-        const elAlto = document.getElementById('count-alto');
-        const elMedio = document.getElementById('count-medio');
-        const elInfo = document.getElementById('count-info');
-
-        if (elCrit) elCrit.textContent = alarmesCriticos;
-        if (elAlto) elAlto.textContent = alarmesAltos;
-        if (elMedio) elMedio.textContent = alarmesMedios;
-        if (elInfo) elInfo.textContent = alarmesInfo;
-
-    } catch (error) {
-        console.error("⚠️ Falha ao ler o CSV do simulador:", error.message);
-    }
+function getElement(id) {
+  return document.getElementById(id);
 }
 
-setInterval(loadClusterState, 2000);
-loadClusterState();
+function setText(id, value) {
+  const element = getElement(id);
+  if (element) {
+    element.textContent = value;
+  }
+}
+
+function setStatusBadge(element, status) {
+  if (!element) {
+    return;
+  }
+
+  const normalizedStatus = normalizeStatus(status);
+  const statusGroup = getStatusGroup(normalizedStatus);
+
+  element.textContent = normalizedStatus || 'WAIT';
+  element.className = 'badge';
+
+  if (statusGroup === 'ok') {
+    element.classList.add('status-ok');
+    return;
+  }
+
+  if (statusGroup === 'standby') {
+    element.classList.add('status-standby');
+    return;
+  }
+
+  if (statusGroup === 'warning') {
+    element.classList.add('status-warn');
+    return;
+  }
+
+  if (statusGroup === 'critical') {
+    element.classList.add('status-crit');
+    return;
+  }
+
+  element.classList.add('status-wait');
+}
+
+function normalizeStatus(status) {
+  return String(status || '').trim().toUpperCase();
+}
+
+function getStatusGroup(status) {
+  if (STATUS_GROUPS.ok.includes(status)) {
+    return 'ok';
+  }
+
+  if (STATUS_GROUPS.standby.includes(status)) {
+    return 'standby';
+  }
+
+  if (STATUS_GROUPS.warning.includes(status)) {
+    return 'warning';
+  }
+
+  if (STATUS_GROUPS.critical.includes(status)) {
+    return 'critical';
+  }
+
+  return 'unknown';
+}
+
+function isOperationalStatus(status) {
+  const group = getStatusGroup(normalizeStatus(status));
+  return group === 'ok' || group === 'standby';
+}
+
+function updateClock() {
+  const clock = getElement('clock');
+  if (!clock) {
+    return;
+  }
+
+  const now = new Date();
+  clock.textContent = now.toLocaleTimeString('pt-BR');
+}
+
+function parseCsv(text) {
+  return text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'))
+    .filter((line) => !line.toLowerCase().startsWith('hostname'))
+    .map((line) => {
+      const columns = line.split(';').map((column) => column.trim());
+
+      return {
+        hostname: String(columns[0] || '').toLowerCase(),
+        ldom: String(columns[1] || '').toLowerCase(),
+        status: normalizeStatus(columns[2] || 'WAIT'),
+        uptime: columns[3] || '-',
+        raw: line,
+      };
+    })
+    .filter((row) => row.hostname && row.ldom && row.status);
+}
+
+function resolveStatusTargets(row) {
+  if (row.ldom === 'infra' || row.ldom === 'ws') {
+    return {
+      badgeId: `status-${row.hostname}`,
+      uptimeId: `up-${row.hostname}`,
+    };
+  }
+
+  return {
+    badgeId: `${row.hostname}-${row.ldom}`,
+    uptimeId: `up-${row.hostname}-${row.ldom}`,
+  };
+}
+
+function updateUptime(id, status, uptime) {
+  const uptimeTag = getElement(id);
+  if (!uptimeTag) {
+    return;
+  }
+
+  const group = getStatusGroup(status);
+  const hasValidUptime = uptime && uptime !== '-';
+
+  if ((group === 'ok' || group === 'standby') && hasValidUptime) {
+    uptimeTag.textContent = `⏱ ${uptime}`;
+    uptimeTag.style.display = 'inline-flex';
+    return;
+  }
+
+  uptimeTag.textContent = '';
+  uptimeTag.style.display = 'none';
+}
+
+function updateHostStatus(row) {
+  const targets = resolveStatusTargets(row);
+  const badge = getElement(targets.badgeId);
+
+  setStatusBadge(badge, row.status);
+  updateUptime(targets.uptimeId, row.status, row.uptime);
+}
+
+function updateIlomTelemetry(row) {
+  if (row.hostname !== 'ilom1' && row.hostname !== 'ilom2') {
+    return;
+  }
+
+  const group = getStatusGroup(row.status);
+  const isOnline = group === 'ok' || group === 'standby';
+
+  const fans = getElement(`${row.hostname}-fans`);
+  const temp = getElement(`${row.hostname}-temp`);
+  const psu = getElement(`${row.hostname}-psu`);
+  const cooling = getElement(`${row.hostname}-cooling`);
+
+  if (fans) {
+    fans.textContent = isOnline ? 'OK' : 'FALHA';
+    fans.className = isOnline ? 'tel-ok' : 'tel-crit';
+  }
+
+  if (temp) {
+    if (isOnline) {
+      temp.textContent = row.hostname === 'ilom1' ? '38°C' : '41°C';
+      temp.className = row.hostname === 'ilom1' ? 'tel-ok' : 'tel-alert';
+    } else {
+      temp.textContent = '--°C';
+      temp.className = 'tel-crit';
+    }
+  }
+
+  if (psu) {
+    psu.textContent = isOnline ? 'A+B OK' : 'FALHA';
+    psu.className = isOnline ? 'tel-ok' : 'tel-crit';
+  }
+
+  if (cooling) {
+    cooling.textContent = isOnline ? '100%' : '0%';
+    cooling.className = isOnline ? 'tel-ok' : 'tel-crit';
+  }
+}
+
+function updateLdomTelemetry(rows) {
+  ['ldom1', 'ldom2'].forEach((ldomName) => {
+    const ldomHostRow = rows.find((row) => row.hostname === ldomName);
+    const hostedRows = rows.filter((row) => row.ldom === ldomName && row.hostname !== ldomName);
+    const activeServices = hostedRows.filter((row) => isOperationalStatus(row.status)).length;
+
+    const ldomStatusGroup = ldomHostRow ? getStatusGroup(ldomHostRow.status) : 'unknown';
+    const isOnline = ldomStatusGroup === 'ok' || ldomStatusGroup === 'standby';
+    const cpuTarget = isOnline ? Math.min(95, 10 + activeServices * 4) : 0;
+
+    setText(`${ldomName}-cpu-text`, `${cpuTarget}%`);
+    setText(`${ldomName}-services-count`, `${activeServices} Sistemas`);
+
+    const cpuBar = getElement(`${ldomName}-cpu-bar`);
+    if (cpuBar) {
+      cpuBar.style.width = `${cpuTarget}%`;
+    }
+  });
+}
+
+function updateSummary(rows) {
+  const counters = {
+    total: rows.length,
+    operational: 0,
+    critical: 0,
+    high: 0,
+    medium: 0,
+    info: 0,
+  };
+
+  rows.forEach((row) => {
+    const group = getStatusGroup(row.status);
+
+    if (group === 'ok') {
+      counters.operational += 1;
+      return;
+    }
+
+    if (group === 'standby') {
+      counters.operational += 1;
+      counters.info += 1;
+      return;
+    }
+
+    if (group === 'warning') {
+      counters.high += 1;
+      return;
+    }
+
+    if (group === 'critical') {
+      counters.critical += 1;
+      return;
+    }
+
+    counters.medium += 1;
+  });
+
+  const healthPercentage = counters.total > 0
+    ? ((counters.operational / counters.total) * 100).toFixed(1)
+    : '0.0';
+
+  setText('global-health-percentage', `${healthPercentage}%`);
+  setText('count-crit', counters.critical);
+  setText('count-alto', counters.high);
+  setText('count-medio', counters.medium);
+  setText('count-info', counters.info);
+
+  const healthBar = document.querySelector('.progress-fill');
+  if (healthBar) {
+    healthBar.style.width = `${healthPercentage}%`;
+  }
+}
+
+function updateNavigationState() {
+  const links = document.querySelectorAll('.nav-menu a');
+
+  links.forEach((link) => {
+    link.addEventListener('click', () => {
+      links.forEach((item) => item.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+}
+
+async function loadClusterState() {
+  try {
+    const response = await fetch(`${NEXUS_CONFIG.statusLdomCsv}?t=${Date.now()}`, {
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Arquivo não encontrado. HTTP ${response.status}`);
+    }
+
+    const text = await response.text();
+    const rows = parseCsv(text);
+
+    rows.forEach((row) => {
+      updateHostStatus(row);
+      updateIlomTelemetry(row);
+    });
+
+    updateLdomTelemetry(rows);
+    updateSummary(rows);
+  } catch (error) {
+    console.warn(`NEXUS MONITOR: aguardando CSV de status (${error.message})`);
+  }
+}
+
+function initNexusDashboard() {
+  updateClock();
+  updateNavigationState();
+  loadClusterState();
+
+  setInterval(updateClock, NEXUS_CONFIG.clockIntervalMs);
+  setInterval(loadClusterState, NEXUS_CONFIG.refreshIntervalMs);
+}
+
+document.addEventListener('DOMContentLoaded', initNexusDashboard);
