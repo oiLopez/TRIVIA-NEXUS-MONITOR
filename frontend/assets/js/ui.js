@@ -431,3 +431,27 @@ function filterEventsByActiveSeverity(rows) {
   return rows.filter((event) => getEventSeverity(event.status) === filter);
 }
 
+
+export function renderDataFreshnessIndicator(freshness) {
+  const widget = document.getElementById('data-freshness-widget');
+  const text = document.getElementById('data-freshness-text');
+
+  if (!widget || !text) {
+    return;
+  }
+
+  const status = freshness?.status || 'wait';
+  const label = freshness?.label || 'Aguardando dados';
+
+  widget.classList.remove(
+    'data-freshness-ok',
+    'data-freshness-wait',
+    'data-freshness-warning',
+    'data-freshness-critical',
+  );
+
+  widget.classList.add(`data-freshness-${status}`);
+  widget.setAttribute('title', freshness?.detail || label);
+
+  text.textContent = label;
+}
