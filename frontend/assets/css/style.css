@@ -1,93 +1,192 @@
 /* =========================================================
-   NEXUS MONITOR: ARQUIVO DE ESTILIZAÇÃO UI/UX PREMIUM
-   Inspirado em ferramentas de NOC de alto padrão (Grafana/Datadog)
+   NEXUS MONITOR - UI/UX SCADA/NOC
+   Frontend polish v0.1
+   Ambiente: HTML/CSS/JS puro, sem dependências externas.
    ========================================================= */
 
-/* VARIÁVEIS GLOBAIS DE DESIGN (Centralização de Cores e Temas) */
+/* =========================================================
+   1. TOKENS VISUAIS
+   ========================================================= */
+
 :root {
-  /* Cores de Identidade de Linha CPTM */
-  --coral: #FF5A36;   /* Linha 11 Coral */
-  --safira: #005BBB;  /* Linha 12 Safira */
-  
-  /* Paleta de Cores do Painel Escuro (Focado em mitigar fadiga visual) */
-  --bg-dark: #0B1121;          /* Fundo geral da página (Midnight Blue) */
-  --sidebar-bg: #0F172A;       /* Fundo da barra lateral */
-  --card-bg: #1E293B;          /* Fundo dos painéis/cards de hardware */
-  --card-border: rgba(255, 255, 255, 0.08); /* Borda sutil quase transparente */
-  
-  /* Cores de Tipografia */
-  --text-main: #F8FAFC;        /* Texto principal de alto contraste */
-  --text-muted: #94A3B8;       /* Texto secundário/subtítulos */
-  
-  /* Cores de Alertas e Estado de Conexão */
-  --success-bg: rgba(16, 185, 129, 0.15); /* Verde de fundo sutil */
-  --success-text: #34D399;               /* Verde de texto brilhante */
-  --danger-bg: rgba(239, 68, 68, 0.15);   /* Vermelho de fundo sutil */
-  --danger-text: #F87171;                /* Vermelho de texto brilhante */
-  --warn-bg: rgba(245, 158, 11, 0.15);    /* Amarelo de fundo sutil */
-  --warn-text: #FBBF24;                  /* Amarelo de texto brilhante */
+  /* Identidade das linhas */
+  --coral: #ff5a36;
+  --safira: #005bbb;
+
+  /* Base NEXUS */
+  --nexus-bg: #071018;
+  --nexus-bg-deep: #030712;
+  --nexus-sidebar: #08111d;
+  --nexus-surface: #0f1b2a;
+  --nexus-surface-strong: #132236;
+  --nexus-surface-soft: rgba(15, 27, 42, 0.72);
+
+  --nexus-border: rgba(148, 163, 184, 0.18);
+  --nexus-border-strong: rgba(148, 163, 184, 0.28);
+
+  --nexus-text: #e5eef7;
+  --nexus-muted: #8fa3b8;
+  --nexus-muted-soft: #64748b;
+
+  --nexus-accent: #38bdf8;
+  --nexus-accent-soft: rgba(56, 189, 248, 0.12);
+
+  --nexus-ok: #22c55e;
+  --nexus-warning: #f59e0b;
+  --nexus-critical: #ef4444;
+  --nexus-info: #60a5fa;
+  --nexus-unknown: #64748b;
+
+  --nexus-radius-sm: 8px;
+  --nexus-radius-md: 12px;
+  --nexus-radius-lg: 18px;
+
+  --nexus-shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.22);
+  --nexus-shadow-md: 0 18px 42px rgba(0, 0, 0, 0.34);
+  --nexus-shadow-glow: 0 0 0 1px rgba(56, 189, 248, 0.12),
+    0 0 32px rgba(56, 189, 248, 0.08);
+
+  /* Compatibilidade com nomes anteriores */
+  --bg-dark: var(--nexus-bg);
+  --sidebar-bg: var(--nexus-sidebar);
+  --card-bg: var(--nexus-surface);
+  --card-border: var(--nexus-border);
+  --text-main: var(--nexus-text);
+  --text-muted: var(--nexus-muted);
+
+  --success-bg: rgba(16, 185, 129, 0.15);
+  --success-text: #34d399;
+  --danger-bg: rgba(239, 68, 68, 0.15);
+  --danger-text: #f87171;
+  --warn-bg: rgba(245, 158, 11, 0.15);
+  --warn-text: #fbbf24;
+
+  --line: var(--nexus-info);
+  --text: var(--nexus-text);
 }
 
-/* RESET E REGRAS GLOBAIS DE COMPORTAMENTO */
-* { 
-  box-sizing: border-box; /* Garante que padding e bordas não estourem o tamanho dos elementos */
-  margin: 0; 
-  padding: 0; 
+/* =========================================================
+   2. RESET / BASE
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-body { 
-  font-family: 'Inter', sans-serif; /* Define a fonte padrão de alta legibilidade */
-  background-color: var(--bg-dark); 
-  color: var(--text-main); 
-  display: flex;                  /* Coloca a Sidebar e o Main-content lado a lado */
-  height: 100vh;                  /* Trava a visualização na altura máxima do monitor */
-  overflow: hidden;               /* Evita barras de rolagem globais indesejadas */
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
-/* ESTRUTURAÇÃO DA BARRA LATERAL (SIDEBAR) */
+body {
+  min-width: 0;
+  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  color: var(--nexus-text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
+    sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(0, 91, 187, 0.20), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(255, 90, 54, 0.12), transparent 30%),
+    linear-gradient(135deg, var(--nexus-bg), var(--nexus-bg-deep) 72%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), transparent 82%);
+}
+
+::selection {
+  background: rgba(56, 189, 248, 0.28);
+  color: var(--nexus-text);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.sidebar,
+.main-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================================================
+   3. SIDEBAR / IDENTIDADE
+   ========================================================= */
+
 .sidebar {
   width: 260px;
-  background-color: var(--sidebar-bg);
-  border-right: 1px solid var(--card-border);
+  flex: 0 0 260px;
   display: flex;
   flex-direction: column;
   padding: 20px;
+  background:
+    linear-gradient(180deg, rgba(8, 17, 29, 0.98), rgba(8, 17, 29, 0.90)),
+    linear-gradient(135deg, rgba(0, 91, 187, 0.14), rgba(255, 90, 54, 0.05));
+  border-right: 1px solid var(--nexus-border);
+  box-shadow: 18px 0 44px rgba(0, 0, 0, 0.26);
 }
 
-/* Branding (Logo e Versão) */
 .brand {
-  margin-bottom: 40px;
+  margin-bottom: 36px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--nexus-border);
 }
 
 .brand h1 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--text-main);
-  margin-bottom: 4px;
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 4px;
+  color: var(--nexus-text);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.18);
 }
 
-/* Cria a listra vertical decorativa antes do título (Gradiente Coral/Safira) */
 .brand h1::before {
-  content: '';
+  content: "";
   display: inline-block;
   width: 6px;
   height: 20px;
-  background: linear-gradient(to bottom, var(--safira), var(--coral));
   border-radius: 4px;
+  background: linear-gradient(to bottom, var(--safira), var(--coral));
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
 }
 
 .brand span {
+  color: var(--nexus-muted);
   font-size: 0.8rem;
-  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* LINKS DO MENU DE NAVEGAÇÃO */
+.brand b {
+  color: var(--nexus-accent);
+  font-weight: 800;
+}
+
 .nav-menu {
   display: flex;
   flex-direction: column;
@@ -95,801 +194,766 @@ body {
 }
 
 .nav-menu a {
-  text-decoration: none;
-  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: all 0.2s ease; /* Transição suave de cor no efeito Hover */
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* Efeito de destaque ao passar o mouse nos itens do menu */
-.nav-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: var(--text-main);
-}
-
-/* Estilização do link que estiver selecionado/ativo */
-.nav-menu a.active {
-  background-color: rgba(0, 91, 187, 0.15); /* Azul Safira translúcido */
-  color: var(--text-main);
-  border-left: 3px solid var(--safira);
-}
-
-/* ÁREA DA DIREITA (CONTEÚDO DINÂMICO) */
-.main-content {
-  flex: 1;                     /* Ocupa todo o resto do espaço disponível na tela */
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;            /* Permite rolagem apenas vertical nesta área caso os cards extrapolem */
-}
-
-/* ESTILIZAÇÃO DA BARRA SUPERIOR (TOPBAR COM EFEITO BLUR) */
-.topbar {
-  height: 70px;
-  padding: 0 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--card-border);
-  background-color: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(10px); /* Efeito moderno de desfoque de vidro (Glassmorphism) */
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.topbar-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.topbar-title span {
-  color: var(--text-muted);
-  font-weight: 400;
-}
-
-/* Bloco do Relógio Digital */
-.clock {
-  font-family: 'Inter', monospace; /* Fonte monoespaçada para os números não balançarem */
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  background: var(--card-bg);
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--card-border);
-}
-
-/* AREA CONTAINER INTERNA DOS CARDS */
-.dashboard-container {
-  padding: 30px;
-}
-
-/* Títulos das Categorias (Servidores, Consolas, Workstations) */
-.section-title {
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 700;
-  color: var(--text-muted);
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Cria a linha horizontal discreta que acompanha o título da seção */
-.section-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background-color: var(--card-border);
-}
-
-/* Espaçamento superior customizado para os títulos subsequentes */
-.mt-40 {
-  margin-top: 40px;
-}
-
-/* SISTEMA DE GRID AUTOMÁTICO E RESPONSIVO */
-.grid {
-  display: grid;
-  /* Cria colunas automaticamente com tamanho mínimo de 220px expandindo até preencher a linha */
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-}
-
-/* ESTILIZAÇÃO PREMIUM DOS CARDS DE MAQUINAS */
-.card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Efeito de profundidade e brilho ao passar o mouse por cima do card */
-.card:hover {
-  transform: translateY(-2px); /* Eleva o painel levemente */
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 90, 54, 0.4); /* Destaca a borda sutilmente com a cor Coral */
-}
-
-.card-header {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-main);
-  margin-bottom: 15px;
-}
-
-.card-footer {
-  display: flex;
-  justify-content: flex-end; /* Alinha a badge de status no canto direito inferior do card */
-}
-
-/* Padronização Internacional das Etiquetas de Status */
-.badge {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  padding: 4px 6px;
-  font-size: 9px; /* Fonte ligeiramente ajustada para caber perfeitamente */
-  font-weight: 800;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  width: 75px; /* LARGURA FIXA: Todos os status terão exatamente o mesmo tamanho */
-  flex-shrink: 0; /* Impede que o ecrã esmague o botão se diminuir a janela */
-  line-height: 1.2;
-}
-
-/* Cria a bolinha indicadora de cor dentro da badge de status */
-.badge::before {
-  content: '';
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-/* CLASSES DINÂMICAS DE STATUS (Geridas pelo JavaScript) */
-
-/* Estado ONLINE / OK */
-.status-ok { 
-  background-color: var(--success-bg); 
-  color: var(--success-text); 
-}
-.status-ok::before { 
-  background-color: var(--success-text); 
-  box-shadow: 0 0 8px var(--success-text); /* Efeito de brilho neon na bolinha */
-}
-
-/* Estado CRÍTICO / OFFLINE */
-.status-crit { 
-  background-color: var(--danger-bg); 
-  color: var(--danger-text); 
-}
-.status-crit::before { 
-  background-color: var(--danger-text); 
-  box-shadow: 0 0 8px var(--danger-text); /* Brilho neon vermelho */
-}
-
-/* Estado de AGUARDANDO COLETA / DISCONNECTED */
-.status-wait { 
-  background-color: var(--card-border); 
-  color: var(--text-muted); 
-}
-.status-wait::before { 
-  background-color: var(--text-muted); 
-}
-
-/* =========================================================
-   LAYOUT HIERÁRQUICO (HA CLUSTER TRIVIATRENS)
-   ========================================================= */
-
-/* Reconfiguração do Grid Layout para 3 Colunas + Divisor */
-.ha-cluster-layout {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr 310px;
-  gap: 20px;
-  align-items: start;
-  width: 100%;
-}
-
-/* Painel Lateral de Workstations */
-.ws-column {
-  background: rgba(15, 23, 42, 0.35);
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2);
-}
-
-.ws-vertical-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* Card Horizontal Compacto de Alta Densidade */
-.ws-card-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 6px;
-  padding: 10px 14px;
-  transition: transform 0.2s ease;
-}
-
-.ws-card-row:hover {
-  border-color: rgba(165, 180, 252, 0.25);
-  transform: translateX(-2px);
-}
-
-.ws-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.ws-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-}
-
-.ws-app-desc {
-  font-size: 10px;
-  color: var(--text-muted);
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
-
-.site-column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  background-color: rgba(255, 255, 255, 0.02);
-  padding: 20px;
-  border-radius: 16px;
-  border: 1px dashed var(--card-border);
-}
-
-/* Nós da Árvore (Hardware e Control) */
-.node-hardware, .node-control, .node-ldom {
-  background-color: var(--card-bg);
-  border: 1px solid var(--card-border);
-  padding: 15px 20px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
-
-.node-title {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--text-main);
-}
-
-/* Destaque para as LDOMs */
-.node-ldom {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 15px;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-}
-
-.border-safira { border-top: 3px solid var(--safira); }
-.border-coral { border-top: 3px solid var(--coral); }
-
-/* Área interna da LDOM para as Zonas Fixas */
-.fixed-zones {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-}
-
-.card.mini {
-  flex: 1;
-  padding: 12px;
-  flex-direction: row;
-  align-items: center;
-  background-color: rgba(0,0,0,0.2);
-}
-
-/* Divisória Central (HA Sync) */
-.ha-divider {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-}
-
-.ha-line {
-  flex: 1;
-  width: 2px;
-  background-color: var(--card-border);
-}
-
-.ha-badge {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--text-muted);
-  padding: 10px 0;
-}
-
-/* Indicador de Host para Zonas Móveis */
-.host-tag {
-  display: inline-block;
-  margin-top: 5px;
-  font-size: 0.7rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background-color: rgba(255,255,255,0.1);
-  color: var(--text-muted);
-  font-family: monospace;
-}
-
-/* Cores Dinâmicas para a tag de Host (injetadas via JS) */
-.host-ldom1 { background-color: rgba(0, 91, 187, 0.2); color: #60A5FA; border: 1px solid var(--safira); }
-.host-ldom2 { background-color: rgba(255, 90, 54, 0.2); color: #FCA5A5; border: 1px solid var(--coral); }
-.host-split { background-color: rgba(239, 68, 68, 0.4); color: white; animation: pulse-crit 1s infinite; }
-
-@keyframes pulse-crit {
-  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-}
-
-/* Divisórias Internas da LDOM */
-.zone-divider {
-  width: 100%;
-  font-size: 10px;
-  font-weight: bold;
-  color: var(--line);
-  border-bottom: 1px solid rgba(0, 168, 255, 0.15);
-  padding-bottom: 4px;
-  margin-top: 8px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* Grid Compacto para as Zonas Móveis (Lista Dupla) */
-.mobile-zones-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Duas colunas para economizar espaço */
-  gap: 8px;
-  width: 100%;
-}
-
-.mz-item {
-  background: rgba(2, 8, 14, 0.6);
-  border: 1px solid rgba(0, 168, 255, 0.1);
-  border-radius: 4px;
-  padding: 6px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  color: var(--text);
-}
-
-/* Classe de Badge Específica para Standby e Reserva */
-.status-standby { 
-  background: rgba(255, 255, 255, 0.1); 
-  color: #a0aec0; 
-  border: 1px solid rgba(255, 255, 255, 0.2); 
-}
-
-/* Badge de Uptime Dinâmico */
-.uptime-tag {
-  font-size: 9px;
-  color: #94a3b8;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.06);
-  padding: 2px 5px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-}
-
-
-/* =========================================================
-   NOVOS COMPONENTES: INFRAESTRUTURA AVANÇADA & TELEMETRIA
-   ========================================================= */
-
-/* Camada Superior de Sumários */
-.top-summary-row {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 20px;
-  margin-bottom: 24px;
-  width: 100%;
-}
-
-.summary-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* Grafismo de Saúde Global */
-.metric-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.8px;
-}
-
-.metric-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: #10B981;
-  margin-top: 4px;
-}
-
-.progress-bar-linear {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  margin-top: 8px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #059669, #10B981);
-  border-radius: 10px;
-  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.status-subtext {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-top: 6px;
-  display: block;
-}
-
-/* Matriz de Caixas de Alarme */
-.alarm-grid-matrix {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-
-.alarm-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 6px;
-  border-radius: 6px;
   border: 1px solid transparent;
-  background: rgba(30, 41, 59, 0.7);
-}
-
-.alarm-count {
-  font-size: 22px;
+  border-radius: var(--nexus-radius-sm);
+  color: var(--nexus-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
   font-weight: 700;
-  line-height: 1;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-.alarm-tag {
-  font-size: 9px;
-  font-weight: 700;
-  margin-top: 5px;
-  letter-spacing: 0.3px;
+.nav-menu a:hover {
+  background: rgba(148, 163, 184, 0.08);
+  border-color: var(--nexus-border);
+  color: var(--nexus-text);
 }
 
-/* Cores da Matriz de Alarme */
-.alarm-box.critico { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #F87171; }
-.alarm-box.alto { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); color: #FBBF24; }
-.alarm-box.medio { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #60A5FA; }
-.alarm-box.info { background: rgba(148, 163, 184, 0.08); border-color: rgba(148, 163, 184, 0.2); color: #94A3B8; }
-
-/* Sub-grid de Telemetria da ILOM */
-.node-hardware-premium {
-  background: var(--sidebar-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 14px;
-  margin-bottom: 12px;
-}
-
-.hardware-main-header, .ldom-main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.ilom-telemetry-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
-  padding-top: 10px;
-}
-
-.tel-item {
-  display: flex;
-  flex-direction: column;
-  background: rgba(0, 0, 0, 0.15);
-  padding: 6px 10px;
-  border-radius: 4px;
-}
-
-.tel-item span {
-  font-size: 9px;
-  color: var(--text-muted);
-}
-
-.tel-item strong {
-  font-size: 11px;
-  margin-top: 2px;
-}
-
-.tel-ok { color: #10B981; }
-.tel-alert { color: #FBBF24; }
-
-/* Indicadores de CPU e Serviços das LDOMs */
-.ldom-perf-bar {
-  background: rgba(0, 0, 0, 0.12);
-  padding: 10px 14px;
-  border-radius: 6px;
-  margin-bottom: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.02);
-}
-
-.perf-text {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.perf-track {
-  width: 100%;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
-  margin: 6px 0;
-  overflow: hidden;
-}
-
-.perf-fill {
-  height: 100%;
-  border-radius: 3px;
-}
-
-.perf-fill.color-safira { background: var(--safira); }
-.perf-fill.color-coral { background: var(--coral); }
-
-.perf-sub-metrics {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.perf-sub-metrics strong {
-  color: var(--text-main);
-}
-
-/* Animação Pulso Sutil para Alarme Crítico */
-@keyframes pulse-light {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; border-color: rgba(239, 68, 68, 0.6); }
-}
-.animate-pulse-light {
-  animation: pulse-light 2s infinite ease-in-out;
-}
-
-/* ==========================================================================
-   AJUSTES FINOS: UPTIME E TEXTOS DENTRO DOS CARDS
-   ========================================================================== */
-/* Garante que o Nome da Aplicação e o Uptime ficam na mesma linha */
-.mz-item span, .card-mini span {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap; /* PROÍBE a quebra de linha */
-  gap: 6px;
-  white-space: nowrap;
-  overflow: hidden; /* Se a tela for muito pequena, impede de empurrar os elementos */
-  text-overflow: ellipsis;
-}
-
-.uptime-tag {
-  font-size: 9px;
-  color: #94a3b8;
-  font-weight: 500;
-  background: rgba(255,255,255,0.06);
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid rgba(255,255,255,0.05);
-  display: inline-block;
-  white-space: nowrap; /* Impede que o uptime quebre em duas linhas (ex: 30d \n 12h) */
-}
-
-/* ==========================================================================
-   RESPONSIVIDADE (MEDIA QUERIES PARA NOTEBOOKS E TELAS MENORES)
-   ========================================================================== */
-
-/* Telas normais de notebooks (até 1400px de largura) */
-@media (max-width: 1400px) {
-  /* Em telas menores, a coluna de Workstations desce para uma nova linha e ocupa 100% da largura,
-     assim não esmaga as LDOMs principais no topo */
-  .ha-cluster-layout {
-    grid-template-columns: 1fr auto 1fr;
-  }
-  
-  .ws-column {
-    grid-column: 1 / -1; /* Força as workstations a ocuparem a tela inteira em baixo */
-    margin-top: 20px;
-  }
-  
-  .ws-vertical-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Em vez de uma lista, viram 4 colunas em baixo */
-    gap: 12px;
-  }
-}
-
-/* Telas muito pequenas ou Tablets (até 1024px) */
-@media (max-width: 1024px) {
-  .top-summary-row {
-    grid-template-columns: 1fr; /* Empilha os blocos superiores (Saúde Global em cima, Alarmes embaixo) */
-  }
-
-  .ha-cluster-layout {
-    grid-template-columns: 1fr; /* Empilha LDOM 1 e LDOM 2 verticalmente */
-  }
-
-  /* Gira a divisória de Sincronia HA para ficar deitada entre a LDOM1 e a LDOM2 */
-  .ha-divider {
-    flex-direction: row;
-    min-height: auto;
-    height: 40px;
-  }
-  
-  .ha-line {
-    height: 1px;
-    width: 100%;
-    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.2), rgba(255,255,255,0));
-  }
-  
-  .ha-badge {
-    writing-mode: horizontal-tb; /* Volta o texto para horizontal */
-    margin: 0 12px;
-  }
-
-  .ws-vertical-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 colunas para workstations */
-  }
-  
-  .mobile-zones-grid {
-    grid-template-columns: 1fr; /* Zonas Móveis em 1 única coluna se a tela for muito fina */
-  }
+.nav-menu a.active {
+  background:
+    linear-gradient(90deg, rgba(0, 91, 187, 0.24), rgba(56, 189, 248, 0.06));
+  border-color: rgba(56, 189, 248, 0.24);
+  border-left: 3px solid var(--nexus-accent);
+  color: var(--nexus-text);
+  box-shadow: inset 0 0 22px rgba(56, 189, 248, 0.04);
 }
 
 /* =========================================================
-   NEXUS MONITOR - Ajustes de saneamento frontend v0.1
-   Cole este bloco no FINAL do frontend/assets/css/style.css
+   4. ÁREA PRINCIPAL / CABEÇALHO
    ========================================================= */
 
-:root {
-  --line: #60A5FA;
-  --text: var(--text-main);
+.main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background:
+    linear-gradient(180deg, rgba(7, 16, 24, 0.24), rgba(7, 16, 24, 0.82)),
+    transparent;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
 }
 
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.32);
+  border-radius: 999px;
 }
 
 .dashboard-header {
-  min-height: 86px;
-  padding: 22px 30px;
+  min-height: 78px;
+  padding: 18px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
-  border-bottom: 1px solid var(--card-border);
-  background: rgba(15, 23, 42, 0.72);
-  backdrop-filter: blur(10px);
+  gap: 24px;
+  border-bottom: 1px solid var(--nexus-border);
+  background: rgba(8, 17, 29, 0.76);
+  backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
 }
 
 .header-info h2 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 4px;
+  color: var(--nexus-text);
+  font-size: 1.3rem;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .header-info p {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  margin-top: 6px;
+  color: var(--nexus-muted);
+  font-size: 0.88rem;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
-.clock-widget {
+.clock-widget,
+.data-freshness-widget {
+  min-height: 38px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text-main);
-  background: var(--card-bg);
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--card-border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+  padding: 8px 13px;
+  border: 1px solid var(--nexus-border);
+  border-radius: 999px;
+  background: rgba(15, 27, 42, 0.82);
+  color: var(--nexus-muted);
+  box-shadow: var(--nexus-shadow-sm);
+  white-space: nowrap;
 }
 
 .clock-icon {
   opacity: 0.82;
 }
 
-.card-inner {
-  width: 100%;
+#clock {
+  color: var(--nexus-text);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono",
+    monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: 0.04em;
 }
 
-.card-mini {
-  flex: 1;
-  min-width: 0;
-  padding: 10px 12px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--card-border);
-  border-radius: 6px;
+/* Compatibilidade com topbar antiga, se reaparecer */
+.topbar {
+  height: 70px;
+  padding: 0 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid var(--nexus-border);
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar-title {
+  color: var(--nexus-text);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.topbar-title span {
+  color: var(--nexus-muted);
+  font-weight: 400;
+}
+
+.clock {
+  padding: 6px 12px;
+  border: 1px solid var(--nexus-border);
+  border-radius: 6px;
+  background: var(--nexus-surface);
+  color: var(--nexus-muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono",
+    monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* =========================================================
+   5. RESUMO SUPERIOR
+   ========================================================= */
+
+.top-summary-row {
+  padding: 22px 30px 0;
+  display: grid;
+  grid-template-columns: 520px 310px;
+  align-items: stretch;
+  justify-content: start;
+  gap: 20px;
+}
+
+.summary-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--nexus-border);
+  border-radius: var(--nexus-radius-lg);
+  background:
+    linear-gradient(180deg, rgba(19, 34, 54, 0.88), rgba(15, 27, 42, 0.84));
+  box-shadow: var(--nexus-shadow-md);
+}
+
+.summary-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(56, 189, 248, 0.16), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
+}
+
+.card-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.health-card {
+  max-width: 520px;
+  min-height: 180px;
+}
+
+.health-card .card-inner {
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.metric-label {
+  color: var(--nexus-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.metric-value {
+  margin-top: 8px;
+  color: var(--nexus-text);
+  font-size: 2.4rem;
+  line-height: 1;
+  font-weight: 900;
+  text-shadow: 0 0 28px rgba(34, 197, 94, 0.20);
+}
+
+.progress-radial-container {
+  margin-top: 16px;
+}
+
+.progress-bar-linear {
+  width: 100%;
+  height: 7px;
+  margin-top: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.74);
+  box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.42);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--nexus-ok), var(--nexus-accent));
+  box-shadow: 0 0 18px rgba(34, 197, 94, 0.30);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-subtext {
+  display: block;
+  margin-top: 8px;
+  color: var(--nexus-muted);
+  font-size: 0.8rem;
+}
+
+.alarms-matrix-card {
+  width: 310px;
+  min-height: 180px;
+  max-height: 220px;
+  padding: 16px;
+  justify-content: space-between;
+}
+
+.alarms-matrix-card .metric-label {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-bottom: 12px;
+  line-height: 1.45;
+}
+
+.alarm-grid-matrix {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.alarm-box {
+  min-height: 66px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--nexus-border);
+  border-radius: var(--nexus-radius-sm);
+  background: rgba(30, 41, 59, 0.7);
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.18);
+}
+
+.alarm-count {
+  font-size: 1.45rem;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.alarm-tag {
+  margin-top: 7px;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.alarm-box.critico {
+  background: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.30);
+  color: #f87171;
+}
+
+.alarm-box.alto {
+  background: rgba(245, 158, 11, 0.10);
+  border-color: rgba(245, 158, 11, 0.30);
+  color: #fbbf24;
+}
+
+.alarm-box.medio {
+  background: rgba(59, 130, 246, 0.10);
+  border-color: rgba(59, 130, 246, 0.30);
+  color: #60a5fa;
+}
+
+.alarm-box.info {
+  background: rgba(148, 163, 184, 0.08);
+  border-color: rgba(148, 163, 184, 0.20);
+  color: #94a3b8;
+}
+
+/* =========================================================
+   6. DASHBOARD / GRID SCADA COMPACTO
+   ========================================================= */
+
+.dashboard-container {
+  padding: 24px 30px 30px;
+}
+
+.ha-cluster-layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(420px, 1fr) 54px minmax(420px, 1fr) 310px;
+  align-items: start;
+  gap: 16px;
+}
+
+.site-column {
+  --site-accent: var(--nexus-accent);
+
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  overflow: hidden;
+  border: 1px solid var(--nexus-border);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(15, 27, 42, 0.72), rgba(2, 6, 23, 0.30)),
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 42%);
+  box-shadow: var(--nexus-shadow-sm);
+}
+
+.ha-cluster-layout > .site-column:first-child {
+  --site-accent: var(--safira);
+}
+
+.ha-divider + .site-column {
+  --site-accent: var(--coral);
+}
+
+/* Cabeçalho de cada caixote físico, em fluxo normal para não quebrar layout */
+.site-column::before {
+  display: block;
+  padding: 8px 11px;
+  border-left: 4px solid var(--site-accent);
+  border-radius: var(--nexus-radius-sm);
+  background: rgba(2, 6, 23, 0.42);
+  color: var(--nexus-muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.ha-cluster-layout > .site-column:first-child::before {
+  content: "ILOM1 / CAIXOTE FÍSICO";
+}
+
+.ha-divider + .site-column::before {
+  content: "ILOM2 / CAIXOTE FÍSICO";
+}
+
+.node-hardware-premium,
+.node-control,
+.node-ldom,
+.ws-column,
+.events-panel {
+  border: 1px solid var(--nexus-border);
+  border-radius: var(--nexus-radius-lg);
+  background:
+    linear-gradient(180deg, rgba(19, 34, 54, 0.88), rgba(15, 27, 42, 0.82));
+  box-shadow: var(--nexus-shadow-sm);
+}
+
+.node-hardware-premium,
+.node-control,
+.node-ldom {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.node-hardware-premium::before,
+.node-control::before,
+.node-ldom::before,
+.ws-column::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 42%);
+}
+
+.node-hardware-premium {
+  padding: 14px;
+  border-left: 4px solid var(--site-accent);
+}
+
+.node-control {
+  min-height: 56px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid rgba(148, 163, 184, 0.42);
+  border-radius: var(--nexus-radius-md);
+  background:
+    linear-gradient(90deg, rgba(56, 189, 248, 0.08), rgba(15, 27, 42, 0.88));
+}
+
+.node-control::after,
+.node-hardware-premium::after,
+.node-ldom::after {
+  display: none;
+}
+
+.node-ldom {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  border-left-width: 4px;
+  background:
+    linear-gradient(180deg, rgba(15, 27, 42, 0.96), rgba(2, 6, 23, 0.44));
+}
+
+.node-ldom.border-safira,
+.border-safira {
+  border-left-color: var(--safira);
+}
+
+.node-ldom.border-coral,
+.border-coral {
+  border-left-color: var(--coral);
+}
+
+.hardware-main-header,
+.ldom-main-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.node-title {
+  min-width: 0;
+  color: var(--nexus-text);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.ilom-telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.tel-item {
+  min-height: 54px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.32);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tel-item:hover,
+.card-mini:hover,
+.mz-item:hover,
+.ws-card-row:hover {
+  border-color: rgba(56, 189, 248, 0.28);
+  box-shadow: var(--nexus-shadow-glow);
+}
+
+.tel-item span {
+  color: var(--nexus-muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tel-item strong {
+  margin-top: 4px;
+  color: var(--nexus-text);
+  font-size: 0.95rem;
+}
+
+.tel-ok {
+  color: var(--nexus-ok);
+}
+
+.tel-alert {
+  color: var(--warn-text);
+}
+
+.tel-crit {
+  color: var(--danger-text);
+}
+
+/* =========================================================
+   7. LDOM / SERVIÇOS
+   ========================================================= */
+
+.ldom-perf-bar {
+  width: 100%;
+  max-width: 260px;
+  margin: 2px 0 8px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: var(--nexus-radius-sm);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.perf-text {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  color: var(--nexus-text);
+  font-size: 0.70rem;
+  font-weight: 800;
+}
+
+.perf-track {
+  width: 100%;
+  height: 6px;
+  margin: 7px 0;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.74);
+  box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.42);
+}
+
+.perf-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.perf-fill.color-safira {
+  background: var(--safira);
+}
+
+.perf-fill.color-coral {
+  background: var(--coral);
+}
+
+.perf-sub-metrics {
+  color: var(--nexus-muted);
+  font-size: 0.68rem;
+}
+
+.perf-sub-metrics strong {
+  color: var(--nexus-text);
+}
+
+.zone-divider {
+  width: 100%;
+  margin: 12px 0 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 168, 255, 0.15);
+  color: var(--nexus-muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fixed-zones {
+  width: 100%;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.10);
+  border-radius: var(--nexus-radius-md);
+  background: rgba(2, 6, 23, 0.22);
+}
+
+.fixed-zones::before {
+  content: "Fixos nesta LDOM";
+  grid-column: 1 / -1;
+  display: block;
+  color: var(--nexus-muted-soft);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.card-mini {
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 9px;
+  background: rgba(2, 6, 23, 0.32);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mobile-zones-grid {
+  width: 100%;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+  border: 1px dashed rgba(56, 189, 248, 0.22);
+  border-radius: var(--nexus-radius-md);
+  background:
+    linear-gradient(180deg, rgba(56, 189, 248, 0.035), rgba(2, 6, 23, 0.18));
 }
 
-.card-mini:hover {
-  border-color: rgba(255, 255, 255, 0.16);
+.mobile-zones-grid::before {
+  content: "IHMs móveis / exclusivas por IP";
+  grid-column: 1 / -1;
+  display: block;
+  margin-bottom: 4px;
+  color: var(--nexus-accent);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.status-standby::before {
-  background-color: #a0aec0;
+.mz-item {
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 9px;
+  background: rgba(2, 6, 23, 0.32);
+  color: var(--nexus-text);
+  font-size: 0.72rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mz-item span,
+.card-mini span {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* =========================================================
+   8. BADGES / STATUS / UPTIME
+   ========================================================= */
+
+.badge {
+  width: 75px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  font-size: 0.56rem;
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 999px;
+}
+
+.status-ok {
+  border-color: rgba(34, 197, 94, 0.26);
+  background-color: var(--success-bg);
+  color: var(--success-text);
+}
+
+.status-ok::before {
+  background-color: var(--success-text);
+  box-shadow: 0 0 8px var(--success-text);
+}
+
+.status-crit {
+  border-color: rgba(239, 68, 68, 0.30);
+  background-color: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.status-crit::before {
+  background-color: var(--danger-text);
+  box-shadow: 0 0 8px var(--danger-text);
 }
 
 .status-warn {
@@ -902,89 +966,318 @@ body {
   box-shadow: 0 0 8px var(--warn-text);
 }
 
-.tel-crit {
-  color: var(--danger-text);
+.status-wait {
+  border-color: rgba(148, 163, 184, 0.18);
+  background-color: rgba(148, 163, 184, 0.08);
+  color: var(--nexus-muted);
 }
 
-@media (max-width: 768px) {
-  body {
-    display: block;
-    height: auto;
-    min-height: 100vh;
-    overflow: auto;
-  }
+.status-wait::before {
+  background-color: var(--nexus-muted);
+}
 
-  .sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--card-border);
-  }
+.status-standby {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #a0aec0;
+}
 
-  .nav-menu {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
+.status-standby::before {
+  background-color: #a0aec0;
+}
 
-  .dashboard-header {
-    position: relative;
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.uptime-tag {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--nexus-muted-soft);
+  font-size: 0.56rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
 
-  .dashboard-container {
-    padding: 18px;
-  }
+.host-tag {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.10);
+  color: var(--nexus-muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono",
+    monospace;
+  font-size: 0.70rem;
+}
 
-  .alarm-grid-matrix {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.host-ldom1 {
+  border: 1px solid var(--safira);
+  background-color: rgba(0, 91, 187, 0.20);
+  color: #60a5fa;
+}
 
-  .ws-vertical-grid {
-    grid-template-columns: 1fr;
-  }
+.host-ldom2 {
+  border: 1px solid var(--coral);
+  background-color: rgba(255, 90, 54, 0.20);
+  color: #fca5a5;
+}
+
+.host-split {
+  background-color: rgba(239, 68, 68, 0.40);
+  color: white;
+  animation: pulse-crit 1s infinite;
 }
 
 /* =========================================================
-   NEXUS MONITOR - Painel de Eventos Operacionais
+   9. DIVISOR HA / WORKSTATIONS
+   ========================================================= */
+
+.ha-divider {
+  width: 54px;
+  min-width: 54px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ha-line {
+  flex: 1;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, rgba(56, 189, 248, 0.42), transparent);
+}
+
+.ha-badge {
+  width: 54px;
+  min-height: 84px;
+  padding: 8px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: rgba(56, 189, 248, 0.10);
+  color: var(--nexus-accent);
+  box-shadow: 0 0 26px rgba(56, 189, 248, 0.12);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.ws-column {
+  position: relative;
+  width: 310px;
+  min-width: 0;
+  padding: 14px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.ws-column > .zone-divider:first-child {
+  display: block;
+  margin-top: 0 !important;
+  margin-bottom: 14px !important;
+  color: #a5b4fc !important;
+}
+
+.ws-vertical-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ws-card-row {
+  min-height: 48px;
+  padding: 9px 11px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 9px;
+  background: rgba(2, 6, 23, 0.32);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.ws-card-row:hover {
+  transform: translateX(-2px);
+}
+
+.ws-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ws-name {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--nexus-text);
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ws-app-desc {
+  color: var(--nexus-muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   10. COMPONENTES ANTIGOS / COMPATIBILIDADE
+   ========================================================= */
+
+.section-title {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--nexus-muted);
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: var(--nexus-border);
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--nexus-border);
+  border-radius: var(--nexus-radius-md);
+  background-color: var(--nexus-surface);
+  box-shadow: var(--nexus-shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 90, 54, 0.40);
+  box-shadow: var(--nexus-shadow-md);
+}
+
+.card-header {
+  margin-bottom: 15px;
+  color: var(--nexus-text);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* =========================================================
+   11. PAINEL DE EVENTOS
    ========================================================= */
 
 .events-panel {
   margin: 0 30px 30px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
+  padding: 20px;
   overflow: hidden;
 }
 
 .events-panel-header {
-  padding: 18px 20px;
+  padding-bottom: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  border-bottom: 1px solid var(--card-border);
-  background: rgba(15, 23, 42, 0.55);
+  border-bottom: 1px solid var(--nexus-border);
 }
 
 .events-panel-header h2 {
-  font-size: 1rem;
   margin-top: 4px;
-  color: var(--text-main);
+  color: var(--nexus-text);
+  font-size: 1rem;
+}
+
+.events-panel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .events-last-update {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--card-border);
-  border-radius: 999px;
   padding: 6px 10px;
+  border: 1px solid var(--nexus-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--nexus-muted);
+  font-size: 0.75rem;
   white-space: nowrap;
+}
+
+.events-filter-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--nexus-border);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.events-filter {
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--nexus-muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.events-filter:hover,
+.events-filter.active {
+  border-color: rgba(56, 189, 248, 0.34);
+  background: var(--nexus-accent-soft);
+  color: var(--nexus-text);
 }
 
 .events-table-wrapper {
   width: 100%;
   overflow-x: auto;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: var(--nexus-radius-md);
 }
 
 .events-table {
@@ -994,21 +1287,21 @@ body {
 }
 
 .events-table th {
-  text-align: left;
-  color: var(--text-muted);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  font-weight: 800;
   padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.14);
-  border-bottom: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--nexus-border);
+  background: rgba(2, 6, 23, 0.38);
+  color: var(--nexus-muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
 }
 
 .events-table td {
   padding: 11px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.045);
-  color: var(--text-main);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.10);
+  color: var(--nexus-text);
   vertical-align: middle;
 }
 
@@ -1017,31 +1310,32 @@ body {
 }
 
 .event-time {
-  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
-  color: var(--text-muted);
+  color: var(--nexus-muted);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono",
+    monospace;
   white-space: nowrap;
 }
 
 .event-host {
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
 }
 
 .event-message {
-  color: var(--text-muted);
   min-width: 260px;
+  color: var(--nexus-muted);
 }
 
 .event-badge {
+  min-width: 74px;
+  padding: 4px 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 74px;
-  padding: 4px 8px;
   border-radius: 999px;
   font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.4px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -1061,7 +1355,7 @@ body {
 }
 
 .event-badge-info {
-  color: #94A3B8;
+  color: #94a3b8;
   background: rgba(148, 163, 184, 0.10);
 }
 
@@ -1070,114 +1364,27 @@ body {
 }
 
 .events-empty {
-  text-align: center;
-  color: var(--text-muted);
   padding: 24px !important;
-}
-
-@media (max-width: 768px) {
-  .events-panel {
-    margin: 0 18px 24px;
-  }
-
-  .events-panel-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  color: var(--nexus-muted);
+  text-align: center;
 }
 
 /* =========================================================
-   NEXUS MONITOR - Filtros do Painel de Eventos
+   12. FRESHNESS DOS DADOS
    ========================================================= */
-
-.events-panel-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.events-filter-group {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px;
-  border: 1px solid var(--card-border);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.16);
-}
-
-.events-filter {
-  border: 0;
-  cursor: pointer;
-  color: var(--text-muted);
-  background: transparent;
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.events-filter:hover {
-  color: var(--text-main);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.events-filter.active {
-  color: var(--text-main);
-  background: rgba(0, 91, 187, 0.28);
-  box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.22);
-}
-
-@media (max-width: 768px) {
-  .events-panel-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .events-filter-group {
-    width: 100%;
-    overflow-x: auto;
-    justify-content: flex-start;
-  }
-}
-
-/* =========================================================
-   NEXUS MONITOR - Indicador de Saúde dos Dados
-   ========================================================= */
-
-.data-freshness-widget {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 36px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--card-border);
-  background: var(--card-bg);
-  color: var(--text-muted);
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
-}
 
 .data-freshness-dot {
   width: 9px;
   height: 9px;
   border-radius: 999px;
-  background: var(--text-muted);
+  background: var(--nexus-muted);
   box-shadow: 0 0 8px rgba(148, 163, 184, 0.45);
 }
 
 .data-freshness-ok {
-  color: var(--success-text);
-  background: var(--success-bg);
   border-color: rgba(16, 185, 129, 0.32);
+  background: var(--success-bg);
+  color: var(--success-text);
 }
 
 .data-freshness-ok .data-freshness-dot {
@@ -1186,14 +1393,14 @@ body {
 }
 
 .data-freshness-wait {
-  color: var(--text-muted);
   background: rgba(148, 163, 184, 0.08);
+  color: var(--nexus-muted);
 }
 
 .data-freshness-warning {
-  color: var(--warn-text);
-  background: var(--warn-bg);
   border-color: rgba(245, 158, 11, 0.34);
+  background: var(--warn-bg);
+  color: var(--warn-text);
 }
 
 .data-freshness-warning .data-freshness-dot {
@@ -1202,9 +1409,9 @@ body {
 }
 
 .data-freshness-critical {
-  color: var(--danger-text);
-  background: var(--danger-bg);
   border-color: rgba(239, 68, 68, 0.34);
+  background: var(--danger-bg);
+  color: var(--danger-text);
 }
 
 .data-freshness-critical .data-freshness-dot {
@@ -1212,9 +1419,1303 @@ body {
   box-shadow: 0 0 10px var(--danger-text);
 }
 
+/* =========================================================
+   13. ANIMAÇÕES
+   ========================================================= */
+
+@keyframes pulse-crit {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.70);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes pulse-light {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.8;
+    border-color: rgba(239, 68, 68, 0.60);
+  }
+}
+
+.animate-pulse-light {
+  animation: pulse-light 2s infinite ease-in-out;
+}
+
+/* =========================================================
+   14. RESPONSIVIDADE
+   ========================================================= */
+
+@media (max-width: 1500px) {
+  .top-summary-row {
+    grid-template-columns: minmax(340px, 1fr) 40px minmax(340px, 1fr) 280px;
+    gap: 12px;
+  }
+
+  .health-card {
+    grid-column: 1 / 4;
+    width: 100%;
+    max-width: none;
+  }
+
+  .alarms-matrix-card {
+    grid-column: 4 / 5;
+    width: 100%;
+  }
+
+  .ha-cluster-layout {
+    grid-template-columns: minmax(340px, 1fr) 40px minmax(340px, 1fr) 280px;
+    gap: 12px;
+  }
+
+  .ha-divider {
+    width: 40px;
+    min-width: 40px;
+  }
+
+  .ha-badge {
+    width: 40px;
+    min-height: 74px;
+    font-size: 0.54rem;
+  }
+
+  .ws-column {
+    grid-column: 4 / 5;
+    grid-row: 1;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .ws-vertical-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .site-column {
+    padding: 10px;
+  }
+
+  .node-ldom {
+    padding: 12px;
+  }
+
+  .mobile-zones-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fixed-zones {
+    grid-template-columns: 1fr;
+  }
+
+  .card-mini.server-fixed-card {
+    min-height: 84px;
+    grid-template-columns: minmax(0, 1fr) 78px;
+  }
+
+  .server-role-badge,
+  .server-fixed-meta .badge {
+    width: 78px;
+  }
+
+  .server-fixed-meta {
+    min-width: 78px;
+  }
+}
+
+@media (max-width: 1180px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  .main-content {
+    overflow-x: hidden;
+  }
+
+  .top-summary-row {
+    grid-template-columns: 1fr;
+  }
+
+  .health-card,
+  .alarms-matrix-card {
+    width: 100%;
+    max-width: none;
+  }
+
+  .ha-cluster-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ha-divider {
+    display: none;
+  }
+
+.ws-column {
+  grid-column: 4 / 5;
+  grid-row: 1;
+  width: 100%;
+  margin-top: 0;
+}
+
+  .ws-vertical-grid {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
-  .data-freshness-widget {
+  body {
+    display: block;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-basis: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--nexus-border);
+  }
+
+  .brand {
+    margin-bottom: 18px;
+  }
+
+  .nav-menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .nav-menu a {
+    flex: 1 1 160px;
+  }
+
+  .dashboard-header {
+    position: relative;
+    padding: 18px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions,
+  .data-freshness-widget,
+  .clock-widget {
     width: 100%;
     justify-content: center;
+  }
+
+  .top-summary-row {
+    padding: 18px 18px 0;
+  }
+
+  .dashboard-container {
+    padding: 18px;
+  }
+
+  .events-panel {
+    margin: 0 18px 24px;
+  }
+
+  .events-panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .events-panel-actions,
+  .events-filter-group {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .events-filter-group {
+    overflow-x: auto;
+  }
+
+  .alarm-grid-matrix,
+  .fixed-zones,
+  .mobile-zones-grid,
+  .ws-vertical-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.1: CORREÇÃO DE SCROLL DO PAINEL EVENTOS
+   Garante que EVENTOS E ALERTAS apareça completo sem depender
+   de zoom negativo no navegador.
+   ========================================================= */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+}
+
+/* Em layout flex, min-height: 0 é essencial para o scroll interno funcionar */
+.main-content {
+  height: 100vh;
+  min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Evita que os blocos principais sejam comprimidos verticalmente */
+.dashboard-header,
+.top-summary-row,
+.dashboard-container,
+.events-panel {
+  flex-shrink: 0;
+}
+
+/* Reduz um pouco o espaço vertical antes do cluster */
+.top-summary-row {
+  padding-top: 18px;
+}
+
+/* Reduz a distância entre cluster e painel de eventos */
+.dashboard-container {
+  padding-bottom: 18px;
+}
+
+/* Painel de eventos deve ocupar largura normal e aparecer completo */
+.events-panel {
+  display: block;
+  width: auto;
+  margin: 0 30px 30px;
+  overflow: visible;
+}
+
+/* Quem deve rolar horizontalmente é só a tabela, não o painel inteiro */
+.events-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/* Garante altura mínima para aparecer conteúdo renderizado */
+.events-table {
+  min-width: 980px;
+}
+
+.events-table tbody {
+  min-height: 80px;
+}
+
+/* Em telas menores, mantém o painel acessível */
+@media (max-width: 1180px) {
+  body {
+    overflow: auto;
+  }
+
+  .main-content {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .events-panel {
+    margin: 0 18px 24px;
+  }
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.1: METADADOS DE IP COMPACTOS
+   IPs visíveis nas camadas principais e via tooltip nos cards
+   pequenos, sem ocupar espaço operacional.
+   ========================================================= */
+
+.ip-tag {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  background: rgba(2, 6, 23, 0.34);
+  color: var(--nexus-muted, #8fa3b8);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.ip-tag::before {
+  content: "IP";
+  margin-right: 5px;
+  color: var(--nexus-accent, #38bdf8);
+  font-size: 0.52rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  opacity: 0.78;
+}
+
+/* Versão compacta para cards pequenos */
+.ip-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 18px;
+  margin-left: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  background: rgba(2, 6, 23, 0.36);
+  color: var(--nexus-accent, #38bdf8);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 0.52rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  cursor: help;
+  flex-shrink: 0;
+}
+
+.ip-tooltip::before {
+  content: "IP";
+}
+
+.ip-tooltip::after {
+  content: attr(data-ip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  z-index: 50;
+  min-width: max-content;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: rgba(2, 6, 23, 0.96);
+  color: var(--nexus-text, #e5eef7);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.ip-tooltip:hover::after,
+.ip-tooltip:focus::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* Ajuste dos cards pequenos para caber nome, uptime e status */
+.card-mini {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 75px;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-mini > span:first-child {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.card-mini > span:first-child > :first-child {
+  min-width: 0;
+}
+
+.card-mini .uptime-tag {
+  flex-shrink: 0;
+}
+
+/* Evita que IP completo apareça dentro de cards pequenos */
+.card-mini .ip-tag {
+  display: none;
+}
+
+/* Em telas menores, mantém apenas tooltip nos cards compactos */
+@media (max-width: 1280px) {
+  .node-title .ip-tag {
+    display: none;
+  }
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.1: IP TAGS MAIS VISÍVEIS
+   Aumenta discretamente o botão IP e o tooltip técnico.
+   ========================================================= */
+
+.ip-tag {
+  padding: 3px 9px;
+  font-size: 0.68rem;
+  min-height: 22px;
+}
+
+.ip-tag::before {
+  font-size: 0.58rem;
+  margin-right: 6px;
+}
+
+/* Botão IP compacto dentro dos cards pequenos */
+.ip-tooltip {
+  width: 34px;
+  height: 22px;
+  margin-left: 6px;
+  font-size: 0.62rem;
+  border-color: rgba(56, 189, 248, 0.24);
+  background: rgba(2, 6, 23, 0.48);
+}
+
+/* Balão que aparece ao passar o mouse */
+.ip-tooltip::after {
+  padding: 8px 11px;
+  font-size: 0.76rem;
+  border-radius: 10px;
+  border-color: rgba(56, 189, 248, 0.36);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.42),
+    0 0 18px rgba(56, 189, 248, 0.10);
+}
+
+/* Dá um pouco mais de respiro nos cards de servidores fixos */
+.card-mini {
+  gap: 10px;
+}
+
+.card-mini > span:first-child {
+  gap: 7px;
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.1: SERVIDORES FIXOS COM IP VISÍVEL
+   Aumenta os blocos dos servidores fixos e exibe o IP como
+   metadado técnico abaixo do nome/uptime.
+   ========================================================= */
+
+.fixed-zones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.fixed-zones::before {
+  grid-column: 1 / -1;
+}
+
+.card-mini.server-fixed-card {
+  min-height: 74px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 78px;
+  align-items: center;
+  gap: 12px;
+}
+
+.server-fixed-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.server-fixed-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.server-fixed-name {
+  color: var(--nexus-text, #e5eef7);
+  font-size: 0.94rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.server-fixed-ip {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: flex-start;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  background: rgba(2, 6, 23, 0.36);
+  color: var(--nexus-muted, #8fa3b8);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.server-fixed-ip::before {
+  content: "IP";
+  margin-right: 6px;
+  color: var(--nexus-accent, #38bdf8);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.10em;
+}
+
+/* O tooltip antigo não precisa aparecer nos servidores fixos */
+.server-fixed-card .ip-tooltip,
+.server-fixed-card .ip-tag {
+  display: none;
+}
+
+/* Garante que a badge fique alinhada e não comprima o IP */
+.server-fixed-card .badge {
+  justify-self: end;
+}
+
+@media (max-width: 1280px) {
+  .card-mini.server-fixed-card {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .server-fixed-card .badge {
+    justify-self: start;
+  }
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.1: UPTIME SOBRE STATUS NOS SERVIDORES
+   Libera espaço para nomes longos como METROSP44/METROSP45.
+   ========================================================= */
+
+.card-mini.server-fixed-card {
+  min-height: 82px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 82px;
+  align-items: center;
+  gap: 12px;
+}
+
+.server-fixed-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.server-fixed-title {
+  min-width: 0;
+  display: block;
+}
+
+.server-fixed-name {
+  display: block;
+  max-width: 100%;
+  color: var(--nexus-text, #e5eef7);
+  font-size: 0.95rem;
+  font-weight: 850;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.server-fixed-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  min-width: 82px;
+}
+
+.server-fixed-meta .uptime-tag {
+  max-width: 82px;
+  justify-content: center;
+  font-size: 0.58rem;
+}
+
+.server-fixed-meta .badge {
+  justify-self: auto;
+}
+
+.server-fixed-ip {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.20);
+  background: rgba(2, 6, 23, 0.42);
+  color: var(--nexus-muted, #8fa3b8);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 0.66rem;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.server-fixed-ip::before {
+  content: "IP";
+  margin-right: 6px;
+  color: var(--nexus-accent, #38bdf8);
+  font-size: 0.56rem;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+}
+
+@media (max-width: 1280px) {
+  .card-mini.server-fixed-card {
+    grid-template-columns: 1fr;
+  }
+
+  .server-fixed-meta {
+    align-items: flex-start;
+  }
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.1: PAPEL OPERACIONAL DOS SERVIDORES
+   Separa saúde técnica de função operacional:
+   ATIVO / STANDBY / DESLIGADO / FALHA.
+   ========================================================= */
+
+.card-mini.server-fixed-card {
+  min-height: 92px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 86px;
+  align-items: center;
+  gap: 12px;
+}
+
+.server-fixed-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.server-fixed-title {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.server-fixed-name {
+  display: block;
+  max-width: 100%;
+  color: var(--nexus-text, #e5eef7);
+  font-size: 0.95rem;
+  font-weight: 850;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.server-fixed-title .uptime-tag {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.server-fixed-ip {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.20);
+  background: rgba(2, 6, 23, 0.42);
+  color: var(--nexus-muted, #8fa3b8);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 0.66rem;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.server-fixed-ip::before {
+  content: "IP";
+  margin-right: 6px;
+  color: var(--nexus-accent, #38bdf8);
+  font-size: 0.56rem;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+}
+
+.server-fixed-meta {
+  min-width: 86px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.server-role-badge {
+  width: 86px;
+  min-height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.58rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+}
+
+.server-role-active {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.32);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.10);
+}
+
+.server-role-standby {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(96, 165, 250, 0.30);
+}
+
+.server-role-off {
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.10);
+  border-color: rgba(148, 163, 184, 0.22);
+}
+
+.server-role-fault {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.34);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.12);
+}
+
+.server-fixed-meta .badge {
+  width: 86px;
+}
+
+@media (max-width: 1280px) {
+  .card-mini.server-fixed-card {
+    grid-template-columns: 1fr;
+  }
+
+  .server-fixed-meta {
+    align-items: flex-start;
+  }
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.1: REPOSICIONA WS E ALARMES
+   Mantém o quadro WS no canto direito e posiciona o painel
+   resumido de alarmes acima dele.
+   ========================================================= */
+
+@media (min-width: 1361px) {
+  .top-summary-row,
+  .ha-cluster-layout {
+    grid-template-columns: minmax(380px, 1fr) 44px minmax(380px, 1fr) 310px;
+    gap: 14px;
+  }
+
+  /* Topo passa a obedecer a mesma malha do SCADA */
+  .top-summary-row {
+    align-items: stretch;
+    justify-content: normal;
+    padding: 18px 30px 0;
+  }
+
+  /* Disponibilidade fica à esquerda, sem ocupar a tela toda */
+  .health-card {
+    grid-column: 1 / 2;
+    width: 100%;
+    max-width: none;
+    min-height: 168px;
+  }
+
+  .health-card .card-inner {
+    padding: 18px;
+  }
+
+  .health-card .metric-value {
+    font-size: 2.15rem;
+  }
+
+  /* Alarmes sobem para a mesma coluna do WS */
+  .alarms-matrix-card {
+    grid-column: 4 / 5;
+    width: 100%;
+    min-height: 168px;
+    max-height: none;
+    padding: 14px;
+  }
+
+  .alarms-matrix-card .metric-label {
+    font-size: 0.64rem;
+    line-height: 1.35;
+    margin-bottom: 10px !important;
+  }
+
+  .alarms-matrix-card .alarm-grid-matrix {
+    gap: 8px;
+  }
+
+  .alarms-matrix-card .alarm-box {
+    min-height: 58px;
+    padding: 8px;
+  }
+
+  .alarms-matrix-card .alarm-count {
+    font-size: 1.25rem;
+  }
+
+  .alarms-matrix-card .alarm-tag {
+    margin-top: 6px;
+    font-size: 0.56rem;
+  }
+
+  /* Cluster mais compacto para caber WS à direita */
+  .dashboard-container {
+    padding-top: 18px;
+  }
+
+  .site-column {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .node-hardware-premium {
+    padding: 12px;
+  }
+
+  .node-control {
+    min-height: 52px;
+    padding: 10px 12px;
+  }
+
+  .node-ldom {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .ha-divider {
+    width: 44px;
+    min-width: 44px;
+  }
+
+  .ha-badge {
+    width: 44px;
+    min-height: 76px;
+    font-size: 0.56rem;
+  }
+
+
+  .ws-vertical-grid {
+    display: flex !important;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .ws-card-row {
+    min-height: 44px;
+    padding: 8px 10px;
+  }
+
+  .ws-name {
+    font-size: 0.74rem;
+  }
+
+  .ws-app-desc {
+    font-size: 0.58rem;
+  }
+
+  /* Servidores fixos mais compactos, sem perder a nova semântica */
+  .card-mini.server-fixed-card {
+    min-height: 86px;
+    padding: 10px 12px;
+    grid-template-columns: minmax(0, 1fr) 82px;
+    gap: 10px;
+  }
+
+  .server-fixed-name {
+    font-size: 0.88rem;
+  }
+
+  .server-fixed-ip {
+    font-size: 0.60rem;
+    padding: 3px 7px;
+  }
+
+  .server-fixed-meta {
+    min-width: 82px;
+    gap: 6px;
+  }
+
+  .server-role-badge,
+  .server-fixed-meta .badge {
+    width: 82px;
+  }
+
+  .server-role-badge {
+    min-height: 21px;
+    font-size: 0.54rem;
+  }
+}
+
+/* Em telas realmente menores, aí sim WS desce para preservar leitura */
+@media (min-width: 1181px) and (max-width: 1360px) {
+  .ha-cluster-layout {
+    grid-template-columns: minmax(380px, 1fr) 44px minmax(380px, 1fr);
+  }
+
+.ws-column {
+  grid-column: 4 / 5;
+  grid-row: 1;
+  width: 100%;
+  margin-top: 0;
+}
+
+  .ws-vertical-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(170px, 1fr));
+  }
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.1: WS FIXO NA COLUNA DIREITA
+   Mantém WS no canto direito em desktop e deixa alarmes acima
+   da mesma coluna lateral.
+   ========================================================= */
+
+@media (min-width: 1181px) {
+  .top-summary-row {
+    display: grid !important;
+    grid-template-columns: minmax(360px, 1fr) 40px minmax(360px, 1fr) 300px !important;
+    gap: 14px !important;
+    align-items: stretch !important;
+    justify-content: normal !important;
+    padding: 18px 30px 0 !important;
+  }
+
+  .health-card {
+    grid-column: 1 / 4 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 160px !important;
+  }
+
+  .alarms-matrix-card {
+    grid-column: 4 / 5 !important;
+    width: 100% !important;
+    min-height: 160px !important;
+    max-height: none !important;
+    padding: 14px !important;
+  }
+
+  .alarms-matrix-card .alarm-box {
+    min-height: 56px !important;
+  }
+
+  .ha-cluster-layout {
+    display: grid !important;
+    grid-template-columns: minmax(360px, 1fr) 40px minmax(360px, 1fr) 300px !important;
+    gap: 14px !important;
+    align-items: start !important;
+  }
+
+  .ha-divider {
+    grid-column: 2 / 3 !important;
+    width: 40px !important;
+    min-width: 40px !important;
+  }
+
+  .ha-badge {
+    width: 40px !important;
+    min-height: 74px !important;
+    font-size: 0.54rem !important;
+  }
+
+  .ws-column {
+    grid-column: 4 / 5 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    margin-top: 0 !important;
+    padding: 12px !important;
+  }
+
+  .ws-vertical-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 7px !important;
+  }
+
+  .ws-card-row {
+    min-height: 44px !important;
+    padding: 8px 10px !important;
+  }
+
+  .ws-name {
+    font-size: 0.74rem !important;
+  }
+
+  .ws-app-desc {
+    font-size: 0.58rem !important;
+  }
+
+  .site-column {
+    padding: 12px !important;
+    gap: 10px !important;
+  }
+
+  .node-hardware-premium {
+    padding: 12px !important;
+  }
+
+  .node-control {
+    min-height: 52px !important;
+    padding: 10px 12px !important;
+  }
+
+  .node-ldom {
+    padding: 14px !important;
+    gap: 12px !important;
+  }
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.1: FIX DEFINITIVO DA COLUNA WS
+   Força o layout desktop:
+   [ ILOM1 ] [ HA ] [ ILOM2 ] [ WS ]
+   e mantém [ ALARMES ] acima da mesma coluna WS.
+   ========================================================= */
+
+@media (min-width: 1000px) {
+  /* Topo alinhado com a coluna lateral direita */
+  .top-summary-row {
+    display: grid !important;
+    grid-template-columns: minmax(310px, 1fr) 36px minmax(310px, 1fr) 270px !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+    justify-content: normal !important;
+    padding: 18px 30px 0 !important;
+  }
+
+  .health-card {
+    grid-column: 1 / 4 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 150px !important;
+  }
+
+  .alarms-matrix-card {
+    grid-column: 4 / 5 !important;
+    width: 100% !important;
+    min-height: 150px !important;
+    max-height: none !important;
+    padding: 12px !important;
+  }
+
+  .alarms-matrix-card .metric-label {
+    font-size: 0.60rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .alarms-matrix-card .alarm-grid-matrix {
+    gap: 7px !important;
+  }
+
+  .alarms-matrix-card .alarm-box {
+    min-height: 50px !important;
+    padding: 7px !important;
+  }
+
+  .alarms-matrix-card .alarm-count {
+    font-size: 1.18rem !important;
+  }
+
+  .alarms-matrix-card .alarm-tag {
+    font-size: 0.52rem !important;
+    margin-top: 5px !important;
+  }
+
+  /* O container vira a grade real do SCADA */
+  .dashboard-container {
+    display: grid !important;
+    grid-template-columns: minmax(310px, 1fr) 36px minmax(310px, 1fr) 270px !important;
+    gap: 12px !important;
+    align-items: start !important;
+    padding: 18px 30px 18px !important;
+  }
+
+  /*
+    Faz os filhos do ha-cluster-layout participarem diretamente
+    da grade do dashboard-container.
+  */
+  .ha-cluster-layout {
+    display: contents !important;
+  }
+
+  /* ILOM1 */
+  .dashboard-container .ha-cluster-layout > .site-column:first-child {
+    grid-column: 1 / 2 !important;
+    grid-row: 1 !important;
+  }
+
+  /* Divisor HA */
+  .dashboard-container .ha-divider {
+    grid-column: 2 / 3 !important;
+    grid-row: 1 !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    align-self: stretch !important;
+  }
+
+  .dashboard-container .ha-badge {
+    width: 36px !important;
+    min-height: 72px !important;
+    font-size: 0.50rem !important;
+  }
+
+  /* ILOM2 */
+  .dashboard-container .ha-divider + .site-column {
+    grid-column: 3 / 4 !important;
+    grid-row: 1 !important;
+  }
+
+  /* WS fixo no canto direito */
+  .dashboard-container .ws-column {
+    grid-column: 4 / 5 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    align-self: start !important;
+  }
+
+  .dashboard-container .ws-vertical-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 7px !important;
+  }
+
+  .dashboard-container .ws-card-row {
+    min-height: 42px !important;
+    padding: 8px 9px !important;
+  }
+
+  .dashboard-container .ws-name {
+    font-size: 0.72rem !important;
+  }
+
+  .dashboard-container .ws-app-desc {
+    font-size: 0.56rem !important;
+  }
+
+  /* Compacta um pouco os caixotes para caber com WS à direita */
+  .site-column {
+    min-width: 0 !important;
+    padding: 10px !important;
+    gap: 10px !important;
+  }
+
+  .node-hardware-premium {
+    padding: 11px !important;
+  }
+
+  .node-control {
+    min-height: 50px !important;
+    padding: 10px 11px !important;
+  }
+
+  .node-ldom {
+    padding: 12px !important;
+    gap: 11px !important;
+  }
+
+  .ilom-telemetry-grid {
+    gap: 8px !important;
+  }
+
+  .tel-item {
+    min-height: 50px !important;
+    padding: 8px !important;
+  }
+
+  .mobile-zones-grid {
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+  }
+
+  .fixed-zones {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .card-mini.server-fixed-card {
+    min-height: 82px !important;
+    padding: 10px !important;
+    grid-template-columns: minmax(0, 1fr) 76px !important;
+    gap: 8px !important;
+  }
+
+  .server-fixed-name {
+    font-size: 0.84rem !important;
+  }
+
+  .server-fixed-ip {
+    font-size: 0.56rem !important;
+    padding: 3px 6px !important;
+  }
+
+  .server-fixed-meta {
+    min-width: 76px !important;
+    gap: 5px !important;
+  }
+
+  .server-role-badge,
+  .server-fixed-meta .badge {
+    width: 76px !important;
+  }
+
+  .server-role-badge {
+    min-height: 20px !important;
+    font-size: 0.50rem !important;
+  }
+}
+
+/* Em telas realmente pequenas, volta para layout empilhado */
+@media (max-width: 999px) {
+  .dashboard-container {
+    display: block !important;
+  }
+
+  .ha-cluster-layout {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .ws-column {
+    width: 100% !important;
+    margin-top: 16px !important;
   }
 }

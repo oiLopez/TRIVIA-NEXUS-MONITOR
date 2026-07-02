@@ -40,7 +40,7 @@
     <header class="dashboard-header">
       <div class="header-info">
         <h2>Painel de Alta Disponibilidade</h2>
-        <p>Monitoramento em tempo real do Cluster Core e Terminais Operacionais</p>
+        <p>Monitoramento em tempo real das linhas 11 Coral e 12 Safira</p>
       </div>
       <div class="header-actions">
         <div class="data-freshness-widget data-freshness-wait" id="data-freshness-widget">
@@ -99,7 +99,11 @@
         <div class="site-column">
           <div class="node-hardware-premium">
             <div class="hardware-main-header">
-              <div class="node-title">ILOM 1 (Hardware) <span id="up-ilom1" class="uptime-tag"></span></div>
+              <div class="node-title">
+                ILOM 1 (Hardware)
+                <span class="ip-tag"> 192.0.2.32 </span>
+                <span id="up-ilom1" class="uptime-tag"></span>
+              </div>
               <span id="status-ilom1" class="badge status-wait">Wait</span>
             </div>
             <div class="ilom-telemetry-grid">
@@ -111,13 +115,21 @@
           </div>
 
           <div class="node-control">
-            <div class="node-title">Control Domain 1 <span id="up-control1" class="uptime-tag"></span></div>
+            <div class="node-title">
+              Control Domain 1
+              <span class="ip-tag">192.0.2.31</span>
+              <span id="up-control1" class="uptime-tag"></span>
+            </div>
             <span id="status-control1" class="badge status-wait">Wait</span>
           </div>
 
           <div class="node-ldom border-safira">
             <div class="ldom-main-header">
-              <div class="node-title">LDOM 1 (Virtualização) <span id="up-ldom1" class="uptime-tag"></span></div>
+              <div class="node-title">
+                LDOM 1 (Virtualização)
+                <span class="ip-tag">192.0.2.2210</span>
+                <span id="up-ldom1" class="uptime-tag"></span>
+              </div>
               <span id="status-ldom1" class="badge status-wait">Wait</span>
             </div>
 
@@ -129,8 +141,36 @@
 
             <div class="zone-divider">SERVIDORES (FIXOS)</div>
             <div class="fixed-zones">
-              <div class="card-mini"><span>SFT1 <span id="up-sft1-ldom1" class="uptime-tag"></span></span><span id="sft1-ldom1" class="badge status-wait">Wait</span></div>
-              <div class="card-mini"><span>METROSP44 <span id="up-metrosp44-ldom1" class="uptime-tag"></span></span><span id="metrosp44-ldom1" class="badge status-wait">Wait</span></div>
+
+              <div class="card-mini server-fixed-card">
+                <div class="server-fixed-info">
+                  <div class="server-fixed-title">
+                    <span class="server-fixed-name">SFT1</span>
+                    <span id="up-sft1-ldom1" class="uptime-tag"></span>
+                  </div>
+                  <span class="server-fixed-ip">192.0.2.22</span>
+                </div>
+
+                <div class="server-fixed-meta">
+                  <span id="role-sft1-ldom1" class="server-role-badge server-role-active">Ativo</span>
+                  <span id="sft1-ldom1" class="badge status-wait">Wait</span>
+                </div>
+              </div>
+
+              <div class="card-mini server-fixed-card">
+                <div class="server-fixed-info">
+                  <div class="server-fixed-title">
+                    <span class="server-fixed-name">METROSP44</span>
+                    <span id="up-metrosp44-ldom1" class="uptime-tag"></span>
+                  </div>
+                  <span class="server-fixed-ip">192.0.2.20</span>
+                </div>
+
+                <div class="server-fixed-meta">
+                  <span id="role-metrosp44-ldom1" class="server-role-badge server-role-active">Ativo</span>
+                  <span id="metrosp44-ldom1" class="badge status-wait">Wait</span>
+                </div>
+              </div>
             </div>
 
             <div class="zone-divider">CONSOLAS (MÓVEIS)</div>
@@ -156,7 +196,11 @@
         <div class="site-column">
           <div class="node-hardware-premium">
             <div class="hardware-main-header">
-              <div class="node-title">ILOM 2 (Hardware) <span id="up-ilom2" class="uptime-tag"></span></div>
+              <div class="node-title">
+                ILOM 2 (Hardware)
+                <span class="ip-tag">192.0.2.34</span>
+                <span id="up-ilom2" class="uptime-tag"></span>
+              </div>
               <span id="status-ilom2" class="badge status-wait">Wait</span>
             </div>
             <div class="ilom-telemetry-grid">
@@ -168,13 +212,21 @@
           </div>
 
           <div class="node-control">
-            <div class="node-title">Control Domain 2 <span id="up-control2" class="uptime-tag"></span></div>
+            <div class="node-title">
+              Control Domain 2
+              <span class="ip-tag">192.0.2.33</span>
+              <span id="up-control2" class="uptime-tag"></span>
+            </div>
             <span id="status-control2" class="badge status-wait">Wait</span>
           </div>
 
           <div class="node-ldom border-coral">
             <div class="ldom-main-header">
-              <div class="node-title">LDOM 2 (Virtualização) <span id="up-ldom2" class="uptime-tag"></span></div>
+              <div class="node-title">
+                LDOM 2 (Virtualização)
+                <span class="ip-tag">192.0.2.2510</span>
+                <span id="up-ldom2" class="uptime-tag"></span>
+              </div>
               <span id="status-ldom2" class="badge status-wait">Wait</span>
             </div>
 
@@ -184,11 +236,41 @@
               <div class="perf-sub-metrics">Serviços Ativos em Uso: <strong id="ldom2-services-count">--</strong></div>
             </div>
 
-            <div class="zone-divider">SERVIDORES (FIXOS)</div>
-            <div class="fixed-zones">
-              <div class="card-mini"><span>SFT2 <span id="up-sft2-ldom2" class="uptime-tag"></span></span><span id="sft2-ldom2" class="badge status-wait">Wait</span></div>
-              <div class="card-mini"><span>METROSP45 <span id="up-metrosp45-ldom2" class="uptime-tag"></span></span><span id="metrosp45-ldom2" class="badge status-wait">Wait</span></div>
-            </div>
+            <div class="zone-divider">SERVIDORES (FIXOS)
+              <div class="fixed-zones">
+
+              <div class="card-mini server-fixed-card">
+                <div class="server-fixed-info">
+                  <div class="server-fixed-title">
+                    <span class="server-fixed-name">SFT2</span>
+                    <span id="up-sft2-ldom2" class="uptime-tag"></span>
+                  </div>
+                  <span class="server-fixed-ip">192.0.2.25</span>
+                </div>
+
+                <div class="server-fixed-meta">
+                  <span id="role-sft2-ldom2" class="server-role-badge server-role-standby">Standby</span>
+                  <span id="sft2-ldom2" class="badge status-wait">Wait</span>
+                </div>
+              </div>
+
+              <div class="card-mini server-fixed-card">
+                <div class="server-fixed-info">
+                  <div class="server-fixed-title">
+                    <span class="server-fixed-name">METROSP45</span>
+                    <span id="up-metrosp45-ldom2" class="uptime-tag"></span>
+                  </div>
+                  <span class="server-fixed-ip">192.0.2.21</span>
+                </div>
+
+                <div class="server-fixed-meta">
+                  <span id="role-metrosp45-ldom2" class="server-role-badge server-role-standby">Standby</span>
+                  <span id="metrosp45-ldom2" class="badge status-wait">Wait</span>
+                </div>
+              </div>
+              </div>
+            </div>  
+            
 
             <div class="zone-divider">CONSOLAS (MÓVEIS)</div>
             <div class="mobile-zones-grid">
@@ -201,7 +283,10 @@
               <div class="mz-item"><span>CONS5 (Micro) <span id="up-cons5-ldom2" class="uptime-tag"></span></span><span id="cons5-ldom2" class="badge status-wait">Wait</span></div>
               <div class="mz-item"><span>CPTM12 (CONS) <span id="up-cptm12-ldom2" class="uptime-tag"></span></span><span id="cptm12-ldom2" class="badge status-wait">Wait</span></div>
             </div>
+          
           </div>
+          </div>
+
         </div>
 
         <div class="ws-column">
