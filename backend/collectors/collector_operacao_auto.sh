@@ -46,9 +46,11 @@ source "$BACKEND_DIR/core/nexus_db.sh"
 HOSTNAME_LOCAL="$(hostname)"
 MODULO="OPERACAO_AUTO"
 
+SSH_TIMEOUT="${NEXUS_SSH_TIMEOUT:-6}"
+
 SSH_OPTS=(
     -o BatchMode=yes
-    -o ConnectTimeout=6
+    -o ConnectTimeout="$SSH_TIMEOUT"
     -o StrictHostKeyChecking=no
 )
 
@@ -97,7 +99,7 @@ listar_hosts_sft() {
     # TIPO;NOME;IP;USUARIO;...
     awk -F';' '
         $1 == "ZONE_FIXA" {
-            print $2
+            print $2 ";" $3 ";" $4
         }
     ' "$HOSTS_CONFIG" | sort -u
 }
@@ -108,105 +110,112 @@ listar_hosts_painel() {
     # TIPO;NOME;IP;USUARIO;...
     awk -F';' '
         $1 == "ZONE_MOVEL" {
-            print $2
+            print $2 ";" $3 ";" $4
         }
     ' "$HOSTS_CONFIG" | sort -u
 }
 
 executar_ssh_check() {
-    local host="$1"
-    local process_regex="$2"
+    local usuario="$1"
+    local ip="$2"
+    local process_regex="$3"
 
-    ssh "${SSH_OPTS[@]}" "$host" \
+    ssh "${SSH_OPTS[@]}" "${usuario}@${ip}" \
         "pgrep -f \"$process_regex\" > /dev/null && echo ATIVO || echo PARADO; exit 0" \
         2>/dev/null
 }
 
 detect_sft() {
-    local host="$1"
-    local host_upper
+    local nome="$1"
+    local ip="$2"
+    local usuario="$3"
+
+    local nome_upper
     local resultado
 
-    host_upper="$(echo "$host" | to_upper)"
+    nome_upper="$(echo "$nome" | to_upper)"
 
-    if ! resultado="$(executar_ssh_check "$host" "$SFT_PROCESS_REGEX")"; then
-        echo "${host_upper};OFFLINE;0;SSH_FALHA"
+    if ! resultado="$(executar_ssh_check "$usuario" "$ip" "$SFT_PROCESS_REGEX")"; then
+        echo "${nome_upper};OFFLINE;0;SSH_FALHA"
 
         nexus_db_insert \
             "$HOSTNAME_LOCAL" \
             "$MODULO" \
             "CRITICAL" \
-            "SFT_${host_upper}" \
+            "SFT_${nome_upper}" \
             "OFFLINE" \
-            "Falha de comunicação SSH com servidor SFT ${host}."
+            "Falha de comunicação SSH com servidor SFT ${nome} no IP ${ip}."
 
         return 0
     fi
 
     if [[ "$resultado" == "ATIVO" ]]; then
-        echo "${host_upper};ATIVO;1;SFT_ATIVO"
+        echo "${nome_upper};ATIVO;1;SFT_ATIVO"
 
         nexus_db_insert \
             "$HOSTNAME_LOCAL" \
             "$MODULO" \
             "OK" \
-            "SFT_${host_upper}" \
+            "SFT_${nome_upper}" \
             "ATIVO" \
-            "Servidor SFT ${host} está ativo."
+            "Servidor SFT ${nome} está ativo no IP ${ip}."
     else
-        echo "${host_upper};STANDBY;0;SFT_STANDBY"
+        echo "${nome_upper};STANDBY;0;SFT_STANDBY"
 
         nexus_db_insert \
             "$HOSTNAME_LOCAL" \
             "$MODULO" \
             "OK" \
-            "SFT_${host_upper}" \
+            "SFT_${nome_upper}" \
             "STANDBY" \
-            "Servidor SFT ${host} está em standby."
+            "Servidor SFT ${nome} está em standby no IP ${ip}."
     fi
 }
 
 detect_painel() {
-    local host="$1"
-    local host_upper
+    local nome="$1"
+    local ip="$2"
+    local usuario="$3"
+
+    local nome_upper
     local resultado
 
-    host_upper="$(echo "$host" | to_upper)"
+    nome_upper="$(echo "$nome" | to_upper)"
 
-    if ! resultado="$(executar_ssh_check "$host" "$PAINEL_PROCESS_REGEX")"; then
-        echo "${host_upper};OFFLINE;0;SSH_FALHA"
+    if ! resultado="$(executar_ssh_check "$usuario" "$ip" "$PAINEL_PROCESS_REGEX")"; then
+        echo "${nome_upper};OFFLINE;0;SSH_FALHA"
 
         nexus_db_insert \
             "$HOSTNAME_LOCAL" \
             "$MODULO" \
             "CRITICAL" \
-            "PAINEL_${host_upper}" \
+            "PAINEL_${nome_upper}" \
             "OFFLINE" \
-            "Falha de comunicação SSH com host de painel ${host}."
+            "Falha de comunicação SSH com host de painel ${nome} no IP ${ip}."
 
         return 0
     fi
 
     if [[ "$resultado" == "ATIVO" ]]; then
-        echo "${host_upper};ATIVO;1;PAINEL_ATIVO"
+        echo "${nome_upper};ATIVO;1;PAINEL_ATIVO"
 
         nexus_db_insert \
             "$HOSTNAME_LOCAL" \
             "$MODULO" \
             "OK" \
-            "PAINEL_${host_upper}" \
+            "PAINEL_${nome_upper}" \
             "ATIVO" \
-            "Aplicação de painel ativa em ${host}."
+            "Aplicação de painel ativa em ${nome} no IP ${ip}."
     else
-        echo "${host_upper};PARADO;0;PAINEL_PARADO"
+        echo "${nome_upper};PARADO;0;PAINEL_PARADO"
 
         nexus_db_insert \
             "$HOSTNAME_LOCAL" \
             "$MODULO" \
             "WARNING" \
-            "PAINEL_${host_upper}" \
+            "PAINEL_${nome_upper}" \
             "PARADO" \
-            "Aplicação de painel parada em ${host}."
+            "Aplicação de painel parada em ${nome} no IP ${ip}."
     fi
 }
 
@@ -214,9 +223,12 @@ coletar_sfts() {
     {
         echo "NOME;MODO;PROCESSOS;DETALHE"
 
-        while read -r host; do
-            [[ -z "$host" ]] && continue
-            detect_sft "$host"
+        while IFS=';' read -r nome ip usuario; do
+            [[ -z "${nome:-}" ]] && continue
+            [[ -z "${ip:-}" ]] && continue
+            [[ -z "${usuario:-}" ]] && usuario="prodix"
+
+            detect_sft "$nome" "$ip" "$usuario"
         done < <(listar_hosts_sft)
     } > "$TMP_OPERACAO"
 
@@ -227,9 +239,12 @@ coletar_paineis() {
     {
         echo "NOME;MODO;PROCESSOS;DETALHE"
 
-        while read -r host; do
-            [[ -z "$host" ]] && continue
-            detect_painel "$host"
+        while IFS=';' read -r nome ip usuario; do
+            [[ -z "${nome:-}" ]] && continue
+            [[ -z "${ip:-}" ]] && continue
+            [[ -z "${usuario:-}" ]] && usuario="prodix"
+
+            detect_painel "$nome" "$ip" "$usuario"
         done < <(listar_hosts_painel)
     } > "$TMP_PAINEL"
 
