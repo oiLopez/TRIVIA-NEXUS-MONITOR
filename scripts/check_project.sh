@@ -214,6 +214,39 @@ check_csv_headers() {
     fi
 }
 
+check_status_ldom() {
+    print_header "Validação do status_ldom.csv"
+
+    local validator="tools/validators/validate_status_ldom.sh"
+    local current_file="backend/data/current/status_ldom.csv"
+    local sample_file="backend/data/samples/status_ldom.sample.csv"
+
+    if [[ ! -f "$validator" ]]; then
+        print_warn "Validador não encontrado: $validator"
+        return 0
+    fi
+
+    if [[ -f "$current_file" ]]; then
+        if bash "$validator" "$current_file"; then
+            print_ok "status_ldom atual válido: $current_file"
+        else
+            print_error "status_ldom atual inválido: $current_file"
+        fi
+    else
+        print_warn "Arquivo status_ldom atual ainda não existe: $current_file"
+    fi
+
+    if [[ -f "$sample_file" ]]; then
+        if bash "$validator" "$sample_file" --strict; then
+            print_ok "Sample status_ldom válido: $sample_file"
+        else
+            print_error "Sample status_ldom inválido: $sample_file"
+        fi
+    else
+        print_warn "Sample status_ldom não encontrado: $sample_file"
+    fi
+}
+
 print_summary() {
     print_header "Resumo geral"
 
@@ -241,6 +274,7 @@ main() {
     check_shell_syntax
     check_inventory
     check_csv_headers
+    check_status_ldom
     print_summary
 }
 
