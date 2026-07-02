@@ -102,6 +102,30 @@ Uso principal:
 
 ---
 
+### `ILOM`
+
+Representa interfaces Oracle ILOM utilizadas para gerenciamento físico dos servidores.
+
+### `CONTROL`
+
+Representa domínios de controle ou servidores responsáveis pela administração da virtualização.
+
+### `LDOM`
+
+Representa domínios lógicos Oracle VM Server for SPARC.
+
+### `WS`
+
+Representa workstations ou estações operacionais monitoradas.
+
+### `ZONE_FIXA`
+
+Representa zonas ou servidores com posição operacional fixa.
+
+### `ZONE_MOVEL`
+
+Representa zonas ou consoles móveis associados a IHMs, painéis ou posições operacionais.
+
 ## Regras de Padronização
 
 O inventário deve seguir estas regras:
@@ -236,3 +260,16 @@ Futuramente, o inventário poderá evoluir para:
 * associação com criticidade operacional;
 * associação com linha, trecho, sistema e dependências;
 * integração com mapa operacional.
+
+
+## Nomes Repetidos
+
+O inventário pode conter nomes repetidos quando o mesmo ativo possuir mais de uma interface, rede, IP ou representação operacional.
+
+Exemplos comuns:
+
+```text
+ws11
+ws12
+ldom1
+ldom2
