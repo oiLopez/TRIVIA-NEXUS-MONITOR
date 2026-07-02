@@ -34,3 +34,13 @@ A interface Frontend v0.1 passou a consumir também o arquivo:
 
 ```text
 backend/data/events/nexus_events.csv
+
+## Indicador de Saúde dos Dados
+
+A interface possui um indicador no cabeçalho principal para informar o estado de atualização dos dados exibidos.
+
+O indicador considera a leitura dos arquivos:
+
+```text
+backend/data/current/status_ldom.csv
+backend/data/events/nexus_events.csv
