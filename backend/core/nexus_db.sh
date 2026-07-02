@@ -1,12 +1,36 @@
-#!/bin/bash
+# ===========================================================
+# Caminhos internos do NEXUS MONITOR
+# ============================================================
+
+# Diretório onde este script está localizado:
+# backend/core/
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Diretório backend:
+# backend/
+BACKEND_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Diretório de dados:
+# backend/data/
+DATA_DIR="$BACKEND_DIR/data"
+
+# Diretório de eventos:
+# backend/data/events/
+EVENTS_DIR="$DATA_DIR/events"
+
+# Arquivo principal de eventos:
+# backend/data/events/nexus_events.csv
+NEXUS_DB_FILE="$EVENTS_DIR/nexus_events.csv"
+
+# Garante que o diretório de eventos exista antes de gravar
+mkdir -p "$EVENTS_DIR"#!/bin/bash
 # ==============================================================================
 # NEXUS MONITOR ENTERPRISE
 # Arquivo: nexus_db.sh
 # Descrição: Biblioteca Core para gravação segura e padronizada em CSV.
 # ==============================================================================
 
-# Caminho do "Banco de Dados" e do arquivo de trava (Lock)
-NEXUS_DB_FILE="../data/events/nexus_events.csv"
+# Caminho do "Banco de Dados" e do arquivo de trava (Lock)"
 NEXUS_LOCK_FILE="/tmp/nexus_db.lock"
 
 # Função que cria o cabeçalho do CSV se o arquivo não existir
