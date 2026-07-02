@@ -131,6 +131,7 @@ check_files() {
         "ROADMAP.md"
         "VERSION"
         "backend/config/nexus_hosts.config"
+	"backend/core/nexus_paths.sh"
         "backend/core/nexus_db.sh"
         "backend/collectors/collector_alertas.sh"
         "backend/collectors/collector_operacao_auto.sh"
