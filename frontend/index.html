@@ -214,6 +214,37 @@
         </div>
       </div>
     </div>
+    <section class="events-panel" id="alertas">
+      <div class="events-panel-header">
+        <div>
+          <span class="metric-label">EVENTOS E ALERTAS</span>
+          <h2>Últimos Eventos Operacionais</h2>
+        </div>
+        <span class="events-last-update" id="events-last-update">Aguardando eventos</span>
+      </div>
+
+      <div class="events-table-wrapper">
+        <table class="events-table">
+          <thead>
+            <tr>
+              <th>Horário</th>
+              <th>Host</th>
+              <th>Módulo</th>
+              <th>Status</th>
+              <th>Métrica</th>
+              <th>Valor</th>
+              <th>Mensagem</th>
+            </tr>
+          </thead>
+          <tbody id="events-table-body">
+            <tr>
+              <td colspan="7" class="events-empty">Aguardando leitura de eventos...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 </body>
 </html>

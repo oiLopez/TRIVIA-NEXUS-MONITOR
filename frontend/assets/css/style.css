@@ -944,4 +944,144 @@ body {
   }
 }
 
+/* =========================================================
+   NEXUS MONITOR - Painel de Eventos Operacionais
+   ========================================================= */
 
+.events-panel {
+  margin: 0 30px 30px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.events-panel-header {
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--card-border);
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.events-panel-header h2 {
+  font-size: 1rem;
+  margin-top: 4px;
+  color: var(--text-main);
+}
+
+.events-last-update {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.events-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.events-table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 800;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.14);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.events-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.events-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.event-time {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.event-host {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.event-message {
+  color: var(--text-muted);
+  min-width: 260px;
+}
+
+.event-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.event-badge-ok {
+  color: var(--success-text);
+  background: var(--success-bg);
+}
+
+.event-badge-warning {
+  color: var(--warn-text);
+  background: var(--warn-bg);
+}
+
+.event-badge-critical {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+}
+
+.event-badge-info {
+  color: #94A3B8;
+  background: rgba(148, 163, 184, 0.10);
+}
+
+.event-row.event-critical td {
+  background: rgba(239, 68, 68, 0.025);
+}
+
+.events-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 24px !important;
+}
+
+@media (max-width: 768px) {
+  .events-panel {
+    margin: 0 18px 24px;
+  }
+
+  .events-panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

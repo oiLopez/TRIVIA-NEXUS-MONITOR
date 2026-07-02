@@ -6,13 +6,21 @@
 'use strict';
 
 import { NEXUS_CONFIG } from './config.js';
-import { fetchClusterRows } from './api.js';
-import { nexusState, setClusterRows, setFrontendError } from './state.js';
+import { fetchClusterRows, fetchEventRows } from './api.js';
+import {
+  nexusState,
+  setClusterRows,
+  setEventRows,
+  setFrontendError,
+  setEventsError,
+} from './state.js';
 import {
   bindNavigationState,
   renderClock,
   renderDashboard,
   renderDataError,
+  renderEventsPanel,
+  renderEventsError,
 } from './ui.js';
 
 async function refreshClusterState() {
@@ -27,15 +35,31 @@ async function refreshClusterState() {
   }
 }
 
+async function refreshEventsState() {
+  try {
+    const rows = await fetchEventRows();
+
+    setEventRows(rows);
+    renderEventsPanel(nexusState.eventRows, nexusState.eventsLastUpdate);
+  } catch (error) {
+    setEventsError(error);
+    renderEventsError(error);
+  }
+}
+
 function startIntervals() {
   setInterval(renderClock, NEXUS_CONFIG.clockIntervalMs);
   setInterval(refreshClusterState, NEXUS_CONFIG.refreshIntervalMs);
+  setInterval(refreshEventsState, NEXUS_CONFIG.eventsRefreshIntervalMs);
 }
 
 function initNexusDashboard() {
   renderClock();
   bindNavigationState();
+
   refreshClusterState();
+  refreshEventsState();
+
   startIntervals();
 }
 

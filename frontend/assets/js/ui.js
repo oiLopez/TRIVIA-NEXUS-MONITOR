@@ -283,3 +283,99 @@ function updateSummary(rows, lastUpdate) {
     subtext.textContent = `Última atualização: ${lastUpdate.toLocaleTimeString('pt-BR')}`;
   }
 }
+
+
+export function renderEventsPanel(rows, lastUpdate) {
+  const tableBody = document.getElementById('events-table-body');
+  const lastUpdateElement = document.getElementById('events-last-update');
+
+  if (!tableBody) {
+    return;
+  }
+
+  const events = Array.isArray(rows) ? rows.slice(-20).reverse() : [];
+
+  if (lastUpdateElement && lastUpdate) {
+    lastUpdateElement.textContent = `Atualizado às ${lastUpdate.toLocaleTimeString('pt-BR')}`;
+  }
+
+  if (events.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7" class="events-empty">Nenhum evento disponível.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  tableBody.innerHTML = events.map((event) => {
+    const severity = getEventSeverity(event.status);
+
+    return `
+      <tr class="event-row event-${severity}">
+        <td class="event-time">${escapeHtml(formatEventTimestamp(event.timestamp))}</td>
+        <td class="event-host">${escapeHtml(event.hostname)}</td>
+        <td>${escapeHtml(event.module)}</td>
+        <td><span class="event-badge event-badge-${severity}">${escapeHtml(event.status)}</span></td>
+        <td>${escapeHtml(event.metric)}</td>
+        <td>${escapeHtml(event.value)}</td>
+        <td class="event-message">${escapeHtml(event.message)}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+export function renderEventsError(error) {
+  console.warn(`NEXUS MONITOR: aguardando CSV de eventos (${error.message})`);
+
+  const tableBody = document.getElementById('events-table-body');
+  const lastUpdateElement = document.getElementById('events-last-update');
+
+  if (lastUpdateElement) {
+    lastUpdateElement.textContent = 'Aguardando arquivo de eventos';
+  }
+
+  if (tableBody) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7" class="events-empty">Aguardando backend/data/events/nexus_events.csv</td>
+      </tr>
+    `;
+  }
+}
+
+function getEventSeverity(status) {
+  const normalizedStatus = String(status || '').trim().toUpperCase();
+
+  if (['CRITICO', 'CRÍTICO', 'CRITICAL', 'FALHA', 'OFFLINE', 'DOWN'].includes(normalizedStatus)) {
+    return 'critical';
+  }
+
+  if (['ALERTA', 'ALERT', 'WARN', 'WARNING', 'DEGRADED', 'DEGRADADO'].includes(normalizedStatus)) {
+    return 'warning';
+  }
+
+  if (['OK', 'ONLINE', 'UP', 'ATIVO', 'RECUPERADO'].includes(normalizedStatus)) {
+    return 'ok';
+  }
+
+  return 'info';
+}
+
+function formatEventTimestamp(timestamp) {
+  if (!timestamp) {
+    return '--';
+  }
+
+  const parts = String(timestamp).split(' ');
+  return parts[1] || timestamp;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
