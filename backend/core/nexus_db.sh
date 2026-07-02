@@ -23,6 +23,11 @@ NEXUS_DB_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$NEXUS_DB_SCRIPT_DIR/nexus_paths.sh"
 # Carrega biblioteca de logs internos.
 source "$NEXUS_DB_SCRIPT_DIR/nexus_logger.sh"
+# Carrega biblioteca de logs internos.
+source "$NEXUS_DB_SCRIPT_DIR/nexus_logger.sh"
+
+# Carrega biblioteca de manipulação CSV.
+source "$NEXUS_DB_SCRIPT_DIR/nexus_csv.sh"
 
 # Arquivo principal de eventos:
 # backend/data/events/nexus_events.csv
@@ -47,17 +52,6 @@ nexus_db_init() {
     fi
 }
 
-nexus_db_sanitize_field() {
-    local value="${1:-}"
-
-    # Remove quebras de linha e substitui ponto e vírgula para não quebrar o CSV.
-    value="${value//$'\n'/ }"
-    value="${value//$'\r'/ }"
-    value="${value//;/,}"
-
-    echo "$value"
-}
-
 # ============================================================
 # API pública
 # ============================================================
@@ -75,15 +69,17 @@ nexus_db_insert() {
 
     timestamp="$(date +"%Y-%m-%d %H:%M:%S")"
 
-    host="$(nexus_db_sanitize_field "$host")"
-    modulo="$(nexus_db_sanitize_field "$modulo")"
-    status="$(nexus_db_sanitize_field "$status")"
-    metrica="$(nexus_db_sanitize_field "$metrica")"
-    valor="$(nexus_db_sanitize_field "$valor")"
-    mensagem="$(nexus_db_sanitize_field "$mensagem")"
-
-    linha_csv="${timestamp};${host};${modulo};${status};${metrica};${valor};${mensagem}"
-
+    linha_csv="$(
+    nexus_csv_join_fields \
+        ";" \
+        "$timestamp" \
+        "$host" \
+        "$modulo" \
+        "$status" \
+        "$metrica" \
+        "$valor" \
+        "$mensagem"
+	)"
     (
         flock -x 200
         echo "$linha_csv" >> "$NEXUS_DB_FILE"
