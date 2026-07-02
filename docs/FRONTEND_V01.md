@@ -27,3 +27,10 @@ frontend/
     │   └── style.css
     └── js/
         └── app.js
+
+## Integração de Eventos Operacionais
+
+A interface Frontend v0.1 passou a consumir também o arquivo:
+
+```text
+backend/data/events/nexus_events.csv

@@ -293,7 +293,11 @@ export function renderEventsPanel(rows, lastUpdate) {
     return;
   }
 
-  const events = Array.isArray(rows) ? rows.slice(-20).reverse() : [];
+  updateEventFilterControls(getActiveEventFilter());
+
+  const sourceRows = Array.isArray(rows) ? rows : [];
+  const filteredRows = filterEventsByActiveSeverity(sourceRows);
+  const events = filteredRows.slice(-20).reverse();
 
   if (lastUpdateElement && lastUpdate) {
     lastUpdateElement.textContent = `Atualizado às ${lastUpdate.toLocaleTimeString('pt-BR')}`;
@@ -379,3 +383,51 @@ function escapeHtml(value) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 }
+
+let activeEventFilter = 'all';
+
+export function bindEventsFilterControls(onFilterChange) {
+  const buttons = document.querySelectorAll('[data-event-filter]');
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const selectedFilter = button.getAttribute('data-event-filter') || 'all';
+
+      setActiveEventFilter(selectedFilter);
+      updateEventFilterControls(selectedFilter);
+
+      if (typeof onFilterChange === 'function') {
+        onFilterChange(selectedFilter);
+      }
+    });
+  });
+}
+
+function setActiveEventFilter(filter) {
+  const allowedFilters = ['all', 'critical', 'warning', 'ok', 'info'];
+  activeEventFilter = allowedFilters.includes(filter) ? filter : 'all';
+}
+
+function getActiveEventFilter() {
+  return activeEventFilter;
+}
+
+function updateEventFilterControls(filter) {
+  const buttons = document.querySelectorAll('[data-event-filter]');
+
+  buttons.forEach((button) => {
+    const buttonFilter = button.getAttribute('data-event-filter') || 'all';
+    button.classList.toggle('active', buttonFilter === filter);
+  });
+}
+
+function filterEventsByActiveSeverity(rows) {
+  const filter = getActiveEventFilter();
+
+  if (filter === 'all') {
+    return rows;
+  }
+
+  return rows.filter((event) => getEventSeverity(event.status) === filter);
+}
+

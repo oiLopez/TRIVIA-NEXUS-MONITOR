@@ -1085,3 +1085,63 @@ body {
     align-items: flex-start;
   }
 }
+
+/* =========================================================
+   NEXUS MONITOR - Filtros do Painel de Eventos
+   ========================================================= */
+
+.events-panel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.events-filter-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.events-filter {
+  border: 0;
+  cursor: pointer;
+  color: var(--text-muted);
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.events-filter:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.events-filter.active {
+  color: var(--text-main);
+  background: rgba(0, 91, 187, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.22);
+}
+
+@media (max-width: 768px) {
+  .events-panel-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .events-filter-group {
+    width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+}
