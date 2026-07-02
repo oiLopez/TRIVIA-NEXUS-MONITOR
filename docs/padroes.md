@@ -32,3 +32,11 @@ Exemplo:
 ```csv
 TIMESTAMP;HOSTNAME;MODULO;STATUS;METRICA;VALOR;MENSAGEM
 2026-07-02 10:00:00;server01;SERVICOS;OK;HTTP;UP;Serviço ativo
+
+
+## Inventário
+
+O inventário oficial de hosts do NEXUS MONITOR fica em:
+
+```text
+backend/config/nexus_hosts.config

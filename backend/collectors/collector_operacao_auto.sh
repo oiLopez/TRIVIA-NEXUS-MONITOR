@@ -94,10 +94,10 @@ validar_config() {
 }
 
 listar_hosts_sft() {
-    # Seleciona zonas fixas relacionadas aos servidores de operação.
-    # Campos esperados no inventário:
-    # TIPO;NOME;IP;USUARIO;...
+    # Retorna: NOME;IP;USUARIO
     awk -F';' '
+        /^[[:space:]]*#/ {next}
+        /^[[:space:]]*$/ {next}
         $1 == "ZONE_FIXA" {
             print $2 ";" $3 ";" $4
         }
@@ -105,10 +105,10 @@ listar_hosts_sft() {
 }
 
 listar_hosts_painel() {
-    # Seleciona zonas móveis relacionadas às IHMs e painéis operacionais.
-    # Campos esperados no inventário:
-    # TIPO;NOME;IP;USUARIO;...
+    # Retorna: NOME;IP;USUARIO
     awk -F';' '
+        /^[[:space:]]*#/ {next}
+        /^[[:space:]]*$/ {next}
         $1 == "ZONE_MOVEL" {
             print $2 ";" $3 ";" $4
         }
