@@ -4,7 +4,6 @@
 # Arquivo: nexus_db.sh
 # Descrição: Biblioteca core para gravação segura e padronizada de eventos em CSV.
 # Autor: miyo
-# Versão: 0.1.0
 # Dependências: bash, coreutils, util-linux/flock
 # Saída: backend/data/events/nexus_events.csv
 # ==============================================================================
@@ -20,27 +19,14 @@ set -o nounset
 # backend/core/
 NEXUS_DB_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Diretório backend:
-# backend/
-NEXUS_BACKEND_DIR="$(cd "$NEXUS_DB_SCRIPT_DIR/.." && pwd)"
-
-# Diretório de dados:
-# backend/data/
-NEXUS_DATA_DIR="$NEXUS_BACKEND_DIR/data"
-
-# Diretório de eventos:
-# backend/data/events/
-NEXUS_EVENTS_DIR="$NEXUS_DATA_DIR/events"
+# Carrega os caminhos oficiais do projeto.
+source "$NEXUS_DB_SCRIPT_DIR/nexus_paths.sh"
 
 # Arquivo principal de eventos:
 # backend/data/events/nexus_events.csv
-NEXUS_DB_FILE="$NEXUS_EVENTS_DIR/nexus_events.csv"
+NEXUS_DB_FILE="$NEXUS_EVENTS_FILE"
 
-# Arquivo de lock para escrita segura.
-NEXUS_LOCK_FILE="/tmp/nexus_monitor_db.lock"
 
-# Cabeçalho oficial do arquivo de eventos.
-NEXUS_EVENTS_HEADER="TIMESTAMP;HOSTNAME;MODULO;STATUS;METRICA;VALOR;MENSAGEM"
 
 # ============================================================
 # Funções internas
