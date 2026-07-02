@@ -26,7 +26,8 @@ source "$NEXUS_DB_SCRIPT_DIR/nexus_paths.sh"
 # backend/data/events/nexus_events.csv
 NEXUS_DB_FILE="$NEXUS_EVENTS_FILE"
 
-
+# Arquivo de lock para escrita segura.
+NEXUS_LOCK_FILE="/tmp/nexus_monitor_db.lock"
 
 # ============================================================
 # Funções internas
