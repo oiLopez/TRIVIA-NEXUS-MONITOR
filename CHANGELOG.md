@@ -34,6 +34,13 @@ O formato segue uma organização simples por versão, data e tipo de alteraçã
 - Padronizado o coletor de Rede A/B para `collector_rede_ab.sh`.
 
 ### Validado
-
 - Verificação de sintaxe Shell realizada com `bash -n`.
 - Estrutura do projeto validada após reorganização inicial.
+- reorganização estrutural;
+- criação de documentação base;
+- padronização inicial dos coletores;
+- criação do validador de inventário;
+- criação do verificador geral do projeto;
+- uso do inventário oficial nos coletores;
+- correção de caminhos frágeis;
+- padronização de eventos CSV.
