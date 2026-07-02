@@ -7,7 +7,10 @@
 
 export const NEXUS_CONFIG = Object.freeze({
   statusLdomCsv: '../backend/data/current/status_ldom.csv',
+  eventsCsv: '../backend/data/events/nexus_events.csv',
+
   refreshIntervalMs: 2000,
+  eventsRefreshIntervalMs: 5000,
   clockIntervalMs: 1000,
 });
 
