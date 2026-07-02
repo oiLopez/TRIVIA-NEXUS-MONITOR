@@ -21,6 +21,8 @@ NEXUS_DB_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Carrega os caminhos oficiais do projeto.
 source "$NEXUS_DB_SCRIPT_DIR/nexus_paths.sh"
+# Carrega biblioteca de logs internos.
+source "$NEXUS_DB_SCRIPT_DIR/nexus_logger.sh"
 
 # Arquivo principal de eventos:
 # backend/data/events/nexus_events.csv
@@ -38,6 +40,10 @@ nexus_db_init() {
 
     if [[ ! -f "$NEXUS_DB_FILE" ]]; then
         echo "$NEXUS_EVENTS_HEADER" > "$NEXUS_DB_FILE"
+
+        nexus_log_info \
+            "NEXUS_DB" \
+            "Arquivo de eventos criado: $NEXUS_DB_FILE"
     fi
 }
 
@@ -82,6 +88,9 @@ nexus_db_insert() {
         flock -x 200
         echo "$linha_csv" >> "$NEXUS_DB_FILE"
     ) 200> "$NEXUS_LOCK_FILE"
+	nexus_log_debug \
+    	"NEXUS_DB" \
+    	"Evento registrado: modulo=${modulo}, status=${status}, metrica=${metrica}, valor=${valor}"
 }
 
 # Inicializa automaticamente ao carregar a biblioteca.
