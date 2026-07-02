@@ -1145,3 +1145,76 @@ body {
     justify-content: flex-start;
   }
 }
+
+/* =========================================================
+   NEXUS MONITOR - Indicador de Saúde dos Dados
+   ========================================================= */
+
+.data-freshness-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.data-freshness-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--text-muted);
+  box-shadow: 0 0 8px rgba(148, 163, 184, 0.45);
+}
+
+.data-freshness-ok {
+  color: var(--success-text);
+  background: var(--success-bg);
+  border-color: rgba(16, 185, 129, 0.32);
+}
+
+.data-freshness-ok .data-freshness-dot {
+  background: var(--success-text);
+  box-shadow: 0 0 10px var(--success-text);
+}
+
+.data-freshness-wait {
+  color: var(--text-muted);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.data-freshness-warning {
+  color: var(--warn-text);
+  background: var(--warn-bg);
+  border-color: rgba(245, 158, 11, 0.34);
+}
+
+.data-freshness-warning .data-freshness-dot {
+  background: var(--warn-text);
+  box-shadow: 0 0 10px var(--warn-text);
+}
+
+.data-freshness-critical {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+  border-color: rgba(239, 68, 68, 0.34);
+}
+
+.data-freshness-critical .data-freshness-dot {
+  background: var(--danger-text);
+  box-shadow: 0 0 10px var(--danger-text);
+}
+
+@media (max-width: 768px) {
+  .data-freshness-widget {
+    width: 100%;
+    justify-content: center;
+  }
+}
