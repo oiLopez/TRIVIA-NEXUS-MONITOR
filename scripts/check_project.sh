@@ -247,6 +247,39 @@ check_status_ldom() {
     fi
 }
 
+check_events_csv() {
+    print_header "Validação do nexus_events.csv"
+
+    local validator="tools/validators/validate_events_csv.sh"
+    local events_file="backend/data/events/nexus_events.csv"
+    local sample_file="backend/data/samples/nexus_events.sample.csv"
+
+    if [[ ! -f "$validator" ]]; then
+        print_warn "Validador não encontrado: $validator"
+        return 0
+    fi
+
+    if [[ -f "$events_file" ]]; then
+        if bash "$validator" "$events_file"; then
+            print_ok "Eventos atuais válidos: $events_file"
+        else
+            print_error "Eventos atuais inválidos: $events_file"
+        fi
+    else
+        print_warn "Arquivo de eventos ainda não existe: $events_file"
+    fi
+
+    if [[ -f "$sample_file" ]]; then
+        if bash "$validator" "$sample_file"; then
+            print_ok "Sample de eventos válido: $sample_file"
+        else
+            print_error "Sample de eventos inválido: $sample_file"
+        fi
+    else
+        print_warn "Sample de eventos não encontrado: $sample_file"
+    fi
+}
+
 print_summary() {
     print_header "Resumo geral"
 
@@ -275,6 +308,7 @@ main() {
     check_inventory
     check_csv_headers
     check_status_ldom
+    check_events_csv
     print_summary
 }
 
