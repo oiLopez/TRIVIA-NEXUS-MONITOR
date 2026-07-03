@@ -2501,63 +2501,16 @@ body {
 }
 
 /* =========================================================
-   NEXUS UI POLISH V0.1: FIX DEFINITIVO DA COLUNA WS
-   Força o layout desktop:
-   [ ILOM1 ] [ HA ] [ ILOM2 ] [ WS ]
-   e mantém [ ALARMES ] acima da mesma coluna WS.
+   NEXUS UI POLISH V0.2: COLUNA DIREITA DE STATUS
+   Desktop:
+   [ ILOM1 ] [ HA ] [ ILOM2 ] [ DISPONIBILIDADE / ALARMES / WS ]
    ========================================================= */
 
 @media (min-width: 1000px) {
-  /* Topo alinhado com a coluna lateral direita */
   .top-summary-row {
-    display: grid !important;
-    grid-template-columns: minmax(310px, 1fr) 36px minmax(310px, 1fr) 270px !important;
-    gap: 12px !important;
-    align-items: stretch !important;
-    justify-content: normal !important;
-    padding: 18px 30px 0 !important;
+    display: none !important;
   }
 
-  .health-card {
-    grid-column: 1 / 4 !important;
-    width: 100% !important;
-    max-width: none !important;
-    min-height: 150px !important;
-  }
-
-  .alarms-matrix-card {
-    grid-column: 4 / 5 !important;
-    width: 100% !important;
-    min-height: 150px !important;
-    max-height: none !important;
-    padding: 12px !important;
-  }
-
-  .alarms-matrix-card .metric-label {
-    font-size: 0.60rem !important;
-    line-height: 1.3 !important;
-    margin-bottom: 8px !important;
-  }
-
-  .alarms-matrix-card .alarm-grid-matrix {
-    gap: 7px !important;
-  }
-
-  .alarms-matrix-card .alarm-box {
-    min-height: 50px !important;
-    padding: 7px !important;
-  }
-
-  .alarms-matrix-card .alarm-count {
-    font-size: 1.18rem !important;
-  }
-
-  .alarms-matrix-card .alarm-tag {
-    font-size: 0.52rem !important;
-    margin-top: 5px !important;
-  }
-
-  /* O container vira a grade real do SCADA */
   .dashboard-container {
     display: grid !important;
     grid-template-columns: minmax(310px, 1fr) 36px minmax(310px, 1fr) 270px !important;
@@ -2566,21 +2519,15 @@ body {
     padding: 18px 30px 18px !important;
   }
 
-  /*
-    Faz os filhos do ha-cluster-layout participarem diretamente
-    da grade do dashboard-container.
-  */
   .ha-cluster-layout {
     display: contents !important;
   }
 
-  /* ILOM1 */
   .dashboard-container .ha-cluster-layout > .site-column:first-child {
     grid-column: 1 / 2 !important;
     grid-row: 1 !important;
   }
 
-  /* Divisor HA */
   .dashboard-container .ha-divider {
     grid-column: 2 / 3 !important;
     grid-row: 1 !important;
@@ -2595,116 +2542,109 @@ body {
     font-size: 0.50rem !important;
   }
 
-  /* ILOM2 */
   .dashboard-container .ha-divider + .site-column {
     grid-column: 3 / 4 !important;
     grid-row: 1 !important;
   }
 
-  /* WS fixo no canto direito */
-  .dashboard-container .ws-column {
+  .right-status-column {
     grid-column: 4 / 5 !important;
     grid-row: 1 !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 12px !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
     align-self: start !important;
   }
 
-  .dashboard-container .ws-vertical-grid {
+  .right-status-column .health-card,
+  .right-status-column .alarms-matrix-card,
+  .right-status-column .ws-column {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  .right-status-column .health-card {
+    min-height: 128px !important;
+  }
+
+  .right-status-column .health-card .card-inner {
+    padding: 12px !important;
+  }
+
+  .right-status-column .health-card .metric-label {
+    font-size: 0.56rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .right-status-column .health-card .metric-value {
+    margin-top: 6px !important;
+    font-size: 1.85rem !important;
+  }
+
+  .right-status-column .health-card .progress-radial-container {
+    margin-top: 10px !important;
+  }
+
+  .right-status-column .health-card .progress-bar-linear {
+    height: 5px !important;
+  }
+
+  .right-status-column .health-card .status-subtext {
+    margin-top: 6px !important;
+    font-size: 0.65rem !important;
+  }
+
+  .right-status-column .alarms-matrix-card {
+    min-height: 146px !important;
+    max-height: none !important;
+    padding: 12px !important;
+  }
+
+  .right-status-column .alarms-matrix-card .metric-label {
+    font-size: 0.60rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .right-status-column .alarm-grid-matrix {
+    gap: 7px !important;
+  }
+
+  .right-status-column .alarm-box {
+    min-height: 50px !important;
+    padding: 7px !important;
+  }
+
+  .right-status-column .alarm-count {
+    font-size: 1.18rem !important;
+  }
+
+  .right-status-column .alarm-tag {
+    margin-top: 5px !important;
+    font-size: 0.52rem !important;
+  }
+
+  .right-status-column .ws-column {
+    position: relative !important;
+    min-width: 0 !important;
+    padding: 12px !important;
+    border-radius: 16px !important;
+  }
+
+  .right-status-column .ws-vertical-grid {
     display: flex !important;
     flex-direction: column !important;
     gap: 7px !important;
   }
-
-  .dashboard-container .ws-card-row {
-    min-height: 42px !important;
-    padding: 8px 9px !important;
-  }
-
-  .dashboard-container .ws-name {
-    font-size: 0.72rem !important;
-  }
-
-  .dashboard-container .ws-app-desc {
-    font-size: 0.56rem !important;
-  }
-
-  /* Compacta um pouco os caixotes para caber com WS à direita */
-  .site-column {
-    min-width: 0 !important;
-    padding: 10px !important;
-    gap: 10px !important;
-  }
-
-  .node-hardware-premium {
-    padding: 11px !important;
-  }
-
-  .node-control {
-    min-height: 50px !important;
-    padding: 10px 11px !important;
-  }
-
-  .node-ldom {
-    padding: 12px !important;
-    gap: 11px !important;
-  }
-
-  .ilom-telemetry-grid {
-    gap: 8px !important;
-  }
-
-  .tel-item {
-    min-height: 50px !important;
-    padding: 8px !important;
-  }
-
-  .mobile-zones-grid {
-    grid-template-columns: 1fr !important;
-    gap: 7px !important;
-  }
-
-  .fixed-zones {
-    grid-template-columns: 1fr !important;
-    gap: 8px !important;
-  }
-
-  .card-mini.server-fixed-card {
-    min-height: 82px !important;
-    padding: 10px !important;
-    grid-template-columns: minmax(0, 1fr) 76px !important;
-    gap: 8px !important;
-  }
-
-  .server-fixed-name {
-    font-size: 0.84rem !important;
-  }
-
-  .server-fixed-ip {
-    font-size: 0.56rem !important;
-    padding: 3px 6px !important;
-  }
-
-  .server-fixed-meta {
-    min-width: 76px !important;
-    gap: 5px !important;
-  }
-
-  .server-role-badge,
-  .server-fixed-meta .badge {
-    width: 76px !important;
-  }
-
-  .server-role-badge {
-    min-height: 20px !important;
-    font-size: 0.50rem !important;
-  }
 }
 
-/* Em telas realmente pequenas, volta para layout empilhado */
 @media (max-width: 999px) {
+  .top-summary-row {
+    display: none !important;
+  }
+
   .dashboard-container {
     display: block !important;
   }
@@ -2712,10 +2652,58 @@ body {
   .ha-cluster-layout {
     display: grid !important;
     grid-template-columns: 1fr !important;
+    gap: 16px !important;
   }
 
-  .ws-column {
-    width: 100% !important;
+  .right-status-column {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
     margin-top: 16px !important;
+  }
+
+  .right-status-column .health-card,
+  .right-status-column .alarms-matrix-card,
+  .right-status-column .ws-column {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .right-status-column .ws-column {
+    margin-top: 0 !important;
+  }
+}
+
+/* =========================================================
+   NEXUS UI POLISH V0.3: GUIAS PELO MENU LATERAL
+   ========================================================= */
+
+.view-panel {
+  display: none;
+  flex-shrink: 0;
+}
+
+.view-panel.active {
+  display: block;
+}
+
+/* A guia de eventos vira uma tela própria */
+.events-view-panel {
+  padding: 24px 30px 30px;
+}
+
+.events-view-panel .events-panel {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+.events-view-panel .events-table-wrapper {
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .events-view-panel {
+    padding: 18px;
   }
 }

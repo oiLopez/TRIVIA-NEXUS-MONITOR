@@ -80,3 +80,38 @@ function initNexusDashboard() {
 }
 
 document.addEventListener('DOMContentLoaded', initNexusDashboard);
+
+function activateView(viewName) {
+  const panels = document.querySelectorAll("[data-view-panel]");
+  const links = document.querySelectorAll("[data-view-link]");
+
+  panels.forEach((panel) => {
+    const isActive = panel.dataset.viewPanel === viewName;
+    panel.classList.toggle("active", isActive);
+  });
+
+  links.forEach((link) => {
+    const isActive = link.dataset.viewLink === viewName;
+    link.classList.toggle("active", isActive);
+  });
+}
+
+function getViewFromHash() {
+  const hash = window.location.hash.replace("#", "");
+
+  if (hash === "alertas") {
+    return "alertas";
+  }
+
+  return "dashboard";
+}
+
+function initViewTabs() {
+  activateView(getViewFromHash());
+
+  window.addEventListener("hashchange", () => {
+    activateView(getViewFromHash());
+  });
+}
+
+initViewTabs();

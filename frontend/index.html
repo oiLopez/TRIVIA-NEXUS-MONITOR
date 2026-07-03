@@ -17,7 +17,7 @@
     </div>
 
     <nav class="nav-menu">
-      <a href="#dashboard" class="active">
+      <a href="#dashboard" class="active" data-view-link="dashboard">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
         Visão Geral
       </a>
@@ -29,7 +29,7 @@
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
         Topologia
       </a>
-      <a href="#alertas">
+      <a href="#alertas" data-view-link="alertas">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
         Alertas
       </a>
@@ -55,256 +55,407 @@
       </div>
     </header>
 
-    <div class="top-summary-row">
-      <div class="summary-card health-card">
-        <div class="card-inner">
-          <div class="metric-info">
-            <span class="metric-label">DISPONIBILIDADE GLOBAL DO SISTEMA</span>
-            <h3 class="metric-value" id="global-health-percentage">98.4%</h3>
+    <section id="dashboard" class="view-panel active" data-view-panel="dashboard">
+  <div class="dashboard-container">
+    <div class="ha-cluster-layout">
+    <div class="site-column">
+      <div class="node-hardware-premium">
+        <div class="hardware-main-header">
+          <div class="node-title">
+            ILOM 1 (Hardware)
+            <span class="ip-tag">192.0.2.32</span>
+            <span id="up-ilom1" class="uptime-tag"></span>
           </div>
-          <div class="progress-radial-container">
-            <div class="progress-bar-linear">
-              <div class="progress-fill" style="width: 98.4%"></div>
-            </div>
-            <span class="status-subtext">Todos os subsistemas críticos operacionais</span>
+          <span id="status-ilom1" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ilom-telemetry-grid">
+          <div class="tel-item">
+            <span>Ventoinhas</span>
+            <strong id="ilom1-fans">--</strong>
+          </div>
+          <div class="tel-item">
+            <span>Temperatura</span>
+            <strong id="ilom1-temp">--</strong>
+          </div>
+          <div class="tel-item">
+            <span>Power Supply</span>
+            <strong id="ilom1-psu">--</strong>
+          </div>
+          <div class="tel-item">
+            <span>Refrigeração</span>
+            <strong id="ilom1-cooling">--</strong>
           </div>
         </div>
       </div>
 
-      <div class="summary-card alarms-matrix-card">
-        <span class="metric-label" style="margin-bottom: 12px; display: block;">PAINEL RESUMIDO DE ALARMES ATIVOS</span>
-        <div class="alarm-grid-matrix">
-          <div class="alarm-box critico animate-pulse-light">
-            <span class="alarm-count" id="count-crit">0</span>
-            <span class="alarm-tag">CRÍTICO</span>
-          </div>
-          <div class="alarm-box alto">
-            <span class="alarm-count" id="count-alto">0</span>
-            <span class="alarm-tag">ALTO</span>
-          </div>
-          <div class="alarm-box medio">
-            <span class="alarm-count" id="count-medio">0</span>
-            <span class="alarm-tag">MÉDIO</span>
-          </div>
-          <div class="alarm-box info">
-            <span class="alarm-count" id="count-info">0</span>
-            <span class="alarm-tag">INFO</span>
-          </div>
+      <div class="node-control">
+        <div class="node-title">
+          Control Domain 1
+          <span class="ip-tag">192.0.2.31</span>
+          <span id="up-control1" class="uptime-tag"></span>
         </div>
+        <span id="status-control1" class="badge status-wait">Wait</span>
       </div>
-    </div>
 
-    <div class="dashboard-container">
-      <div class="ha-cluster-layout">
-        <div class="site-column">
-          <div class="node-hardware-premium">
-            <div class="hardware-main-header">
-              <div class="node-title">
-                ILOM 1 (Hardware)
-                <span class="ip-tag"> 192.0.2.32 </span>
-                <span id="up-ilom1" class="uptime-tag"></span>
+      <div class="node-ldom border-safira">
+        <div class="ldom-main-header">
+          <div class="node-title">
+            LDOM 1 (Virtualização)
+            <span class="ip-tag">192.0.2.2210</span>
+            <span id="up-ldom1" class="uptime-tag"></span>
+          </div>
+          <span id="status-ldom1" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ldom-perf-bar">
+          <div class="perf-text">
+            <span>Uso de CPU Core</span>
+            <span id="ldom1-cpu-text">--%</span>
+          </div>
+          <div class="perf-track">
+            <div class="perf-fill color-safira" id="ldom1-cpu-bar" style="width: 0%"></div>
+          </div>
+          <div class="perf-sub-metrics">
+            Serviços Ativos em Uso:
+            <strong id="ldom1-services-count">--</strong>
+          </div>
+        </div>
+
+        <div class="zone-divider">SERVIDORES (FIXOS)</div>
+
+        <div class="fixed-zones">
+          <div class="card-mini server-fixed-card">
+            <div class="server-fixed-info">
+              <div class="server-fixed-title">
+                <span class="server-fixed-name">SFT1</span>
+                <span id="up-sft1-ldom1" class="uptime-tag"></span>
               </div>
-              <span id="status-ilom1" class="badge status-wait">Wait</span>
+              <span class="server-fixed-ip">192.0.2.22</span>
             </div>
-            <div class="ilom-telemetry-grid">
-              <div class="tel-item"><span>Ventoinhas</span><strong id="ilom1-fans">--</strong></div>
-              <div class="tel-item"><span>Temperatura</span><strong id="ilom1-temp">--</strong></div>
-              <div class="tel-item"><span>Power Supply</span><strong id="ilom1-psu">--</strong></div>
-              <div class="tel-item"><span>Refrigeração</span><strong id="ilom1-cooling">--</strong></div>
+
+            <div class="server-fixed-meta">
+              <span id="role-sft1-ldom1" class="server-role-badge server-role-active">Ativo</span>
+              <span id="sft1-ldom1" class="badge status-wait">Wait</span>
             </div>
           </div>
 
-          <div class="node-control">
-            <div class="node-title">
-              Control Domain 1
-              <span class="ip-tag">192.0.2.31</span>
-              <span id="up-control1" class="uptime-tag"></span>
-            </div>
-            <span id="status-control1" class="badge status-wait">Wait</span>
-          </div>
-
-          <div class="node-ldom border-safira">
-            <div class="ldom-main-header">
-              <div class="node-title">
-                LDOM 1 (Virtualização)
-                <span class="ip-tag">192.0.2.2210</span>
-                <span id="up-ldom1" class="uptime-tag"></span>
+          <div class="card-mini server-fixed-card">
+            <div class="server-fixed-info">
+              <div class="server-fixed-title">
+                <span class="server-fixed-name">METROSP44</span>
+                <span id="up-metrosp44-ldom1" class="uptime-tag"></span>
               </div>
-              <span id="status-ldom1" class="badge status-wait">Wait</span>
+              <span class="server-fixed-ip">192.0.2.20</span>
             </div>
 
-            <div class="ldom-perf-bar">
-              <div class="perf-text"><span>Uso de CPU Core</span><span id="ldom1-cpu-text">--%</span></div>
-              <div class="perf-track"><div class="perf-fill color-safira" id="ldom1-cpu-bar" style="width: 0%"></div></div>
-              <div class="perf-sub-metrics">Serviços Ativos em Uso: <strong id="ldom1-services-count">--</strong></div>
-            </div>
-
-            <div class="zone-divider">SERVIDORES (FIXOS)</div>
-            <div class="fixed-zones">
-
-              <div class="card-mini server-fixed-card">
-                <div class="server-fixed-info">
-                  <div class="server-fixed-title">
-                    <span class="server-fixed-name">SFT1</span>
-                    <span id="up-sft1-ldom1" class="uptime-tag"></span>
-                  </div>
-                  <span class="server-fixed-ip">192.0.2.22</span>
-                </div>
-
-                <div class="server-fixed-meta">
-                  <span id="role-sft1-ldom1" class="server-role-badge server-role-active">Ativo</span>
-                  <span id="sft1-ldom1" class="badge status-wait">Wait</span>
-                </div>
-              </div>
-
-              <div class="card-mini server-fixed-card">
-                <div class="server-fixed-info">
-                  <div class="server-fixed-title">
-                    <span class="server-fixed-name">METROSP44</span>
-                    <span id="up-metrosp44-ldom1" class="uptime-tag"></span>
-                  </div>
-                  <span class="server-fixed-ip">192.0.2.20</span>
-                </div>
-
-                <div class="server-fixed-meta">
-                  <span id="role-metrosp44-ldom1" class="server-role-badge server-role-active">Ativo</span>
-                  <span id="metrosp44-ldom1" class="badge status-wait">Wait</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="zone-divider">CONSOLAS (MÓVEIS)</div>
-            <div class="mobile-zones-grid">
-              <div class="mz-item"><span>CPTM1 (CONA) <span id="up-cptm1-ldom1" class="uptime-tag"></span></span><span id="cptm1-ldom1" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CPTM2 (CONB) <span id="up-cptm2-ldom1" class="uptime-tag"></span></span><span id="cptm2-ldom1" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CPTM3 (CONC) <span id="up-cptm3-ldom1" class="uptime-tag"></span></span><span id="cptm3-ldom1" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CPTM4 (Manut) <span id="up-cptm4-ldom1" class="uptime-tag"></span></span><span id="cptm4-ldom1" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>SME3 (Eng) <span id="up-sme3-ldom1" class="uptime-tag"></span></span><span id="sme3-ldom1" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CONS1 (Ebilock) <span id="up-cons1-ldom1" class="uptime-tag"></span></span><span id="cons1-ldom1" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CONS5 (Micro) <span id="up-cons5-ldom1" class="uptime-tag"></span></span><span id="cons5-ldom1" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CPTM12 (CONS) <span id="up-cptm12-ldom1" class="uptime-tag"></span></span><span id="cptm12-ldom1" class="badge status-wait">Wait</span></div>
+            <div class="server-fixed-meta">
+              <span id="role-metrosp44-ldom1" class="server-role-badge server-role-active">Ativo</span>
+              <span id="metrosp44-ldom1" class="badge status-wait">Wait</span>
             </div>
           </div>
         </div>
 
-        <div class="ha-divider">
-          <div class="ha-line"></div>
-          <div class="ha-badge">HA SYNC</div>
-          <div class="ha-line"></div>
-        </div>
+        <div class="zone-divider">CONSOLAS (MÓVEIS)</div>
 
-        <div class="site-column">
-          <div class="node-hardware-premium">
-            <div class="hardware-main-header">
-              <div class="node-title">
-                ILOM 2 (Hardware)
-                <span class="ip-tag">192.0.2.34</span>
-                <span id="up-ilom2" class="uptime-tag"></span>
-              </div>
-              <span id="status-ilom2" class="badge status-wait">Wait</span>
-            </div>
-            <div class="ilom-telemetry-grid">
-              <div class="tel-item"><span>Ventoinhas</span><strong id="ilom2-fans">--</strong></div>
-              <div class="tel-item"><span>Temperatura</span><strong id="ilom2-temp">--</strong></div>
-              <div class="tel-item"><span>Power Supply</span><strong id="ilom2-psu">--</strong></div>
-              <div class="tel-item"><span>Refrigeração</span><strong id="ilom2-cooling">--</strong></div>
-            </div>
+        <div class="mobile-zones-grid">
+          <div class="mz-item">
+            <span>CPTM1 (CONA) <span id="up-cptm1-ldom1" class="uptime-tag"></span></span>
+            <span id="cptm1-ldom1" class="badge status-wait">Wait</span>
           </div>
-
-          <div class="node-control">
-            <div class="node-title">
-              Control Domain 2
-              <span class="ip-tag">192.0.2.33</span>
-              <span id="up-control2" class="uptime-tag"></span>
-            </div>
-            <span id="status-control2" class="badge status-wait">Wait</span>
+          <div class="mz-item">
+            <span>CPTM2 (CONB) <span id="up-cptm2-ldom1" class="uptime-tag"></span></span>
+            <span id="cptm2-ldom1" class="badge status-wait">Wait</span>
           </div>
-
-          <div class="node-ldom border-coral">
-            <div class="ldom-main-header">
-              <div class="node-title">
-                LDOM 2 (Virtualização)
-                <span class="ip-tag">192.0.2.2510</span>
-                <span id="up-ldom2" class="uptime-tag"></span>
-              </div>
-              <span id="status-ldom2" class="badge status-wait">Wait</span>
-            </div>
-
-            <div class="ldom-perf-bar">
-              <div class="perf-text"><span>Uso de CPU Core</span><span id="ldom2-cpu-text">--%</span></div>
-              <div class="perf-track"><div class="perf-fill color-coral" id="ldom2-cpu-bar" style="width: 0%"></div></div>
-              <div class="perf-sub-metrics">Serviços Ativos em Uso: <strong id="ldom2-services-count">--</strong></div>
-            </div>
-
-            <div class="zone-divider">SERVIDORES (FIXOS)
-              <div class="fixed-zones">
-
-              <div class="card-mini server-fixed-card">
-                <div class="server-fixed-info">
-                  <div class="server-fixed-title">
-                    <span class="server-fixed-name">SFT2</span>
-                    <span id="up-sft2-ldom2" class="uptime-tag"></span>
-                  </div>
-                  <span class="server-fixed-ip">192.0.2.25</span>
-                </div>
-
-                <div class="server-fixed-meta">
-                  <span id="role-sft2-ldom2" class="server-role-badge server-role-standby">Standby</span>
-                  <span id="sft2-ldom2" class="badge status-wait">Wait</span>
-                </div>
-              </div>
-
-              <div class="card-mini server-fixed-card">
-                <div class="server-fixed-info">
-                  <div class="server-fixed-title">
-                    <span class="server-fixed-name">METROSP45</span>
-                    <span id="up-metrosp45-ldom2" class="uptime-tag"></span>
-                  </div>
-                  <span class="server-fixed-ip">192.0.2.21</span>
-                </div>
-
-                <div class="server-fixed-meta">
-                  <span id="role-metrosp45-ldom2" class="server-role-badge server-role-standby">Standby</span>
-                  <span id="metrosp45-ldom2" class="badge status-wait">Wait</span>
-                </div>
-              </div>
-              </div>
-            </div>  
-            
-
-            <div class="zone-divider">CONSOLAS (MÓVEIS)</div>
-            <div class="mobile-zones-grid">
-              <div class="mz-item"><span>CPTM1 (CONA) <span id="up-cptm1-ldom2" class="uptime-tag"></span></span><span id="cptm1-ldom2" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CPTM2 (CONB) <span id="up-cptm2-ldom2" class="uptime-tag"></span></span><span id="cptm2-ldom2" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CPTM3 (CONC) <span id="up-cptm3-ldom2" class="uptime-tag"></span></span><span id="cptm3-ldom2" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CPTM4 (Manut) <span id="up-cptm4-ldom2" class="uptime-tag"></span></span><span id="cptm4-ldom2" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>SME3 (Eng) <span id="up-sme3-ldom2" class="uptime-tag"></span></span><span id="sme3-ldom2" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CONS1 (Ebilock) <span id="up-cons1-ldom2" class="uptime-tag"></span></span><span id="cons1-ldom2" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CONS5 (Micro) <span id="up-cons5-ldom2" class="uptime-tag"></span></span><span id="cons5-ldom2" class="badge status-wait">Wait</span></div>
-              <div class="mz-item"><span>CPTM12 (CONS) <span id="up-cptm12-ldom2" class="uptime-tag"></span></span><span id="cptm12-ldom2" class="badge status-wait">Wait</span></div>
-            </div>
-          
+          <div class="mz-item">
+            <span>CPTM3 (CONC) <span id="up-cptm3-ldom1" class="uptime-tag"></span></span>
+            <span id="cptm3-ldom1" class="badge status-wait">Wait</span>
           </div>
+          <div class="mz-item">
+            <span>CPTM4 (Manut) <span id="up-cptm4-ldom1" class="uptime-tag"></span></span>
+            <span id="cptm4-ldom1" class="badge status-wait">Wait</span>
           </div>
-
-        </div>
-
-        <div class="ws-column">
-          <div class="zone-divider" style="margin-top:0; margin-bottom:16px; color:#a5b4fc;">ESTAÇÕES FÍSICAS (WS)</div>
-          <div class="ws-vertical-grid">
-            <div class="ws-card-row"><div class="ws-info"><div class="ws-name">WS11 <span id="up-ws11" class="uptime-tag"></span></div><div class="ws-app-desc">SME3 ENG</div></div><span id="status-ws11" class="badge status-wait">Wait</span></div>
-            <div class="ws-card-row"><div class="ws-info"><div class="ws-name">WS12 <span id="up-ws12" class="uptime-tag"></span></div><div class="ws-app-desc">CONS1 (EBILOCK)</div></div><span id="status-ws12" class="badge status-wait">Wait</span></div>
-            <div class="ws-card-row"><div class="ws-info"><div class="ws-name">WS13 <span id="up-ws13" class="uptime-tag"></span></div><div class="ws-app-desc">CONS5 (MICROLOCK)</div></div><span id="status-ws13" class="badge status-wait">Wait</span></div>
-            <div class="ws-card-row"><div class="ws-info"><div class="ws-name">WS21 <span id="up-ws21" class="uptime-tag"></span></div><div class="ws-app-desc">CPTM 4 MANUT</div></div><span id="status-ws21" class="badge status-wait">Wait</span></div>
-            <div class="ws-card-row"><div class="ws-info"><div class="ws-name">WS22 <span id="up-ws22" class="uptime-tag"></span></div><div class="ws-app-desc">CONS (CPTM12)</div></div><span id="status-ws22" class="badge status-wait">Wait</span></div>
-            <div class="ws-card-row"><div class="ws-info"><div class="ws-name">WS23 <span id="up-ws23" class="uptime-tag"></span></div><div class="ws-app-desc">CONA (CPTM1)</div></div><span id="status-ws23" class="badge status-wait">Wait</span></div>
-            <div class="ws-card-row"><div class="ws-info"><div class="ws-name">WS24 <span id="up-ws24" class="uptime-tag"></span></div><div class="ws-app-desc">CONB (CPTM2)</div></div><span id="status-ws24" class="badge status-wait">Wait</span></div>
-            <div class="ws-card-row"><div class="ws-info"><div class="ws-name">WS25 <span id="up-ws25" class="uptime-tag"></span></div><div class="ws-app-desc">CONC (CPTM3)</div></div><span id="status-ws25" class="badge status-wait">Wait</span></div>
+          <div class="mz-item">
+            <span>SME3 (Eng) <span id="up-sme3-ldom1" class="uptime-tag"></span></span>
+            <span id="sme3-ldom1" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>CONS1 (Ebilock) <span id="up-cons1-ldom1" class="uptime-tag"></span></span>
+            <span id="cons1-ldom1" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>CONS5 (Micro) <span id="up-cons5-ldom1" class="uptime-tag"></span></span>
+            <span id="cons5-ldom1" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>CPTM12 (CONS) <span id="up-cptm12-ldom1" class="uptime-tag"></span></span>
+            <span id="cptm12-ldom1" class="badge status-wait">Wait</span>
           </div>
         </div>
       </div>
     </div>
-    <section class="events-panel" id="alertas">
+
+    <div class="ha-divider">
+      <div class="ha-line"></div>
+      <div class="ha-badge">HA SYNC</div>
+      <div class="ha-line"></div>
+    </div>
+
+    <div class="site-column">
+      <div class="node-hardware-premium">
+        <div class="hardware-main-header">
+          <div class="node-title">
+            ILOM 2 (Hardware)
+            <span class="ip-tag">192.0.2.34</span>
+            <span id="up-ilom2" class="uptime-tag"></span>
+          </div>
+          <span id="status-ilom2" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ilom-telemetry-grid">
+          <div class="tel-item">
+            <span>Ventoinhas</span>
+            <strong id="ilom2-fans">--</strong>
+          </div>
+          <div class="tel-item">
+            <span>Temperatura</span>
+            <strong id="ilom2-temp">--</strong>
+          </div>
+          <div class="tel-item">
+            <span>Power Supply</span>
+            <strong id="ilom2-psu">--</strong>
+          </div>
+          <div class="tel-item">
+            <span>Refrigeração</span>
+            <strong id="ilom2-cooling">--</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="node-control">
+        <div class="node-title">
+          Control Domain 2
+          <span class="ip-tag">192.0.2.33</span>
+          <span id="up-control2" class="uptime-tag"></span>
+        </div>
+        <span id="status-control2" class="badge status-wait">Wait</span>
+      </div>
+
+      <div class="node-ldom border-coral">
+        <div class="ldom-main-header">
+          <div class="node-title">
+            LDOM 2 (Virtualização)
+            <span class="ip-tag">192.0.2.2510</span>
+            <span id="up-ldom2" class="uptime-tag"></span>
+          </div>
+          <span id="status-ldom2" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ldom-perf-bar">
+          <div class="perf-text">
+            <span>Uso de CPU Core</span>
+            <span id="ldom2-cpu-text">--%</span>
+          </div>
+          <div class="perf-track">
+            <div class="perf-fill color-coral" id="ldom2-cpu-bar" style="width: 0%"></div>
+          </div>
+          <div class="perf-sub-metrics">
+            Serviços Ativos em Uso:
+            <strong id="ldom2-services-count">--</strong>
+          </div>
+        </div>
+
+        <div class="zone-divider">SERVIDORES (FIXOS)</div>
+
+        <div class="fixed-zones">
+          <div class="card-mini server-fixed-card">
+            <div class="server-fixed-info">
+              <div class="server-fixed-title">
+                <span class="server-fixed-name">SFT2</span>
+                <span id="up-sft2-ldom2" class="uptime-tag"></span>
+              </div>
+              <span class="server-fixed-ip">192.0.2.25</span>
+            </div>
+
+            <div class="server-fixed-meta">
+              <span id="role-sft2-ldom2" class="server-role-badge server-role-standby">Standby</span>
+              <span id="sft2-ldom2" class="badge status-wait">Wait</span>
+            </div>
+          </div>
+
+          <div class="card-mini server-fixed-card">
+            <div class="server-fixed-info">
+              <div class="server-fixed-title">
+                <span class="server-fixed-name">METROSP45</span>
+                <span id="up-metrosp45-ldom2" class="uptime-tag"></span>
+              </div>
+              <span class="server-fixed-ip">192.0.2.21</span>
+            </div>
+
+            <div class="server-fixed-meta">
+              <span id="role-metrosp45-ldom2" class="server-role-badge server-role-standby">Standby</span>
+              <span id="metrosp45-ldom2" class="badge status-wait">Wait</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="zone-divider">CONSOLAS (MÓVEIS)</div>
+
+        <div class="mobile-zones-grid">
+          <div class="mz-item">
+            <span>CPTM1 (CONA) <span id="up-cptm1-ldom2" class="uptime-tag"></span></span>
+            <span id="cptm1-ldom2" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>CPTM2 (CONB) <span id="up-cptm2-ldom2" class="uptime-tag"></span></span>
+            <span id="cptm2-ldom2" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>CPTM3 (CONC) <span id="up-cptm3-ldom2" class="uptime-tag"></span></span>
+            <span id="cptm3-ldom2" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>CPTM4 (Manut) <span id="up-cptm4-ldom2" class="uptime-tag"></span></span>
+            <span id="cptm4-ldom2" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>SME3 (Eng) <span id="up-sme3-ldom2" class="uptime-tag"></span></span>
+            <span id="sme3-ldom2" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>CONS1 (Ebilock) <span id="up-cons1-ldom2" class="uptime-tag"></span></span>
+            <span id="cons1-ldom2" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>CONS5 (Micro) <span id="up-cons5-ldom2" class="uptime-tag"></span></span>
+            <span id="cons5-ldom2" class="badge status-wait">Wait</span>
+          </div>
+          <div class="mz-item">
+            <span>CPTM12 (CONS) <span id="up-cptm12-ldom2" class="uptime-tag"></span></span>
+            <span id="cptm12-ldom2" class="badge status-wait">Wait</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-status-column">
+    <div class="summary-card health-card">
+      <div class="card-inner">
+        <div class="metric-info">
+          <span class="metric-label">DISPONIBILIDADE GLOBAL DO SISTEMA</span>
+          <h3 class="metric-value" id="global-health-percentage">98.4%</h3>
+        </div>
+
+        <div class="progress-radial-container">
+          <div class="progress-bar-linear">
+            <div class="progress-fill" style="width: 98.4%"></div>
+          </div>
+          <span class="status-subtext">Todos os subsistemas críticos operacionais</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-card alarms-matrix-card">
+      <span class="metric-label">PAINEL RESUMIDO DE ALARMES ATIVOS</span>
+
+      <div class="alarm-grid-matrix">
+        <div class="alarm-box critico animate-pulse-light">
+          <span class="alarm-count" id="count-crit">0</span>
+          <span class="alarm-tag">CRÍTICO</span>
+        </div>
+
+        <div class="alarm-box alto">
+          <span class="alarm-count" id="count-alto">0</span>
+          <span class="alarm-tag">ALTO</span>
+        </div>
+
+        <div class="alarm-box medio">
+          <span class="alarm-count" id="count-medio">0</span>
+          <span class="alarm-tag">MÉDIO</span>
+        </div>
+
+        <div class="alarm-box info">
+          <span class="alarm-count" id="count-info">0</span>
+          <span class="alarm-tag">INFO</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ws-column">
+      <div class="zone-divider">ESTAÇÕES FÍSICAS (WS)</div>
+
+      <div class="ws-vertical-grid">
+        <div class="ws-card-row">
+          <div class="ws-info">
+            <div class="ws-name">WS11 <span id="up-ws11" class="uptime-tag"></span></div>
+            <div class="ws-app-desc">SME3 ENG</div>
+          </div>
+          <span id="status-ws11" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ws-card-row">
+          <div class="ws-info">
+            <div class="ws-name">WS12 <span id="up-ws12" class="uptime-tag"></span></div>
+            <div class="ws-app-desc">CONS1 (EBILOCK)</div>
+          </div>
+          <span id="status-ws12" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ws-card-row">
+          <div class="ws-info">
+            <div class="ws-name">WS13 <span id="up-ws13" class="uptime-tag"></span></div>
+            <div class="ws-app-desc">CONS5 (MICROLOCK)</div>
+          </div>
+          <span id="status-ws13" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ws-card-row">
+          <div class="ws-info">
+            <div class="ws-name">WS21 <span id="up-ws21" class="uptime-tag"></span></div>
+            <div class="ws-app-desc">CPTM 4 MANUT</div>
+          </div>
+          <span id="status-ws21" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ws-card-row">
+          <div class="ws-info">
+            <div class="ws-name">WS22 <span id="up-ws22" class="uptime-tag"></span></div>
+            <div class="ws-app-desc">CONS (CPTM12)</div>
+          </div>
+          <span id="status-ws22" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ws-card-row">
+          <div class="ws-info">
+            <div class="ws-name">WS23 <span id="up-ws23" class="uptime-tag"></span></div>
+            <div class="ws-app-desc">CONA (CPTM1)</div>
+          </div>
+          <span id="status-ws23" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ws-card-row">
+          <div class="ws-info">
+            <div class="ws-name">WS24 <span id="up-ws24" class="uptime-tag"></span></div>
+            <div class="ws-app-desc">CONB (CPTM2)</div>
+          </div>
+          <span id="status-ws24" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ws-card-row">
+          <div class="ws-info">
+            <div class="ws-name">WS25 <span id="up-ws25" class="uptime-tag"></span></div>
+            <div class="ws-app-desc">CONC (CPTM3)</div>
+          </div>
+          <span id="status-ws25" class="badge status-wait">Wait</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+   <section id="alertas" class="view-panel events-view-panel" data-view-panel="alertas">
+    <div class="events-panel">
       <div class="events-panel-header">
         <div>
           <span class="metric-label">EVENTOS E ALERTAS</span>
@@ -342,7 +493,8 @@
           </tbody>
         </table>
       </div>
-    </section>
+      </div>
+      </section>
 
   </main>
 </body>
