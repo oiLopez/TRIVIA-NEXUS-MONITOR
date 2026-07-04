@@ -103,6 +103,10 @@ function getViewFromHash() {
     return "alertas";
   }
 
+  if (hash === "servidores") {
+    return "servidores";
+  }
+
   return "dashboard";
 }
 

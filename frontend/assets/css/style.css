@@ -2456,3 +2456,179 @@ body {
   max-height: 68px;
   object-fit: contain;
 }
+
+/* =========================================================
+   NEXUS UI POLISH V0.5: GUIA SERVIDORES
+   ========================================================= */
+
+.servers-view-panel {
+  padding: 24px 30px 30px;
+}
+
+.servers-panel {
+  width: 100%;
+  padding: 20px;
+  border: 1px solid var(--nexus-border);
+  border-radius: var(--nexus-radius-lg);
+  background:
+    linear-gradient(180deg, rgba(19, 34, 54, 0.88), rgba(15, 27, 42, 0.82));
+  box-shadow: var(--nexus-shadow-sm);
+}
+
+.servers-panel-header {
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+  border-bottom: 1px solid var(--nexus-border);
+}
+
+.servers-panel-header h2 {
+  margin-top: 4px;
+  color: var(--nexus-text);
+  font-size: 1rem;
+}
+
+.servers-panel-header p {
+  max-width: 620px;
+  color: var(--nexus-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.servers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.server-detail-card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--nexus-border);
+  border-left: 4px solid var(--nexus-accent);
+  border-radius: var(--nexus-radius-lg);
+  background:
+    linear-gradient(180deg, rgba(15, 27, 42, 0.96), rgba(2, 6, 23, 0.44));
+  box-shadow: var(--nexus-shadow-sm);
+}
+
+.server-detail-header {
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.server-detail-kicker {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--nexus-muted);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.server-detail-header h3 {
+  margin-bottom: 6px;
+  color: var(--nexus-text);
+  font-size: 1rem;
+}
+
+.server-view-perf {
+  max-width: none;
+  margin: 0 0 16px;
+}
+
+.server-detail-section {
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.10);
+}
+
+.server-detail-section-title {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--nexus-muted);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.server-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.server-detail-row {
+  min-height: 58px;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: var(--nexus-radius-sm);
+  background: rgba(2, 6, 23, 0.32);
+}
+
+.server-detail-row strong {
+  display: block;
+  color: var(--nexus-text);
+  font-size: 0.84rem;
+}
+
+.server-detail-row span {
+  color: var(--nexus-muted);
+  font-size: 0.68rem;
+}
+
+.server-detail-status-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+@media (max-width: 1000px) {
+  .servers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .servers-panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .servers-panel-header p {
+    text-align: left;
+  }
+}
+
+@media (max-width: 768px) {
+  .servers-view-panel {
+    padding: 18px;
+  }
+
+  .servers-panel {
+    padding: 16px;
+  }
+
+  .server-detail-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .server-detail-status-group {
+    width: 100%;
+    align-items: flex-start;
+  }
+}

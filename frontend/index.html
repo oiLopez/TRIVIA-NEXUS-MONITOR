@@ -21,7 +21,7 @@
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
         Visão Geral
       </a>
-      <a href="#servidores">
+      <a href="#servidores" data-view-link="servidores">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
         Servidores
       </a>
@@ -106,20 +106,6 @@
             <span id="up-ldom1" class="uptime-tag"></span>
           </div>
           <span id="status-ldom1" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="ldom-perf-bar">
-          <div class="perf-text">
-            <span>Uso de CPU Core</span>
-            <span id="ldom1-cpu-text">--%</span>
-          </div>
-          <div class="perf-track">
-            <div class="perf-fill color-safira" id="ldom1-cpu-bar" style="width: 0%"></div>
-          </div>
-          <div class="perf-sub-metrics">
-            Serviços Ativos em Uso:
-            <strong id="ldom1-services-count">--</strong>
-          </div>
         </div>
 
         <div class="zone-divider">SERVIDORES (FIXOS)</div>
@@ -251,20 +237,6 @@
           <span id="status-ldom2" class="badge status-wait">Wait</span>
         </div>
 
-        <div class="ldom-perf-bar">
-          <div class="perf-text">
-            <span>Uso de CPU Core</span>
-            <span id="ldom2-cpu-text">--%</span>
-          </div>
-          <div class="perf-track">
-            <div class="perf-fill color-coral" id="ldom2-cpu-bar" style="width: 0%"></div>
-          </div>
-          <div class="perf-sub-metrics">
-            Serviços Ativos em Uso:
-            <strong id="ldom2-services-count">--</strong>
-          </div>
-        </div>
-
         <div class="zone-divider">SERVIDORES (FIXOS)</div>
 
         <div class="fixed-zones">
@@ -339,7 +311,7 @@
     </div>
   </div>
 
-<div class="right-status-column">
+  <div class="right-status-column">
     <div class="trivia-logo-card" aria-label="Logo TRIVIA Trens">
       <img src="./assets/img/trivia-logo.png" alt="TRIVIA Trens">
     </div>
@@ -458,6 +430,129 @@
   </div>
 </div>
 </section>
+
+<section id="servidores" class="view-panel servers-view-panel" data-view-panel="servidores">
+  <div class="servers-panel">
+    <div class="servers-panel-header">
+      <div>
+        <span class="metric-label">SERVIDORES</span>
+        <h2>Detalhamento técnico das LDOMs e servidores fixos</h2>
+      </div>
+      <p>
+        Visão técnica de uso de CPU Core, serviços ativos, IPs, uptime, saúde e papel operacional.
+      </p>
+    </div>
+
+    <div class="servers-grid">
+      <article class="server-detail-card border-safira">
+        <div class="server-detail-header">
+          <div>
+            <span class="server-detail-kicker">LDOM 1</span>
+            <h3>LDOM 1 - Virtualização</h3>
+            <span class="ip-tag">192.0.2.2210</span>
+          </div>
+          <span id="status-ldom1-server-view" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ldom-perf-bar server-view-perf">
+          <div class="perf-text">
+            <span>Uso de CPU Core</span>
+            <span id="ldom1-cpu-text">--%</span>
+          </div>
+          <div class="perf-track">
+            <div class="perf-fill color-safira" id="ldom1-cpu-bar" style="width: 0%"></div>
+          </div>
+          <div class="perf-sub-metrics">
+            Serviços Ativos em Uso:
+            <strong id="ldom1-services-count">--</strong>
+          </div>
+        </div>
+
+        <div class="server-detail-section">
+          <span class="server-detail-section-title">Servidores fixos nesta LDOM</span>
+
+          <div class="server-detail-list">
+            <div class="server-detail-row">
+              <div>
+                <strong>SFT1</strong>
+                <span>IP 192.0.2.22</span>
+              </div>
+              <div class="server-detail-status-group">
+                <span id="role-sft1-server-view" class="server-role-badge server-role-active">Ativo</span>
+                <span id="sft1-server-view" class="badge status-wait">Wait</span>
+              </div>
+            </div>
+
+            <div class="server-detail-row">
+              <div>
+                <strong>METROSP44</strong>
+                <span>IP 192.0.2.20</span>
+              </div>
+              <div class="server-detail-status-group">
+                <span id="role-metrosp44-server-view" class="server-role-badge server-role-active">Ativo</span>
+                <span id="metrosp44-server-view" class="badge status-wait">Wait</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="server-detail-card border-coral">
+        <div class="server-detail-header">
+          <div>
+            <span class="server-detail-kicker">LDOM 2</span>
+            <h3>LDOM 2 - Virtualização</h3>
+            <span class="ip-tag">192.0.2.2510</span>
+          </div>
+          <span id="status-ldom2-server-view" class="badge status-wait">Wait</span>
+        </div>
+
+        <div class="ldom-perf-bar server-view-perf">
+          <div class="perf-text">
+            <span>Uso de CPU Core</span>
+            <span id="ldom2-cpu-text">--%</span>
+          </div>
+          <div class="perf-track">
+            <div class="perf-fill color-coral" id="ldom2-cpu-bar" style="width: 0%"></div>
+          </div>
+          <div class="perf-sub-metrics">
+            Serviços Ativos em Uso:
+            <strong id="ldom2-services-count">--</strong>
+          </div>
+        </div>
+
+        <div class="server-detail-section">
+          <span class="server-detail-section-title">Servidores fixos nesta LDOM</span>
+
+          <div class="server-detail-list">
+            <div class="server-detail-row">
+              <div>
+                <strong>SFT2</strong>
+                <span>IP 192.0.2.25</span>
+              </div>
+              <div class="server-detail-status-group">
+                <span id="role-sft2-server-view" class="server-role-badge server-role-standby">Standby</span>
+                <span id="sft2-server-view" class="badge status-wait">Wait</span>
+              </div>
+            </div>
+
+            <div class="server-detail-row">
+              <div>
+                <strong>METROSP45</strong>
+                <span>IP 192.0.2.21</span>
+              </div>
+              <div class="server-detail-status-group">
+                <span id="role-metrosp45-server-view" class="server-role-badge server-role-standby">Standby</span>
+                <span id="metrosp45-server-view" class="badge status-wait">Wait</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
    <section id="alertas" class="view-panel events-view-panel" data-view-panel="alertas">
     <div class="events-panel">
       <div class="events-panel-header">
