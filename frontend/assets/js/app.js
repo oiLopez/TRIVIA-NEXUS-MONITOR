@@ -331,3 +331,40 @@ function initIhmOperationalNormalizer() {
 }
 
 initIhmOperationalNormalizer();
+
+function initSidebarToggle() {
+  const sidebar = document.getElementById("sidebar");
+  const toggle = document.getElementById("sidebar-toggle");
+
+  if (!sidebar || !toggle) {
+    return;
+  }
+
+  const storageKey = "nexus-sidebar-collapsed";
+
+  function applySidebarState(isCollapsed) {
+    sidebar.classList.toggle("is-collapsed", isCollapsed);
+
+    toggle.setAttribute("aria-expanded", String(!isCollapsed));
+    toggle.setAttribute(
+      "aria-label",
+      isCollapsed ? "Expandir menu lateral" : "Recolher menu lateral"
+    );
+    toggle.setAttribute(
+      "title",
+      isCollapsed ? "Expandir menu" : "Recolher menu"
+    );
+  }
+
+  const savedState = localStorage.getItem(storageKey) === "true";
+  applySidebarState(savedState);
+
+  toggle.addEventListener("click", () => {
+    const shouldCollapse = !sidebar.classList.contains("is-collapsed");
+
+    localStorage.setItem(storageKey, String(shouldCollapse));
+    applySidebarState(shouldCollapse);
+  });
+}
+
+initSidebarToggle();
