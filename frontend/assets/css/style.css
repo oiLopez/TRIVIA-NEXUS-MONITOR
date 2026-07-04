@@ -3222,3 +3222,134 @@ body {
     font-size: 0.60rem !important;
   }
 }
+/* =========================================================
+   NEXUS UI POLISH V1.2: SIDEBAR RECOLHÍVEL
+   ========================================================= */
+
+.sidebar {
+  transition:
+    width 0.22s ease,
+    flex-basis 0.22s ease,
+    padding 0.22s ease;
+}
+
+.brand-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.sidebar-toggle {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--nexus-border);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(19, 34, 54, 0.92), rgba(15, 27, 42, 0.82));
+  color: var(--nexus-text);
+  box-shadow: var(--nexus-shadow-sm);
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  border-color: rgba(56, 189, 248, 0.38);
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.nav-label {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    opacity 0.18s ease,
+    width 0.18s ease;
+}
+
+.sidebar.is-collapsed {
+  width: 78px;
+  flex-basis: 78px;
+  padding: 18px 10px;
+}
+
+.sidebar.is-collapsed .brand {
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+}
+
+.sidebar.is-collapsed .brand-top {
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.sidebar.is-collapsed .brand h1 {
+  justify-content: center;
+  gap: 0;
+  font-size: 0;
+}
+
+.sidebar.is-collapsed .brand span {
+  display: none;
+}
+
+.sidebar.is-collapsed .nav-menu a {
+  justify-content: center;
+  gap: 0;
+  padding: 12px;
+}
+
+.sidebar.is-collapsed .nav-label {
+  width: 0;
+  opacity: 0;
+}
+
+.sidebar.is-collapsed .nav-menu a.active {
+  border-left: 1px solid rgba(56, 189, 248, 0.24);
+  border-bottom: 3px solid var(--nexus-accent);
+}
+
+.sidebar.is-collapsed .sidebar-toggle {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 768px) {
+  .sidebar.is-collapsed {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .sidebar.is-collapsed .brand-top {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .sidebar.is-collapsed .brand h1 {
+    font-size: 1.4rem;
+    gap: 8px;
+  }
+
+  .sidebar.is-collapsed .brand span {
+    display: inline;
+  }
+
+  .sidebar.is-collapsed .nav-menu a {
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .sidebar.is-collapsed .nav-label {
+    width: auto;
+    opacity: 1;
+  }
+}
