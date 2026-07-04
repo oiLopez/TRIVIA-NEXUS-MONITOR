@@ -318,7 +318,11 @@ function initIhmOperationalNormalizer() {
     normalizeIhmOperationalStatus();
   });
 
-  document.querySelectorAll(".mobile-zones-grid .badge, .server-asset-status .badge").forEach((el) => {
+  document
+  .querySelectorAll(
+    ".mobile-zones-grid .badge, .server-asset-status .badge, .server-asset-status-dual .server-role-badge"
+  )
+  .forEach((el) => {
     observer.observe(el, {
       attributes: true,
       childList: true,
