@@ -2430,3 +2430,29 @@ body {
     padding: 18px;
   }
 }
+
+/* =========================================================
+   NEXUS UI POLISH V0.4: LOGO TRIVIA NA COLUNA DIREITA
+   ========================================================= */
+
+.trivia-logo-card {
+  width: 100%;
+  min-height: 92px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: var(--nexus-shadow-sm);
+}
+
+.trivia-logo-card img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 68px;
+  object-fit: contain;
+}
