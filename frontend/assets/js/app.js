@@ -372,3 +372,154 @@ function initSidebarToggle() {
 }
 
 initSidebarToggle();
+
+function syncServerDetailView() {
+  const mappings = [
+    ["status-ldom1", "status-ldom1-server-view"],
+    ["status-ldom2", "status-ldom2-server-view"],
+
+    ["sft1-ldom1", "sft1-server-view"],
+    ["metrosp44-ldom1", "metrosp44-server-view"],
+    ["sft2-ldom2", "sft2-server-view"],
+    ["metrosp45-ldom2", "metrosp45-server-view"],
+
+    ["role-sft1-ldom1", "role-sft1-server-view"],
+    ["role-metrosp44-ldom1", "role-metrosp44-server-view"],
+    ["role-sft2-ldom2", "role-sft2-server-view"],
+    ["role-metrosp45-ldom2", "role-metrosp45-server-view"],
+  ];
+
+  mappings.forEach(([sourceId, targetId]) => {
+    copyElementState(sourceId, targetId);
+  });
+}
+
+function normalizePingBadgeFromOperationalStatus(sourceId, pingId) {
+  const source = document.getElementById(sourceId);
+  const ping = document.getElementById(pingId);
+
+  if (!source || !ping) {
+    return;
+  }
+
+  const value = source.textContent.trim().toUpperCase();
+
+  ping.className = "badge";
+
+  if (["ATIVO", "STANDBY", "OK"].includes(value)) {
+    ping.textContent = "PING OK";
+    ping.classList.add("status-ok");
+    return;
+  }
+
+  if (["ALERTA", "WARN", "WARNING"].includes(value)) {
+    ping.textContent = "PING";
+    ping.classList.add("status-warn");
+    return;
+  }
+
+  if (["FALHA", "CRIT", "CRITICAL"].includes(value)) {
+    ping.textContent = "PING FALHA";
+    ping.classList.add("status-crit");
+    return;
+  }
+
+  ping.textContent = "PING";
+  ping.classList.add("status-wait");
+}
+
+function syncIhmCommunicationBadges() {
+  const ihmIds = [
+    "cptm1-ldom1",
+    "cptm2-ldom1",
+    "cptm3-ldom1",
+    "cptm4-ldom1",
+    "sme3-ldom1",
+    "cons1-ldom1",
+    "cons5-ldom1",
+    "cptm12-ldom1",
+
+    "cptm1-ldom2",
+    "cptm2-ldom2",
+    "cptm3-ldom2",
+    "cptm4-ldom2",
+    "sme3-ldom2",
+    "cons1-ldom2",
+    "cons5-ldom2",
+    "cptm12-ldom2",
+  ];
+
+  ihmIds.forEach((id) => {
+    normalizePingBadgeFromOperationalStatus(id, `srv-comm-${id}`);
+  });
+}
+
+function initServersViewRefinement() {
+  syncServerDetailView();
+  syncIhmCommunicationBadges();
+
+  const sourceIds = [
+    "status-ldom1",
+    "status-ldom2",
+
+    "sft1-ldom1",
+    "metrosp44-ldom1",
+    "sft2-ldom2",
+    "metrosp45-ldom2",
+
+    "role-sft1-ldom1",
+    "role-metrosp44-ldom1",
+    "role-sft2-ldom2",
+    "role-metrosp45-ldom2",
+
+    "cptm1-ldom1",
+    "cptm2-ldom1",
+    "cptm3-ldom1",
+    "cptm4-ldom1",
+    "sme3-ldom1",
+    "cons1-ldom1",
+    "cons5-ldom1",
+    "cptm12-ldom1",
+
+    "cptm1-ldom2",
+    "cptm2-ldom2",
+    "cptm3-ldom2",
+    "cptm4-ldom2",
+    "sme3-ldom2",
+    "cons1-ldom2",
+    "cons5-ldom2",
+    "cptm12-ldom2",
+  ];
+
+  const observer = new MutationObserver(() => {
+    syncServerDetailView();
+    syncIhmCommunicationBadges();
+  });
+
+  sourceIds.forEach((sourceId) => {
+    const source = document.getElementById(sourceId);
+
+    if (!source) {
+      return;
+    }
+
+    observer.observe(source, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+  });
+
+  window.addEventListener("hashchange", () => {
+    syncServerDetailView();
+    syncIhmCommunicationBadges();
+  });
+
+  setInterval(() => {
+    syncServerDetailView();
+    syncIhmCommunicationBadges();
+  }, 3000);
+}
+
+initServersViewRefinement();

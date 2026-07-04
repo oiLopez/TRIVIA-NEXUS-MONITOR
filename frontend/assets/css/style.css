@@ -3353,3 +3353,121 @@ body {
     opacity: 1;
   }
 }
+
+/* =========================================================
+   NEXUS UI POLISH V1.3: STATUS MAIS VISÍVEIS NA GUIA SERVIDORES
+   Reforça contraste dos badges ATIVO / STANDBY / OK / ALERTA / FALHA / PING.
+   ========================================================= */
+
+#servidores .server-role-badge,
+#servidores .badge {
+  min-height: 24px;
+  font-size: 0.60rem;
+  font-weight: 950;
+  letter-spacing: 0.07em;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+}
+
+#servidores .server-role-active,
+#servidores .status-active {
+  border-color: rgba(34, 197, 94, 0.55) !important;
+  background:
+    radial-gradient(circle at left, rgba(34, 197, 94, 0.28), transparent 52%),
+    rgba(16, 185, 129, 0.20) !important;
+  color: #6ee7b7 !important;
+  box-shadow:
+    inset 0 0 18px rgba(34, 197, 94, 0.10),
+    0 0 14px rgba(34, 197, 94, 0.16);
+}
+
+#servidores .server-role-standby,
+#servidores .status-standby {
+  border-color: rgba(96, 165, 250, 0.45) !important;
+  background:
+    radial-gradient(circle at left, rgba(96, 165, 250, 0.20), transparent 52%),
+    rgba(30, 64, 175, 0.22) !important;
+  color: #bfdbfe !important;
+  box-shadow:
+    inset 0 0 18px rgba(96, 165, 250, 0.08),
+    0 0 12px rgba(96, 165, 250, 0.12);
+}
+
+#servidores .status-ok {
+  border-color: rgba(34, 197, 94, 0.55) !important;
+  background:
+    radial-gradient(circle at left, rgba(34, 197, 94, 0.28), transparent 52%),
+    rgba(16, 185, 129, 0.20) !important;
+  color: #6ee7b7 !important;
+  box-shadow:
+    inset 0 0 18px rgba(34, 197, 94, 0.10),
+    0 0 14px rgba(34, 197, 94, 0.16);
+}
+
+#servidores .status-ok::before,
+#servidores .status-active::before {
+  background-color: #34d399 !important;
+  box-shadow: 0 0 10px #34d399 !important;
+}
+
+#servidores .status-warn {
+  border-color: rgba(245, 158, 11, 0.58) !important;
+  background:
+    radial-gradient(circle at left, rgba(245, 158, 11, 0.28), transparent 52%),
+    rgba(245, 158, 11, 0.18) !important;
+  color: #fcd34d !important;
+  box-shadow:
+    inset 0 0 18px rgba(245, 158, 11, 0.10),
+    0 0 14px rgba(245, 158, 11, 0.14);
+}
+
+#servidores .status-warn::before {
+  background-color: #fbbf24 !important;
+  box-shadow: 0 0 10px #fbbf24 !important;
+}
+
+#servidores .status-crit {
+  border-color: rgba(239, 68, 68, 0.62) !important;
+  background:
+    radial-gradient(circle at left, rgba(239, 68, 68, 0.30), transparent 52%),
+    rgba(239, 68, 68, 0.18) !important;
+  color: #fca5a5 !important;
+  box-shadow:
+    inset 0 0 18px rgba(239, 68, 68, 0.10),
+    0 0 14px rgba(239, 68, 68, 0.16);
+}
+
+#servidores .status-crit::before {
+  background-color: #f87171 !important;
+  box-shadow: 0 0 10px #f87171 !important;
+}
+
+#servidores .status-wait {
+  border-color: rgba(148, 163, 184, 0.30) !important;
+  background: rgba(30, 41, 59, 0.44) !important;
+  color: #cbd5e1 !important;
+}
+
+#servidores .status-wait::before {
+  background-color: #94a3b8 !important;
+  box-shadow: 0 0 8px rgba(148, 163, 184, 0.55) !important;
+}
+
+#servidores .server-asset-status-dual .badge,
+#servidores .server-asset-status-dual .server-role-badge {
+  width: 92px;
+}
+
+#servidores .server-asset-status-dual .badge {
+  display: inline-flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+#servidores .server-asset-status-dual .badge::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 999px;
+}
