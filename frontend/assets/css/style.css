@@ -3050,3 +3050,109 @@ body {
     opacity: 1;
   }
 }
+
+/* =========================================================
+   NEXUS UI POLISH V1.0: LEGIBILIDADE DO DASHBOARD PRINCIPAL
+   Aumenta leitura de servidores fixos e IHMs móveis no SCADA/NOC.
+   ========================================================= */
+
+#dashboard .node-ldom .zone-divider {
+  margin-top: 14px !important;
+  padding-bottom: 10px !important;
+  font-size: 0.74rem !important;
+  letter-spacing: 0.13em !important;
+}
+
+#dashboard .fixed-zones,
+#dashboard .mobile-zones-grid {
+  padding: 12px !important;
+  gap: 10px !important;
+}
+
+#dashboard .fixed-zones::before,
+#dashboard .mobile-zones-grid::before {
+  margin-bottom: 4px !important;
+  font-size: 0.70rem !important;
+  letter-spacing: 0.13em !important;
+}
+
+/* Servidores fixos no dashboard */
+#dashboard .card-mini.server-fixed-card {
+  min-height: 76px !important;
+  padding: 12px !important;
+  gap: 12px !important;
+}
+
+#dashboard .server-fixed-title {
+  gap: 8px !important;
+}
+
+#dashboard .server-fixed-name {
+  font-size: 0.94rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.02em !important;
+}
+
+#dashboard .server-fixed-ip {
+  margin-top: 7px !important;
+  padding: 3px 7px !important;
+  font-size: 0.66rem !important;
+}
+
+#dashboard .server-fixed-meta {
+  min-width: 88px !important;
+  gap: 7px !important;
+}
+
+#dashboard .server-role-badge,
+#dashboard .server-fixed-meta .badge {
+  width: 88px !important;
+  min-height: 24px !important;
+  font-size: 0.58rem !important;
+}
+
+/* IHMs móveis no dashboard */
+#dashboard .mz-item {
+  min-height: 52px !important;
+  padding: 11px 12px !important;
+  gap: 12px !important;
+  font-size: 0.84rem !important;
+}
+
+#dashboard .mz-item > span:first-child {
+  font-size: 0.84rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.01em !important;
+}
+
+#dashboard .mz-item .uptime-tag {
+  margin-left: 4px !important;
+  font-size: 0.58rem !important;
+}
+
+#dashboard .mz-item .badge {
+  width: 84px !important;
+  min-height: 24px !important;
+  padding: 4px 7px !important;
+  font-size: 0.58rem !important;
+}
+
+/* Em telas médias, mantém legível sem estourar a coluna */
+@media (max-width: 1500px) {
+  #dashboard .mz-item {
+    min-height: 50px !important;
+    padding: 10px 11px !important;
+  }
+
+  #dashboard .card-mini.server-fixed-card {
+    min-height: 74px !important;
+  }
+
+  #dashboard .server-fixed-name {
+    font-size: 0.90rem !important;
+  }
+
+  #dashboard .mz-item > span:first-child {
+    font-size: 0.80rem !important;
+  }
+}
