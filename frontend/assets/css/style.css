@@ -3156,3 +3156,69 @@ body {
     font-size: 0.80rem !important;
   }
 }
+
+/* =========================================================
+   NEXUS UI POLISH V1.1: LEGIBILIDADE DAS WORKSTATIONS
+   Aumenta leitura das WS na coluna direita do dashboard.
+   ========================================================= */
+
+#dashboard .right-status-column .ws-column {
+  padding: 14px !important;
+}
+
+#dashboard .right-status-column .ws-column > .zone-divider:first-child {
+  margin-bottom: 14px !important;
+  font-size: 0.74rem !important;
+  letter-spacing: 0.13em !important;
+}
+
+#dashboard .right-status-column .ws-vertical-grid {
+  gap: 9px !important;
+}
+
+#dashboard .right-status-column .ws-card-row {
+  min-height: 54px !important;
+  padding: 10px 12px !important;
+  gap: 12px !important;
+}
+
+#dashboard .right-status-column .ws-name {
+  font-size: 0.84rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.01em !important;
+}
+
+#dashboard .right-status-column .ws-app-desc {
+  margin-top: 2px !important;
+  font-size: 0.64rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+}
+
+#dashboard .right-status-column .ws-card-row .uptime-tag {
+  margin-left: 4px !important;
+  font-size: 0.56rem !important;
+}
+
+#dashboard .right-status-column .ws-card-row .badge {
+  width: 84px !important;
+  min-height: 24px !important;
+  padding: 4px 7px !important;
+  font-size: 0.58rem !important;
+}
+
+/* Em telas médias, evita estourar a coluna direita */
+@media (max-width: 1500px) {
+  #dashboard .right-status-column .ws-card-row {
+    min-height: 50px !important;
+    padding: 9px 10px !important;
+  }
+
+  #dashboard .right-status-column .ws-name {
+    font-size: 0.80rem !important;
+  }
+
+  #dashboard .right-status-column .ws-app-desc {
+    font-size: 0.60rem !important;
+  }
+}
