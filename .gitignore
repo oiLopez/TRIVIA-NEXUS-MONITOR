@@ -2,6 +2,11 @@
 # NEXUS MONITOR - Git Ignore
 # ============================================================
 
+# NEXUS MONITOR - cópias locais com dados reais
+backend/config/*.local.config
+backend/collectors/*.local.sh
+docs/*.local.md
+
 # NEXUS MONITOR - dados gerados localmente
 backend/data/**/*.csv
 backend/logs/**/*.log
@@ -76,3 +81,7 @@ backend/data/runtime/*.csv
 !backend/data/current/.gitkeep
 !backend/data/events/.gitkeep
 !backend/data/runtime/.gitkeep
+
+# NEXUS MONITOR - arquivos locais com dados reais
+frontend/index.local.html
+frontend/assets/data/local/
