@@ -2,6 +2,17 @@
 # NEXUS MONITOR - Git Ignore
 # ============================================================
 
+# NEXUS MONITOR - dados gerados localmente
+backend/data/**/*.csv
+backend/logs/**/*.log
+backend/logs/*.log
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
+*~
+
 # Dados operacionais atuais gerados por coletores
 backend/data/current/alertas_ativos.csv
 backend/data/current/operacao_servidores.csv
@@ -52,3 +63,16 @@ backend/data/samples/generated/*
 # Configurações locais não versionadas
 local.config
 *.local
+
+# NEXUS MONITOR - dados gerados localmente / runtime
+backend/data/current/*.csv
+backend/data/events/*.csv
+backend/data/runtime/*.csv
+
+# Manter arquivos de exemplo versionados
+!backend/data/samples/*.csv
+
+# Manter diretórios versionados
+!backend/data/current/.gitkeep
+!backend/data/events/.gitkeep
+!backend/data/runtime/.gitkeep
