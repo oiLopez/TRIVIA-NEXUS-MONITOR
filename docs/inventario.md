@@ -44,7 +44,7 @@ Nem todos os registros precisam possuir exatamente a mesma quantidade de campos 
 | --------- | ---------------------------------- | -------------- |
 | `TIPO`    | Tipo lógico do ativo               | `ZONE_FIXA`    |
 | `NOME`    | Nome lógico do host                | `sft1`         |
-| `IP`      | Endereço IP utilizado para conexão | `192.0.2.22` |
+| `IP`      | Endereço IP utilizado para conexão | `192.0.2.19` |
 | `USUARIO` | Usuário utilizado para acesso SSH  | `prodix`       |
 
 ---
@@ -71,7 +71,7 @@ Representa zonas ou servidores com posição operacional fixa.
 Exemplo:
 
 ```text
-ZONE_FIXA;sft1;192.0.2.22;prodix;servidor;LDOM1;VM;Servidor;Alça;Norte;(sft1)
+ZONE_FIXA;sft1;192.0.2.19;prodix;servidor;LDOM1;VM;Servidor;Alça;Norte;(sft1)
 ```
 
 Uso principal:
@@ -90,7 +90,7 @@ Representa zonas ou consoles que podem estar associados a painéis, IHMs ou posi
 Exemplo:
 
 ```text
-ZONE_MOVEL;cptm1;192.0.2.10;prodix;console;CONA;VM;IHM;cptm1
+ZONE_MOVEL;cptm1;192.0.2.33;prodix;console;CONA;VM;IHM;cptm1
 ```
 
 Uso principal:
@@ -155,7 +155,7 @@ TIPO;NOME;IP;USUARIO
 Exemplo mínimo:
 
 ```text
-ZONE_FIXA;sft1;192.0.2.22;prodix
+ZONE_FIXA;sft1;192.0.2.19;prodix
 ```
 
 ---
@@ -185,9 +185,9 @@ awk -F';' '$1 == "ZONE_FIXA" {print $2 ";" $3 ";" $4}' backend/config/nexus_host
 Saída esperada:
 
 ```text
-sft1;192.0.2.22;prodix
-sft1b;192.0.2.48;prodix
-sft2;192.0.2.25;prodix
+sft1;192.0.2.19;prodix
+sft1b;192.0.2.20;prodix
+sft2;192.0.2.21;prodix
 ```
 
 Para listar hosts `ZONE_MOVEL`:
@@ -200,8 +200,8 @@ Saída esperada:
 
 ```text
 sme3;192.0.2.27;prodix
-sme3b;192.0.2.53;prodix
-cptm1;192.0.2.10;prodix
+sme3b;192.0.2.28;prodix
+cptm1;192.0.2.33;prodix
 ```
 
 ---

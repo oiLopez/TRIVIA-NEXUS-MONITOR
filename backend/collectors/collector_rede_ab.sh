@@ -29,7 +29,7 @@ MODULO="REDE_AB"
 # Rede A usa localhost e deve retornar OK.
 # Rede B usa IP inválido/simulado e deve retornar CRITICAL.
 IP_REDE_A="127.0.0.1"
-IP_REDE_B="192.0.2.60"
+IP_REDE_B="192.0.2.10"
 
 check_network() {
     local interface="$1"
