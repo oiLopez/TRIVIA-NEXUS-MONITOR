@@ -523,3 +523,78 @@ function initServersViewRefinement() {
 }
 
 initServersViewRefinement();
+/**
+ * NEXUS MONITOR - Operational Status Runtime Data Layer
+ *
+ * Loads backend/data/runtime/operational_status.csv when running locally.
+ * GitHub Pages may not provide this file; in that case the frontend keeps
+ * the static/demo state.
+ */
+
+const NEXUS_OPERATIONAL_STATUS_PATH = "../backend/data/runtime/operational_status.csv";
+
+function parseNexusCsvLine(line, separator = ";") {
+  return line.split(separator).map((value) => value.trim());
+}
+
+function parseNexusOperationalStatusCsv(csvText) {
+  const lines = csvText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length < 2) {
+    return [];
+  }
+
+  const headers = parseNexusCsvLine(lines[0]);
+
+  return lines.slice(1).map((line) => {
+    const values = parseNexusCsvLine(line);
+    const row = {};
+
+    headers.forEach((header, index) => {
+      row[header] = values[index] ?? "";
+    });
+
+    return row;
+  });
+}
+
+async function loadNexusOperationalStatus() {
+  try {
+    const response = await fetch(NEXUS_OPERATIONAL_STATUS_PATH, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const csvText = await response.text();
+    const rows = parseNexusOperationalStatusCsv(csvText);
+
+    window.NEXUS_OPERATIONAL_STATUS = rows;
+
+    console.info(
+      `[NEXUS] operational_status.csv carregado: ${rows.length} registros`
+    );
+
+    return rows;
+  } catch (error) {
+    window.NEXUS_OPERATIONAL_STATUS = [];
+
+    console.warn(
+      "[NEXUS] operational_status.csv indisponível. Mantendo estado estático/demo.",
+      error.message
+    );
+
+    return [];
+  }
+}
+
+function initNexusOperationalStatusDataLayer() {
+  loadNexusOperationalStatus();
+}
+
+document.addEventListener("DOMContentLoaded", initNexusOperationalStatusDataLayer);
