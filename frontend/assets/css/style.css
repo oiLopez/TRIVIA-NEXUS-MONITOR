@@ -2202,11 +2202,18 @@ body {
   border-color: rgba(148, 163, 184, 0.22);
 }
 
-.server-role-fault {
+.server-role-fail {
   color: #f87171;
   background: rgba(239, 68, 68, 0.14);
   border-color: rgba(239, 68, 68, 0.34);
   box-shadow: 0 0 12px rgba(239, 68, 68, 0.12);
+}
+
+.server-role-unknown {
+  color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.10);
+  border-color: rgba(148, 163, 184, 0.28);
+  border-style: dashed;
 }
 
 .server-fixed-meta .badge {

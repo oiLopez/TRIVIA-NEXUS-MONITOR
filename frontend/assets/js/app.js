@@ -579,6 +579,8 @@ async function loadNexusOperationalStatus() {
     console.info(
       `[NEXUS] operational_status.csv carregado: ${rows.length} registros`
     );
+    
+    nexusRenderFixedServerOperationalRoles();
 
     return rows;
   } catch (error) {
@@ -595,6 +597,180 @@ async function loadNexusOperationalStatus() {
 
 function initNexusOperationalStatusDataLayer() {
   loadNexusOperationalStatus();
+  setInterval(loadNexusOperationalStatus, NEXUS_CONFIG.refreshIntervalMs);
 }
 
 document.addEventListener("DOMContentLoaded", initNexusOperationalStatusDataLayer);
+
+const NEXUS_FIXED_SERVERS = ["METROSP44", "METROSP45", "SFT1", "SFT2"];
+
+function nexusGetRowValue(row, possibleKeys) {
+  if (!row) return "";
+
+  for (const key of possibleKeys) {
+    if (row[key] !== undefined && row[key] !== null && String(row[key]).trim() !== "") {
+      return String(row[key]).trim();
+    }
+  }
+
+  const normalizedMap = {};
+  Object.keys(row).forEach((key) => {
+    normalizedMap[key.toLowerCase()] = row[key];
+  });
+
+  for (const key of possibleKeys) {
+    const value = normalizedMap[key.toLowerCase()];
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      return String(value).trim();
+    }
+  }
+
+  return "";
+}
+
+function nexusNormalizeAssetName(value) {
+  return String(value || "")
+    .trim()
+    .toUpperCase();
+}
+
+function nexusNormalizeOperationalRole(value) {
+  const role = String(value || "")
+    .trim()
+    .toUpperCase();
+
+  if (["ATIVO", "ACTIVE"].includes(role)) return "ATIVO";
+  if (["STANDBY", "RESERVA"].includes(role)) return "STANDBY";
+  if (["DESLIGADO", "OFF", "OFFLINE", "SHUTDOWN"].includes(role)) return "DESLIGADO";
+  if (["FALHA", "FAIL", "FAILED", "ERROR"].includes(role)) return "FALHA";
+
+  return "INDEFINIDO";
+}
+
+function nexusGetOperationalRows() {
+  return Array.isArray(window.NEXUS_OPERATIONAL_STATUS)
+    ? window.NEXUS_OPERATIONAL_STATUS
+    : [];
+}
+
+function nexusFindOperationalRowByAssetName(assetName) {
+  const target = nexusNormalizeAssetName(assetName);
+
+  return nexusGetOperationalRows().find((row) => {
+    const possibleNames = [
+      nexusGetRowValue(row, ["asset_id", "ASSET_ID"]),
+      nexusGetRowValue(row, ["logical_asset_id", "LOGICAL_ASSET_ID"]),
+      nexusGetRowValue(row, ["asset_name", "ASSET_NAME"]),
+      nexusGetRowValue(row, ["name", "NAME"]),
+      nexusGetRowValue(row, ["hostname", "HOSTNAME"]),
+      nexusGetRowValue(row, ["server_name", "SERVER_NAME"]),
+    ].map(nexusNormalizeAssetName);
+
+    return possibleNames.includes(target);
+  });
+}
+
+function nexusGetFixedServerOperationalRole(serverName) {
+  const row = nexusFindOperationalRowByAssetName(serverName);
+
+  if (!row) {
+    return "INDEFINIDO";
+  }
+
+  return nexusNormalizeOperationalRole(
+    nexusGetRowValue(row, [
+      "operational_role",
+      "OPERATIONAL_ROLE",
+      "role",
+      "ROLE",
+      "papel_operacional",
+      "PAPEL_OPERACIONAL",
+      "operational_status",
+      "OPERATIONAL_STATUS",
+      "state",
+      "STATE"
+    ])
+  );
+}
+
+const NEXUS_FIXED_SERVER_ROLE_TARGET_IDS = {
+  SFT1: ["role-sft1-ldom1", "role-sft1-server-view"],
+  METROSP44: ["role-metrosp44-ldom1", "role-metrosp44-server-view"],
+  SFT2: ["role-sft2-ldom2", "role-sft2-server-view"],
+  METROSP45: ["role-metrosp45-ldom2", "role-metrosp45-server-view"],
+};
+
+const NEXUS_SERVER_ROLE_CLASS_NAMES = [
+  "server-role-active",
+  "server-role-standby",
+  "server-role-off",
+  "server-role-fault",
+  "server-role-unknown",
+];
+
+function nexusGetServerRolePresentation(role) {
+  switch (nexusNormalizeOperationalRole(role)) {
+    case "ATIVO":
+      return {
+        label: "Ativo",
+        className: "server-role-active",
+      };
+      case "FALHA":
+        return {
+          label: "Falha",
+          className: "server-role-fault",
+      };
+
+    case "STANDBY":
+      return {
+        label: "Standby",
+        className: "server-role-standby",
+      };
+
+    case "DESLIGADO":
+      return {
+        label: "Desligado",
+        className: "server-role-off",
+      };
+
+    case "FALHA":
+      return {
+        label: "Falha",
+        className: "server-role-fail",
+      };
+
+    default:
+      return {
+        label: "Indefinido",
+        className: "server-role-unknown",
+      };
+  }
+}
+
+function nexusUpdateServerRoleBadge(elementId, role) {
+  const element = document.getElementById(elementId);
+
+  if (!element) {
+    return;
+  }
+
+  const presentation = nexusGetServerRolePresentation(role);
+
+  element.textContent = presentation.label;
+  element.classList.remove(...NEXUS_SERVER_ROLE_CLASS_NAMES);
+  element.classList.add("server-role-badge", presentation.className);
+  element.dataset.operationalRole = nexusNormalizeOperationalRole(role);
+}
+
+function nexusRenderFixedServerOperationalRoles() {
+  NEXUS_FIXED_SERVERS.forEach((serverName) => {
+    const role = nexusGetFixedServerOperationalRole(serverName);
+    const targetIds = NEXUS_FIXED_SERVER_ROLE_TARGET_IDS[serverName] || [];
+
+    targetIds.forEach((targetId) => {
+      nexusUpdateServerRoleBadge(targetId, role);
+    });
+  });
+
+  syncServerDetailView();
+}
