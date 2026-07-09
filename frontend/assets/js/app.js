@@ -581,6 +581,7 @@ async function loadNexusOperationalStatus() {
     );
     
     nexusRenderFixedServerOperationalRoles();
+      nexusRenderIhmOperationalStatus();
 
     return rows;
   } catch (error) {
@@ -773,4 +774,193 @@ function nexusRenderFixedServerOperationalRoles() {
   });
 
   syncServerDetailView();
+}
+
+function nexusParseOperationalTimestamp(value) {
+  const parsed = Date.parse(String(value || "").replace(" ", "T"));
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+function nexusGetLatestOperationalRow(rows) {
+  return [...rows].sort((a, b) => {
+    return nexusParseOperationalTimestamp(b.timestamp) - nexusParseOperationalTimestamp(a.timestamp);
+  })[0] || null;
+}
+
+function nexusFindLatestOperationalRowByLogicalAssetAndLdom(logicalAssetId, ldom) {
+  const targetLogicalAsset = nexusNormalizeAssetName(logicalAssetId);
+  const targetLdom = nexusNormalizeAssetName(ldom);
+
+  const matches = nexusGetOperationalRows().filter((row) => {
+    const rowLogicalAsset = nexusNormalizeAssetName(
+      nexusGetRowValue(row, ["logical_asset_id", "LOGICAL_ASSET_ID"])
+    );
+
+    const rowLdom = nexusNormalizeAssetName(
+      nexusGetRowValue(row, ["ldom", "LDOM"])
+    );
+
+    return rowLogicalAsset === targetLogicalAsset && rowLdom === targetLdom;
+  });
+
+  return nexusGetLatestOperationalRow(matches);
+}
+
+function nexusNormalizeBoolean(value) {
+  return ["true", "1", "sim", "yes"].includes(
+    String(value || "").trim().toLowerCase()
+  );
+}
+
+function nexusRenderIhmOperationalStatus() {
+  const targets = [
+    "CPTM1",
+    "CPTM2",
+    "CPTM3",
+    "CPTM4",
+    "SME3",
+    "CONS1",
+    "CONS5",
+    "CPTM12",
+  ].flatMap((ihmName) => {
+    const ihmId = ihmName.toLowerCase();
+
+    return [
+      {
+        logicalAssetId: `${ihmName}_IHM`,
+        ldom: "LDOM1",
+        roleId: `srv-${ihmId}-ldom1`,
+        commId: `srv-comm-${ihmId}-ldom1`,
+        dashboardId: `${ihmId}-ldom1`,
+      },
+      {
+        logicalAssetId: `${ihmName}_IHM`,
+        ldom: "LDOM2",
+        roleId: `srv-${ihmId}-ldom2`,
+        commId: `srv-comm-${ihmId}-ldom2`,
+        dashboardId: `${ihmId}-ldom2`,
+      },
+    ];
+  });
+
+  targets.forEach((target) => {
+    const row = nexusFindLatestOperationalRowByLogicalAssetAndLdom(
+      target.logicalAssetId,
+      target.ldom
+    );
+
+    if (!row) {
+      return;
+    }
+
+    const role = nexusGetRowValue(row, [
+      "operational_role",
+      "OPERATIONAL_ROLE",
+    ]);
+
+    const technicalComm = nexusGetRowValue(row, [
+      "technical_comm",
+      "TECHNICAL_COMM",
+    ]);
+
+    const message = nexusGetRowValue(row, [
+      "message",
+      "MESSAGE",
+    ]);
+
+    const conflict = nexusNormalizeBoolean(
+      nexusGetRowValue(row, [
+        "redundancy_conflict",
+        "REDUNDANCY_CONFLICT",
+      ])
+    );
+
+    nexusUpdateServerRoleBadge(
+      target.roleId,
+      conflict ? "FALHA" : role
+    );
+
+    const roleElement = document.getElementById(target.roleId);
+
+    if (roleElement) {
+      roleElement.title = message || "";
+
+      if (conflict) {
+        roleElement.textContent = "Conflito";
+      }
+    }
+
+    nexusUpdateTechnicalStatusBadge(target.commId, technicalComm);
+
+    nexusUpdateIhmDashboardBadge(
+      target.dashboardId,
+      conflict ? "CONFLITO" : role,
+      message
+    );
+  });
+}
+
+function nexusUpdateIhmDashboardBadge(elementId, role, message) {
+  const element = document.getElementById(elementId);
+
+  if (!element) {
+    return;
+  }
+
+  const normalizedRole = String(role || "").trim().toUpperCase();
+
+  element.classList.remove(
+    "status-ok",
+    "status-warn",
+    "status-crit",
+    "status-wait",
+    "status-standby"
+  );
+
+  if (normalizedRole === "CONFLITO") {
+    element.textContent = "Conflito";
+    element.classList.add("status-crit");
+  } else if (normalizedRole === "ATIVO") {
+    element.textContent = "Ativo";
+    element.classList.add("status-ok");
+  } else if (normalizedRole === "STANDBY") {
+    element.textContent = "Standby";
+    element.classList.add("status-standby");
+  } else if (normalizedRole === "FALHA") {
+    element.textContent = "Falha";
+    element.classList.add("status-crit");
+  } else if (normalizedRole === "DESLIGADO") {
+    element.textContent = "Off";
+    element.classList.add("status-wait");
+  } else {
+    element.textContent = "Wait";
+    element.classList.add("status-wait");
+  }
+
+  element.title = message || "";
+}
+
+function nexusNormalizeTechnicalStatus(value) {
+  const status = String(value || "").trim().toUpperCase();
+
+  if (status === "OK") return "OK";
+  if (["WARN", "WARNING", "ALERTA"].includes(status)) return "WARN";
+  if (["CRIT", "CRITICAL", "FALHA"].includes(status)) return "CRIT";
+  if (["WAIT", "PENDING", "UNKNOWN", ""].includes(status)) return "WAIT";
+
+  return "WAIT";
+}
+
+function nexusUpdateTechnicalStatusBadge(elementId, status) {
+  const element = document.getElementById(elementId);
+
+  if (!element) {
+    return;
+  }
+
+  const normalizedStatus = nexusNormalizeTechnicalStatus(status);
+
+  element.classList.remove("status-ok", "status-warn", "status-crit", "status-wait");
+  element.classList.add(`status-${normalizedStatus.toLowerCase()}`);
+  element.textContent = normalizedStatus;
 }
