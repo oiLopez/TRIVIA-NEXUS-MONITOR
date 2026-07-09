@@ -334,7 +334,7 @@ function initIhmOperationalNormalizer() {
   setInterval(normalizeIhmOperationalStatus, 3000);
 }
 
-initIhmOperationalNormalizer();
+// initIhmOperationalNormalizer();
 
 function initSidebarToggle() {
   const sidebar = document.getElementById("sidebar");
@@ -812,6 +812,8 @@ function nexusNormalizeBoolean(value) {
   );
 }
 
+
+
 function nexusRenderIhmOperationalStatus() {
   const targets = [
     "CPTM1",
@@ -890,7 +892,25 @@ function nexusRenderIhmOperationalStatus() {
       }
     }
 
-    nexusUpdateTechnicalStatusBadge(target.commId, technicalComm);
+    function nexusUpdateTechnicalStatusBadge(elementId, status) {
+  const element = document.getElementById(elementId);
+
+  if (!element) {
+    return;
+  }
+
+  element.classList.remove(
+    "status-ok",
+    "status-warn",
+    "status-crit",
+    "status-wait",
+    "status-standby",
+    "status-active"
+  );
+
+  element.classList.add(`status-${normalizedStatus.toLowerCase()}`);
+  element.textContent = normalizedStatus;
+}
 
     nexusUpdateIhmDashboardBadge(
       target.dashboardId,
@@ -914,15 +934,18 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
     "status-warn",
     "status-crit",
     "status-wait",
-    "status-standby"
+    "status-standby",
+    "status-active"
   );
+
+  element.classList.add("badge");
 
   if (normalizedRole === "CONFLITO") {
     element.textContent = "Conflito";
     element.classList.add("status-crit");
   } else if (normalizedRole === "ATIVO") {
     element.textContent = "Ativo";
-    element.classList.add("status-ok");
+    element.classList.add("status-active");
   } else if (normalizedRole === "STANDBY") {
     element.textContent = "Standby";
     element.classList.add("status-standby");
@@ -939,28 +962,396 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
 
   element.title = message || "";
 }
+/* =========================================================
+   NEXUS SAFE FIX - IHM OPERATIONAL BADGES
+   Objetivo:
+   - impedir que badges de IHM herdem classe verde antiga;
+   - manter separado papel operacional e comunicação técnica;
+   - usar server-role-fault para conflito/falha operacional.
+   ========================================================= */
 
-function nexusNormalizeTechnicalStatus(value) {
-  const status = String(value || "").trim().toUpperCase();
+(() => {
+  const ihmNames = [
+    "CPTM1",
+    "CPTM2",
+    "CPTM3",
+    "CPTM4",
+    "SME3",
+    "CONS1",
+    "CONS5",
+    "CPTM12",
+  ];
 
-  if (status === "OK") return "OK";
-  if (["WARN", "WARNING", "ALERTA"].includes(status)) return "WARN";
-  if (["CRIT", "CRITICAL", "FALHA"].includes(status)) return "CRIT";
-  if (["WAIT", "PENDING", "UNKNOWN", ""].includes(status)) return "WAIT";
+  const wsNames = [
+    "WS11",
+    "WS12",
+    "WS13",
+    "WS21",
+    "WS22",
+    "WS23",
+    "WS24",
+    "WS25",
+  ];
 
-  return "WAIT";
-}
-
-function nexusUpdateTechnicalStatusBadge(elementId, status) {
-  const element = document.getElementById(elementId);
-
-  if (!element) {
-    return;
+  function safeNormalizeText(value) {
+    return String(value || "").trim().toUpperCase();
   }
 
-  const normalizedStatus = nexusNormalizeTechnicalStatus(status);
+  function safeNormalizeRole(value) {
+    const role = safeNormalizeText(value);
 
-  element.classList.remove("status-ok", "status-warn", "status-crit", "status-wait");
-  element.classList.add(`status-${normalizedStatus.toLowerCase()}`);
-  element.textContent = normalizedStatus;
-}
+    if (["ATIVO", "ACTIVE"].includes(role)) return "ATIVO";
+    if (["STANDBY", "RESERVA"].includes(role)) return "STANDBY";
+    if (["DESLIGADO", "OFF", "OFFLINE", "SHUTDOWN"].includes(role)) return "DESLIGADO";
+    if (["FALHA", "FAIL", "FAILED", "ERROR", "CRIT", "CRITICAL"].includes(role)) return "FALHA";
+    if (["NAO_APLICAVEL", "N/A", "NA"].includes(role)) return "NAO_APLICAVEL";
+
+    return "INDEFINIDO";
+  }
+
+  function safeNormalizeTechnicalStatus(value) {
+    const status = safeNormalizeText(value);
+
+    if (status === "OK") return "OK";
+    if (["WARN", "WARNING", "ALERTA"].includes(status)) return "WARN";
+    if (["CRIT", "CRITICAL", "FALHA", "FAIL", "FAILED", "ERROR"].includes(status)) return "CRIT";
+    if (["WAIT", "PING", "PENDING", "UNKNOWN", "INDEFINIDO", ""].includes(status)) return "WAIT";
+
+    return "WAIT";
+  }
+
+  function safeNormalizeBoolean(value) {
+    return ["true", "1", "sim", "yes"].includes(
+      String(value || "").trim().toLowerCase()
+    );
+  }
+
+  function safeGetRowValue(row, possibleKeys) {
+    if (!row) return "";
+
+    for (const key of possibleKeys) {
+      if (row[key] !== undefined && row[key] !== null && String(row[key]).trim() !== "") {
+        return String(row[key]).trim();
+      }
+    }
+
+    const normalizedMap = {};
+
+    Object.keys(row).forEach((key) => {
+      normalizedMap[key.toLowerCase()] = row[key];
+    });
+
+    for (const key of possibleKeys) {
+      const value = normalizedMap[key.toLowerCase()];
+
+      if (value !== undefined && value !== null && String(value).trim() !== "") {
+        return String(value).trim();
+      }
+    }
+
+    return "";
+  }
+
+  function safeParseOperationalTimestamp(value) {
+    const parsed = Date.parse(String(value || "").replace(" ", "T"));
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
+
+  function safeGetOperationalRows() {
+    return Array.isArray(window.NEXUS_OPERATIONAL_STATUS)
+      ? window.NEXUS_OPERATIONAL_STATUS
+      : [];
+  }
+
+  function safeGetLatestOperationalRow(rows) {
+    return [...rows].sort((a, b) => {
+      const timestampA = safeGetRowValue(a, ["timestamp", "TIMESTAMP"]);
+      const timestampB = safeGetRowValue(b, ["timestamp", "TIMESTAMP"]);
+
+      return safeParseOperationalTimestamp(timestampB) - safeParseOperationalTimestamp(timestampA);
+    })[0] || null;
+  }
+
+  function safeFindLatestOperationalRowByLogicalAssetAndLdom(logicalAssetId, ldom) {
+    const targetLogicalAsset = safeNormalizeText(logicalAssetId);
+    const targetLdom = safeNormalizeText(ldom);
+
+    const matches = safeGetOperationalRows().filter((row) => {
+      const rowLogicalAsset = safeNormalizeText(
+        safeGetRowValue(row, ["logical_asset_id", "LOGICAL_ASSET_ID"])
+      );
+
+      const rowLdom = safeNormalizeText(
+        safeGetRowValue(row, ["ldom", "LDOM"])
+      );
+
+      return rowLogicalAsset === targetLogicalAsset && rowLdom === targetLdom;
+    });
+
+    return safeGetLatestOperationalRow(matches);
+  }
+
+  function safeGetServerRolePresentation(role) {
+    switch (safeNormalizeRole(role)) {
+      case "ATIVO":
+        return {
+          label: "Ativo",
+          className: "server-role-active",
+        };
+
+      case "STANDBY":
+        return {
+          label: "Standby",
+          className: "server-role-standby",
+        };
+
+      case "DESLIGADO":
+        return {
+          label: "Desligado",
+          className: "server-role-off",
+        };
+
+      case "FALHA":
+        return {
+          label: "Falha",
+          className: "server-role-fault",
+        };
+
+      default:
+        return {
+          label: "Indefinido",
+          className: "server-role-unknown",
+        };
+    }
+  }
+
+  function safeUpdateServerRoleBadge(elementId, role, labelOverride, message) {
+    const element = document.getElementById(elementId);
+
+    if (!element) {
+      return;
+    }
+
+    const presentation = safeGetServerRolePresentation(role);
+
+    element.className = "server-role-badge";
+    element.classList.add(presentation.className);
+    element.textContent = labelOverride || presentation.label;
+    element.dataset.operationalRole = safeNormalizeRole(role);
+    element.title = message || "";
+  }
+
+  function safeUpdateTechnicalStatusBadge(elementId, status, message) {
+    const element = document.getElementById(elementId);
+
+    if (!element) {
+      return;
+    }
+
+    const normalizedStatus = safeNormalizeTechnicalStatus(status);
+
+    element.className = "badge";
+    element.classList.add(`status-${normalizedStatus.toLowerCase()}`);
+    element.textContent = normalizedStatus;
+    element.title = message || "";
+  }
+
+  function safeUpdateIhmDashboardBadge(elementId, role, message) {
+    const element = document.getElementById(elementId);
+
+    if (!element) {
+      return;
+    }
+
+    const normalizedRole = safeNormalizeText(role);
+
+    element.className = "badge";
+
+    if (normalizedRole === "CONFLITO") {
+      element.textContent = "Conflito";
+      element.classList.add("status-crit");
+    } else if (normalizedRole === "ATIVO") {
+      element.textContent = "Ativo";
+      element.classList.add("status-active");
+    } else if (normalizedRole === "STANDBY") {
+      element.textContent = "Standby";
+      element.classList.add("status-standby");
+    } else if (normalizedRole === "FALHA") {
+      element.textContent = "Falha";
+      element.classList.add("status-crit");
+    } else if (normalizedRole === "DESLIGADO") {
+      element.textContent = "Off";
+      element.classList.add("status-wait");
+    } else {
+      element.textContent = "Wait";
+      element.classList.add("status-wait");
+    }
+
+    element.title = message || "";
+  }
+
+  function safeCopyBadgeState(sourceId, targetId) {
+    const source = document.getElementById(sourceId);
+    const target = document.getElementById(targetId);
+
+    if (!source || !target) {
+      return;
+    }
+
+    target.className = source.className;
+    target.textContent = source.textContent;
+    target.title = source.title || "";
+  }
+
+  function safeCopyTextState(sourceId, targetId) {
+    const source = document.getElementById(sourceId);
+    const target = document.getElementById(targetId);
+
+    if (!source || !target) {
+      return;
+    }
+
+    target.textContent = source.textContent;
+    target.title = source.title || "";
+  }
+
+  function safeSyncServerAssetsView() {
+    /*
+     * Não espelhar mais IHMs do dashboard para a guia Servidores.
+     *
+     * Motivo:
+     * - dashboard usa "badge status-*";
+     * - guia Servidores usa "server-role-badge server-role-*";
+     * - copiar classe entre essas camadas deixa CONFLITO/ATIVO/STANDBY verde indevidamente.
+     *
+     * Mantemos apenas WS e uptime.
+     */
+
+    wsNames.forEach((wsName) => {
+      const wsId = wsName.toLowerCase();
+
+      safeCopyBadgeState(`status-${wsId}`, `srv-status-${wsId}`);
+      safeCopyTextState(`up-${wsId}`, `srv-up-${wsId}`);
+    });
+
+    ihmNames.forEach((ihmName) => {
+      const ihmId = ihmName.toLowerCase();
+
+      safeCopyTextState(`up-${ihmId}-ldom1`, `srv-up-${ihmId}-ldom1`);
+      safeCopyTextState(`up-${ihmId}-ldom2`, `srv-up-${ihmId}-ldom2`);
+    });
+  }
+
+  function safeRenderIhmOperationalStatus() {
+    const targets = ihmNames.flatMap((ihmName) => {
+      const ihmId = ihmName.toLowerCase();
+
+      return [
+        {
+          logicalAssetId: `${ihmName}_IHM`,
+          ldom: "LDOM1",
+          dashboardId: `${ihmId}-ldom1`,
+          serverRoleId: `srv-${ihmId}-ldom1`,
+          serverCommId: `srv-comm-${ihmId}-ldom1`,
+        },
+        {
+          logicalAssetId: `${ihmName}_IHM`,
+          ldom: "LDOM2",
+          dashboardId: `${ihmId}-ldom2`,
+          serverRoleId: `srv-${ihmId}-ldom2`,
+          serverCommId: `srv-comm-${ihmId}-ldom2`,
+        },
+      ];
+    });
+
+    targets.forEach((target) => {
+      const row = safeFindLatestOperationalRowByLogicalAssetAndLdom(
+        target.logicalAssetId,
+        target.ldom
+      );
+
+      if (!row) {
+        return;
+      }
+
+      const role = safeGetRowValue(row, ["operational_role", "OPERATIONAL_ROLE"]);
+      const technicalComm = safeGetRowValue(row, ["technical_comm", "TECHNICAL_COMM"]);
+      const message = safeGetRowValue(row, ["message", "MESSAGE"]);
+      const conflict = safeNormalizeBoolean(
+        safeGetRowValue(row, ["redundancy_conflict", "REDUNDANCY_CONFLICT"])
+      );
+
+      /*
+       * Guia Servidores:
+       * Papel operacional fica em server-role-badge.
+       * Comunicação/ping fica em badge status-*.
+       */
+      safeUpdateServerRoleBadge(
+        target.serverRoleId,
+        conflict ? "FALHA" : role,
+        conflict ? "Conflito" : "",
+        message
+      );
+
+      safeUpdateTechnicalStatusBadge(
+        target.serverCommId,
+        technicalComm,
+        message
+      );
+
+      /*
+       * Dashboard:
+       * Mostra papel operacional resumido.
+       * Conflito sempre vermelho.
+       */
+      safeUpdateIhmDashboardBadge(
+        target.dashboardId,
+        conflict ? "CONFLITO" : role,
+        message
+      );
+    });
+  }
+
+  try {
+    syncServerAssetsView = safeSyncServerAssetsView;
+  } catch (error) {
+    console.warn("[NEXUS] Não foi possível sobrescrever syncServerAssetsView", error);
+  }
+
+  try {
+    nexusUpdateServerRoleBadge = function nexusUpdateServerRoleBadgeSafe(elementId, role) {
+      safeUpdateServerRoleBadge(elementId, role);
+    };
+  } catch (error) {
+    console.warn("[NEXUS] Não foi possível sobrescrever nexusUpdateServerRoleBadge", error);
+  }
+
+  try {
+    nexusRenderIhmOperationalStatus = safeRenderIhmOperationalStatus;
+  } catch (error) {
+    console.warn("[NEXUS] Não foi possível sobrescrever nexusRenderIhmOperationalStatus", error);
+  }
+
+  try {
+    nexusUpdateIhmDashboardBadge = safeUpdateIhmDashboardBadge;
+  } catch (error) {
+    console.warn("[NEXUS] Não foi possível sobrescrever nexusUpdateIhmDashboardBadge", error);
+  }
+
+  try {
+    nexusUpdateTechnicalStatusBadge = safeUpdateTechnicalStatusBadge;
+  } catch (error) {
+    console.warn("[NEXUS] Não foi possível sobrescrever nexusUpdateTechnicalStatusBadge", error);
+  }
+
+  try {
+    safeSyncServerAssetsView();
+    safeRenderIhmOperationalStatus();
+
+    if (typeof nexusRenderFixedServerOperationalRoles === "function") {
+      nexusRenderFixedServerOperationalRoles();
+    }
+  } catch (error) {
+    console.error("[NEXUS] Falha ao aplicar correção segura de badges operacionais", error);
+  }
+})();
