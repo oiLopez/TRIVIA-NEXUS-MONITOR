@@ -85,6 +85,44 @@ check_optional_file() {
 # Validações
 # ============================================================
 
+
+check_operational_status() {
+    print_header "Validando operational_status.csv"
+
+    local csv_file="backend/data/runtime/operational_status.csv"
+    local contract_validator="tools/validators/validate_operational_status.sh"
+    local conflict_validator="tools/validators/validate_operational_conflicts.sh"
+
+    if [[ ! -f "$csv_file" ]]; then
+        print_warn "Arquivo runtime não encontrado: $csv_file"
+        print_warn "Validação de operational_status ignorada porque runtime é local/gerado."
+        return 0
+    fi
+
+    if [[ ! -f "$contract_validator" ]]; then
+        print_error "Validador não encontrado: $contract_validator"
+        return 0
+    fi
+
+    if [[ ! -f "$conflict_validator" ]]; then
+        print_error "Validador não encontrado: $conflict_validator"
+        return 0
+    fi
+
+    if bash "$contract_validator" "$csv_file"; then
+        print_ok "Contrato operational_status validado."
+    else
+        print_error "Contrato operational_status apresentou erro(s)."
+    fi
+
+    if bash "$conflict_validator" "$csv_file"; then
+        print_ok "Conflitos operacionais validados."
+    else
+        print_error "Conflitos operacionais apresentaram erro(s)."
+    fi
+}
+
+
 check_directories() {
     print_header "Validando diretórios obrigatórios"
 
@@ -313,3 +351,5 @@ main() {
 }
 
 main "$@"
+
+check_operational_status
