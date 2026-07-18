@@ -266,3 +266,18 @@ A regra de negócio não deve ficar concentrada no JavaScript.
 3. Detectar conflito de IHM por logical_asset_id.
 4. Evoluir coleta real com ping, ssh/rlogin e leitura de processos.
 5. Exibir mensagens operacionais claras no frontend.
+
+---
+
+## Observação sobre endereços IP
+
+Os endereços IP usados em arquivos sample, documentação e exemplos do NEXUS MONITOR são fictícios e não representam necessariamente o ambiente real.
+
+Os IPs reais do ambiente operacional devem ficar apenas em arquivos locais ignorados pelo Git, como arquivos runtime ou configurações locais.
+
+Diretriz:
+
+    samples/docs = IP fictício
+    runtime/local = IP real do ambiente
+    repositório público = sem IP sensível
+
