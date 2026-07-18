@@ -175,6 +175,7 @@ check_files() {
 	"backend/core/nexus_logger.sh"
         "backend/collectors/collector_alertas.sh"
         "backend/collectors/collector_operacao_auto.sh"
+        "backend/collectors/collector_prodix_operational.sh"
         "backend/collectors/collector_rede_ab.sh"
         "backend/collectors/collector_virtualizacao.sh"
         "docs/arquitetura.md"

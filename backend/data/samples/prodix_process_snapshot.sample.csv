@@ -1,0 +1,17 @@
+ihm;ldom;ip_address;technical_comm;sb_recebe;ma;sb_watdog
+CPTM1;LDOM1;192.0.2.33;OK;true;true;true
+CPTM1;LDOM2;192.0.2.33;OK;false;false;false
+CPTM2;LDOM1;192.0.2.35;OK;true;true;true
+CPTM2;LDOM2;192.0.2.35;OK;true;true;true
+CPTM3;LDOM1;192.0.2.37;OK;false;false;false
+CPTM3;LDOM2;192.0.2.37;OK;true;true;true
+CPTM4;LDOM1;192.0.2.39;OK;true;true;true
+CPTM4;LDOM2;192.0.2.39;OK;false;false;false
+SME3;LDOM1;192.0.2.27;OK;true;true;true
+SME3;LDOM2;192.0.2.27;OK;false;false;false
+CONS1;LDOM1;192.0.2.29;OK;true;true;true
+CONS1;LDOM2;192.0.2.29;OK;false;false;false
+CONS5;LDOM1;192.0.2.31;OK;false;false;false
+CONS5;LDOM2;192.0.2.31;OK;true;true;true
+CPTM12;LDOM1;192.0.2.41;OK;false;false;false
+CPTM12;LDOM2;192.0.2.41;OK;true;true;true
