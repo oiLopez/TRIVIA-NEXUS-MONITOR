@@ -281,3 +281,18 @@ Diretriz:
     runtime/local = IP real do ambiente
     repositório público = sem IP sensível
 
+
+---
+
+## Observação sobre dados sensíveis
+
+Os IPs, nomes e registros presentes em arquivos sample são placeholders de desenvolvimento e documentação.
+
+Dados reais do ambiente operacional devem permanecer apenas em arquivos locais/runtime ignorados pelo Git.
+
+Diretriz:
+
+    backend/data/samples = dados fictícios
+    backend/data/runtime = dados reais locais, ignorados pelo Git
+    backend/config/*.local = configuração real local, ignorada pelo Git
+
