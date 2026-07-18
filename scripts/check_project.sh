@@ -353,4 +353,39 @@ main() {
 
 main "$@"
 
+
+check_prodix_process_snapshot() {
+    print_header "Validando snapshot Prodix"
+
+    local sample_file="backend/data/samples/prodix_process_snapshot.sample.csv"
+    local runtime_file="backend/data/runtime/prodix_process_snapshot.csv"
+    local validator="tools/validators/validate_prodix_process_snapshot.sh"
+
+    if [[ ! -f "$validator" ]]; then
+        print_error "Validador não encontrado: $validator"
+        return 0
+    fi
+
+    if [[ -f "$sample_file" ]]; then
+        if bash "$validator" "$sample_file"; then
+            print_ok "Sample Prodix validado."
+        else
+            print_error "Sample Prodix apresentou erro(s)."
+        fi
+    else
+        print_warn "Sample Prodix não encontrado: $sample_file"
+    fi
+
+    if [[ -f "$runtime_file" ]]; then
+        if bash "$validator" "$runtime_file"; then
+            print_ok "Runtime Prodix validado."
+        else
+            print_error "Runtime Prodix apresentou erro(s)."
+        fi
+    else
+        print_warn "Runtime Prodix não encontrado; validação local ignorada."
+    fi
+}
+
 check_operational_status
+check_prodix_process_snapshot
