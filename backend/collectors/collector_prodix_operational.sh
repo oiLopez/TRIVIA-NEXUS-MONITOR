@@ -25,6 +25,7 @@ TIMESTAMP="${NEXUS_OPERATIONAL_TIMESTAMP:-$(date '+%Y-%m-%d %H:%M:%S')}"
 MODE="${NEXUS_PRODIX_COLLECTOR_MODE:-snapshot}"
 
 SNAPSHOT_FILE="${NEXUS_PRODIX_SNAPSHOT_FILE:-$PROJECT_ROOT/backend/data/runtime/prodix_process_snapshot.csv}"
+ASSETS_FILE="${NEXUS_PRODIX_ASSETS_FILE:-$PROJECT_ROOT/backend/config/prodix_assets.local.csv}"
 
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
@@ -131,24 +132,52 @@ derive_prodix_role() {
   echo "STANDBY"
 }
 
-emit_static_infra() {
-  emit_row "ILOM1" "ILOM1" "Chassi ILOM 1" "ILOM" "N/A" "N/A" "192.0.2.13" "OK" "OK" "NAO_APLICAVEL" "NONE" "false" "ILOM comunicando normalmente"
-  emit_row "ILOM2" "ILOM2" "Chassi ILOM 2" "ILOM" "N/A" "N/A" "192.0.2.14" "OK" "OK" "NAO_APLICAVEL" "NONE" "false" "ILOM comunicando normalmente"
 
-  emit_row "CONTROL_DOMAIN_1" "CONTROL_DOMAIN_1" "Control Domain 1" "CONTROL_DOMAIN" "ILOM1" "N/A" "192.0.2.11" "OK" "OK" "NAO_APLICAVEL" "NONE" "false" "Control Domain operacional"
-  emit_row "CONTROL_DOMAIN_2" "CONTROL_DOMAIN_2" "Control Domain 2" "CONTROL_DOMAIN" "ILOM2" "N/A" "192.0.2.12" "OK" "OK" "NAO_APLICAVEL" "NONE" "false" "Control Domain operacional"
+emit_configured_assets() {
+  local assets_file="$ASSETS_FILE"
+  local sample_assets_file="$PROJECT_ROOT/backend/config/prodix_assets.sample.csv"
+  local expected_header="asset_id;logical_asset_id;asset_name;asset_type;parent_asset;ldom;ip_address;technical_comm;health_status;operational_role;redundancy_group;redundancy_conflict;message"
 
-  emit_row "LDOM1" "LDOM1" "LDOM 1" "LDOM" "CONTROL_DOMAIN_1" "LDOM1" "192.0.2.15" "OK" "OK" "NAO_APLICAVEL" "NONE" "false" "LDOM operacional"
-  emit_row "LDOM2" "LDOM2" "LDOM 2" "LDOM" "CONTROL_DOMAIN_2" "LDOM2" "192.0.2.17" "OK" "OK" "NAO_APLICAVEL" "NONE" "false" "LDOM operacional"
+  if [[ ! -f "$assets_file" ]]; then
+    assets_file="$sample_assets_file"
+    echo "[NEXUS][WARN] Config local de ativos não encontrada. Usando sample fictício: $assets_file" >&2
+  fi
+
+  if [[ ! -f "$assets_file" ]]; then
+    echo "[NEXUS][ERRO] Config de ativos Prodix não encontrada: $assets_file" >&2
+    exit 1
+  fi
+
+  local header
+  header="$(head -n 1 "$assets_file")"
+
+  if [[ "$header" != "$expected_header" ]]; then
+    echo "[NEXUS][ERRO] Cabeçalho inválido em: $assets_file" >&2
+    echo "[NEXUS][INFO] Esperado: $expected_header" >&2
+    echo "[NEXUS][INFO] Atual:    $header" >&2
+    exit 1
+  fi
+
+  tail -n +2 "$assets_file" | while IFS=';' read -r asset_id logical_asset_id asset_name asset_type parent_asset ldom ip_address technical_comm health_status operational_role redundancy_group redundancy_conflict message; do
+    [[ -z "${asset_id:-}" ]] && continue
+
+    emit_row \
+      "$asset_id" \
+      "$logical_asset_id" \
+      "$asset_name" \
+      "$asset_type" \
+      "$parent_asset" \
+      "$ldom" \
+      "$ip_address" \
+      "$technical_comm" \
+      "$health_status" \
+      "$operational_role" \
+      "$redundancy_group" \
+      "$redundancy_conflict" \
+      "$message"
+  done
 }
 
-emit_fixed_servers() {
-  emit_row "SFT1" "SFT1" "Servidor SFT1" "FIXED_SERVER" "LDOM1" "LDOM1" "192.0.2.19" "OK" "OK" "ATIVO" "SFT_PAIR" "false" "Servidor fixo ativo em operacao"
-  emit_row "SFT2" "SFT2" "Servidor SFT2" "FIXED_SERVER" "LDOM2" "LDOM2" "192.0.2.21" "OK" "OK" "STANDBY" "SFT_PAIR" "false" "Servidor fixo em standby"
-
-  emit_row "METROSP44" "METROSP44" "Servidor METROSP44" "FIXED_SERVER" "LDOM1" "LDOM1" "192.0.2.23" "OK" "OK" "STANDBY" "METROSP_PAIR" "false" "Servidor fixo em standby"
-  emit_row "METROSP45" "METROSP45" "Servidor METROSP45" "FIXED_SERVER" "LDOM2" "LDOM2" "192.0.2.25" "OK" "OK" "ATIVO" "METROSP_PAIR" "false" "Servidor fixo ativo em operacao"
-}
 
 emit_ihm_from_snapshot_row() {
   local ihm="$1"
@@ -257,8 +286,7 @@ mark_redundancy_conflicts() {
 }
 
 main() {
-  emit_static_infra
-  emit_fixed_servers
+  emit_configured_assets
 
   case "$MODE" in
     snapshot)

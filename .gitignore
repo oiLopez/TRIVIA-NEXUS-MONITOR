@@ -85,3 +85,7 @@ backend/data/runtime/*.csv
 # NEXUS MONITOR - arquivos locais com dados reais
 frontend/index.local.html
 frontend/assets/data/local/
+
+# Configurações locais/sensíveis
+backend/config/*.local.csv
+backend/config/*.local

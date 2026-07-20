@@ -1,0 +1,11 @@
+asset_id;logical_asset_id;asset_name;asset_type;parent_asset;ldom;ip_address;technical_comm;health_status;operational_role;redundancy_group;redundancy_conflict;message
+ILOM1;ILOM1;Chassi ILOM 1;ILOM;N/A;N/A;192.0.2.13;OK;OK;NAO_APLICAVEL;NONE;false;ILOM comunicando normalmente
+ILOM2;ILOM2;Chassi ILOM 2;ILOM;N/A;N/A;192.0.2.14;OK;OK;NAO_APLICAVEL;NONE;false;ILOM comunicando normalmente
+CONTROL_DOMAIN_1;CONTROL_DOMAIN_1;Control Domain 1;CONTROL_DOMAIN;ILOM1;N/A;192.0.2.11;OK;OK;NAO_APLICAVEL;NONE;false;Control Domain operacional
+CONTROL_DOMAIN_2;CONTROL_DOMAIN_2;Control Domain 2;CONTROL_DOMAIN;ILOM2;N/A;192.0.2.12;OK;OK;NAO_APLICAVEL;NONE;false;Control Domain operacional
+LDOM1;LDOM1;LDOM 1;LDOM;CONTROL_DOMAIN_1;LDOM1;192.0.2.15;OK;OK;NAO_APLICAVEL;NONE;false;LDOM operacional
+LDOM2;LDOM2;LDOM 2;LDOM;CONTROL_DOMAIN_2;LDOM2;192.0.2.17;OK;OK;NAO_APLICAVEL;NONE;false;LDOM operacional
+SFT1;SFT1;Servidor SFT1;FIXED_SERVER;LDOM1;LDOM1;192.0.2.19;OK;OK;ATIVO;SFT_PAIR;false;Servidor fixo ativo em operacao
+SFT2;SFT2;Servidor SFT2;FIXED_SERVER;LDOM2;LDOM2;192.0.2.21;OK;OK;STANDBY;SFT_PAIR;false;Servidor fixo em standby
+METROSP44;METROSP44;Servidor METROSP44;FIXED_SERVER;LDOM1;LDOM1;192.0.2.23;OK;OK;STANDBY;METROSP_PAIR;false;Servidor fixo em standby
+METROSP45;METROSP45;Servidor METROSP45;FIXED_SERVER;LDOM2;LDOM2;192.0.2.25;OK;OK;ATIVO;METROSP_PAIR;false;Servidor fixo ativo em operacao
