@@ -86,6 +86,25 @@ check_optional_file() {
 # ============================================================
 
 
+
+check_public_repo_safety() {
+    print_header "Validando segurança do repositório público"
+
+    local validator="tools/validators/validate_public_repo_safety.sh"
+
+    if [[ ! -f "$validator" ]]; then
+        print_error "Validador não encontrado: $validator"
+        return 0
+    fi
+
+    if bash "$validator"; then
+        print_ok "Auditoria pública validada."
+    else
+        print_error "Auditoria pública apresentou erro(s)."
+    fi
+}
+
+
 check_operational_status() {
     print_header "Validando operational_status.csv"
 
@@ -389,3 +408,4 @@ check_prodix_process_snapshot() {
 
 check_operational_status
 check_prodix_process_snapshot
+check_public_repo_safety
