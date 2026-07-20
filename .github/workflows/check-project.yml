@@ -1,0 +1,33 @@
+name: NEXUS Project Check
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - feature/**
+      - refactor/**
+      - fix/**
+  pull_request:
+
+jobs:
+  check-project:
+    name: Run project validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show Bash version
+        run: bash --version
+
+      - name: Validate shell syntax
+        run: |
+          find backend tools scripts -name "*.sh" -print0 | xargs -0 bash -n
+
+      - name: Run NEXUS project check
+        run: |
+          chmod +x scripts/check_project.sh
+          chmod +x tools/validators/*.sh
+          bash scripts/check_project.sh
