@@ -373,6 +373,41 @@ main() {
 main "$@"
 
 
+
+check_prodix_assets_config() {
+    print_header "Validando config de ativos Prodix"
+
+    local sample_file="backend/config/prodix_assets.sample.csv"
+    local local_file="backend/config/prodix_assets.local.csv"
+    local validator="tools/validators/validate_prodix_assets_config.sh"
+
+    if [[ ! -f "$validator" ]]; then
+        print_error "Validador não encontrado: $validator"
+        return 0
+    fi
+
+    if [[ -f "$sample_file" ]]; then
+        if bash "$validator" "$sample_file"; then
+            print_ok "Sample de ativos Prodix validado."
+        else
+            print_error "Sample de ativos Prodix apresentou erro(s)."
+        fi
+    else
+        print_error "Sample de ativos Prodix não encontrado: $sample_file"
+    fi
+
+    if [[ -f "$local_file" ]]; then
+        if bash "$validator" "$local_file"; then
+            print_ok "Config local de ativos Prodix validada."
+        else
+            print_error "Config local de ativos Prodix apresentou erro(s)."
+        fi
+    else
+        print_warn "Config local de ativos Prodix não encontrada; usando sample fictício."
+    fi
+}
+
+
 check_prodix_process_snapshot() {
     print_header "Validando snapshot Prodix"
 
@@ -407,5 +442,6 @@ check_prodix_process_snapshot() {
 }
 
 check_operational_status
+check_prodix_assets_config
 check_prodix_process_snapshot
 check_public_repo_safety
