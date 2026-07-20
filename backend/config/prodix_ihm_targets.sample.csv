@@ -1,0 +1,17 @@
+ihm;ldom;ip_address;evidence_file
+CPTM1;LDOM1;192.0.2.33;backend/data/runtime/prodix_ps/CPTM1_LDOM1.ps
+CPTM1;LDOM2;192.0.2.33;backend/data/runtime/prodix_ps/CPTM1_LDOM2.ps
+CPTM2;LDOM1;192.0.2.35;backend/data/runtime/prodix_ps/CPTM2_LDOM1.ps
+CPTM2;LDOM2;192.0.2.35;backend/data/runtime/prodix_ps/CPTM2_LDOM2.ps
+CPTM3;LDOM1;192.0.2.37;backend/data/runtime/prodix_ps/CPTM3_LDOM1.ps
+CPTM3;LDOM2;192.0.2.37;backend/data/runtime/prodix_ps/CPTM3_LDOM2.ps
+CPTM4;LDOM1;192.0.2.39;backend/data/runtime/prodix_ps/CPTM4_LDOM1.ps
+CPTM4;LDOM2;192.0.2.39;backend/data/runtime/prodix_ps/CPTM4_LDOM2.ps
+SME3;LDOM1;192.0.2.27;backend/data/runtime/prodix_ps/SME3_LDOM1.ps
+SME3;LDOM2;192.0.2.27;backend/data/runtime/prodix_ps/SME3_LDOM2.ps
+CONS1;LDOM1;192.0.2.29;backend/data/runtime/prodix_ps/CONS1_LDOM1.ps
+CONS1;LDOM2;192.0.2.29;backend/data/runtime/prodix_ps/CONS1_LDOM2.ps
+CONS5;LDOM1;192.0.2.31;backend/data/runtime/prodix_ps/CONS5_LDOM1.ps
+CONS5;LDOM2;192.0.2.31;backend/data/runtime/prodix_ps/CONS5_LDOM2.ps
+CPTM12;LDOM1;192.0.2.41;backend/data/runtime/prodix_ps/CPTM12_LDOM1.ps
+CPTM12;LDOM2;192.0.2.41;backend/data/runtime/prodix_ps/CPTM12_LDOM2.ps
