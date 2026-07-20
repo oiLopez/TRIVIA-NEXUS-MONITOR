@@ -26,23 +26,27 @@ cd "$PROJECT_ROOT"
 echo "[NEXUS] Iniciando pipeline operacional Prodix..."
 
 echo
-echo "[NEXUS] 1/5 - Gerando prodix_process_snapshot.csv"
+echo "[NEXUS] 1/6 - Validando raw snapshot Prodix"
+tools/validators/validate_prodix_raw_process_snapshot.sh backend/data/runtime/prodix_raw_process_snapshot.csv
+
+echo
+echo "[NEXUS] 2/6 - Gerando prodix_process_snapshot.csv"
 backend/collectors/collector_prodix_snapshot.sh
 
 echo
-echo "[NEXUS] 2/5 - Validando snapshot Prodix"
+echo "[NEXUS] 3/6 - Validando snapshot Prodix"
 tools/validators/validate_prodix_process_snapshot.sh backend/data/runtime/prodix_process_snapshot.csv
 
 echo
-echo "[NEXUS] 3/5 - Gerando operational_status.csv"
+echo "[NEXUS] 4/6 - Gerando operational_status.csv"
 backend/collectors/collector_prodix_operational.sh
 
 echo
-echo "[NEXUS] 4/5 - Validando contrato operational_status"
+echo "[NEXUS] 5/6 - Validando contrato operational_status"
 tools/validators/validate_operational_status.sh backend/data/runtime/operational_status.csv
 
 echo
-echo "[NEXUS] 5/5 - Validando conflitos operacionais"
+echo "[NEXUS] 6/6 - Validando conflitos operacionais"
 tools/validators/validate_operational_conflicts.sh backend/data/runtime/operational_status.csv
 
 echo
