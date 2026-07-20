@@ -1,0 +1,17 @@
+ihm;ldom;ip_address;technical_comm;process_list
+CPTM1;LDOM1;192.0.2.33;OK;sb_recebe ma sb_watdog painelcon
+CPTM1;LDOM2;192.0.2.33;OK;
+CPTM2;LDOM1;192.0.2.35;OK;sb_recebe ma sb_watdog painelcon
+CPTM2;LDOM2;192.0.2.35;OK;sb_recebe ma sb_watdog painelcon
+CPTM3;LDOM1;192.0.2.37;OK;
+CPTM3;LDOM2;192.0.2.37;OK;sb_recebe ma sb_watdog painelcon
+CPTM4;LDOM1;192.0.2.39;OK;sb_recebe ma sb_watdog painelcon
+CPTM4;LDOM2;192.0.2.39;OK;
+SME3;LDOM1;192.0.2.27;OK;sb_recebe ma sb_watdog painelcon
+SME3;LDOM2;192.0.2.27;OK;
+CONS1;LDOM1;192.0.2.29;OK;sb_recebe ma sb_watdog painelcon
+CONS1;LDOM2;192.0.2.29;OK;
+CONS5;LDOM1;192.0.2.31;OK;
+CONS5;LDOM2;192.0.2.31;OK;sb_recebe ma sb_watdog painelcon
+CPTM12;LDOM1;192.0.2.41;OK;
+CPTM12;LDOM2;192.0.2.41;OK;sb_recebe ma sb_watdog painelcon
