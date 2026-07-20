@@ -30,7 +30,8 @@ ASSETS_FILE="${NEXUS_PRODIX_ASSETS_FILE:-$PROJECT_ROOT/backend/config/prodix_ass
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
 TMP_FILE="$(mktemp)"
-trap 'rm -f "$TMP_FILE"' EXIT
+CONFLICT_TMP=""
+trap 'rm -f "${TMP_FILE:-}" "${CONFLICT_TMP:-}"' EXIT
 
 HEADER="timestamp;asset_id;logical_asset_id;asset_name;asset_type;parent_asset;ldom;ip_address;technical_comm;health_status;operational_role;redundancy_group;redundancy_conflict;message"
 
@@ -299,13 +300,12 @@ main() {
       ;;
   esac
 
-  local conflict_tmp
-  conflict_tmp="$(mktemp)"
-  trap 'rm -f "$TMP_FILE" "$conflict_tmp"' EXIT
+  CONFLICT_TMP="$(mktemp)"
 
-  mark_redundancy_conflicts "$TMP_FILE" "$conflict_tmp"
+  mark_redundancy_conflicts "$TMP_FILE" "$CONFLICT_TMP"
 
-  mv "$conflict_tmp" "$OUTPUT_FILE"
+  mv "$CONFLICT_TMP" "$OUTPUT_FILE"
+  CONFLICT_TMP=""
 
   echo "[NEXUS] operational_status.csv gerado em: $OUTPUT_FILE"
 }
