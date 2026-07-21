@@ -3,7 +3,7 @@ set -euo pipefail
 
 CSV_FILE="${1:-backend/data/samples/service_status.sample.csv}"
 
-EXPECTED_HEADER="timestamp;host_id;host_name;host_type;ldom;ip_address;service_name;service_pattern;technical_comm;service_status;pid_count;pids;message"
+EXPECTED_HEADER="timestamp;host_id;host_name;host_type;ldom;ip_address;service_name;service_pattern;expected_scope;technical_comm;service_status;pid_count;pids;message"
 
 if [[ ! -f "$CSV_FILE" ]]; then
   echo "[NEXUS][ERRO] Arquivo não encontrado: $CSV_FILE" >&2
@@ -28,8 +28,8 @@ NR == 1 {
   next
 }
 
-NF != 13 {
-  printf("[NEXUS][ERRO] Linha %d possui %d campos; esperado 13: %s\n", NR, NF, $0) > "/dev/stderr"
+NF != 14 {
+  printf("[NEXUS][ERRO] Linha %d possui %d campos; esperado 14: %s\n", NR, NF, $0) > "/dev/stderr"
   errors++
   next
 }
@@ -43,14 +43,20 @@ NF != 13 {
   ip_address = $6
   service_name = $7
   service_pattern = $8
-  technical_comm = $9
-  service_status = $10
-  pid_count = $11
-  pids = $12
-  message = $13
+  expected_scope = $9
+  technical_comm = $10
+  service_status = $11
+  pid_count = $12
+  pids = $13
+  message = $14
 
   if (timestamp == "" || host_id == "" || host_name == "" || service_name == "" || service_pattern == "" || message == "") {
     printf("[NEXUS][ERRO] Linha %d: campos obrigatórios vazios\n", NR) > "/dev/stderr"
+    errors++
+  }
+
+  if (expected_scope !~ /^(SINGLE_ACTIVE|MULTI_ACTIVE)$/) {
+    printf("[NEXUS][ERRO] Linha %d: expected_scope inválido: %s\n", NR, expected_scope) > "/dev/stderr"
     errors++
   }
 

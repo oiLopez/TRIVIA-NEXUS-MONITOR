@@ -22,7 +22,7 @@ O serviço `evtreport` é responsável pela geração da tabela de eventos consu
 
 ## Cabeçalho
 
-    timestamp;host_id;host_name;host_type;ldom;ip_address;service_name;service_pattern;technical_comm;service_status;pid_count;pids;message
+    timestamp;host_id;host_name;host_type;ldom;ip_address;service_name;service_pattern;expected_scope;technical_comm;service_status;pid_count;pids;message
 
 ## Campos
 

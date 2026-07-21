@@ -1,4 +1,5 @@
-timestamp;host_id;host_name;host_type;ldom;ip_address;service_name;service_pattern;technical_comm;service_status;pid_count;pids;message
-2026-07-19 22:00:00;CPTM2_LDOM1;CPTM2;IHM;LDOM1;192.0.2.35;evtreport;evtreport;OK;RUNNING;1;1234;Servico evtreport ativo nesta maquina
-2026-07-19 22:00:00;CPTM2_LDOM2;CPTM2;IHM;LDOM2;192.0.2.35;evtreport;evtreport;OK;STOPPED;0;N/A;Servico evtreport nao encontrado nesta maquina
-2026-07-19 22:00:00;SFT1;SFT1;FIXED_SERVER;LDOM1;192.0.2.19;evtreport;evtreport;OK;LOCKED;1;29664;Existe outra instancia em execucao de PID 29664
+timestamp;host_id;host_name;host_type;ldom;ip_address;service_name;service_pattern;expected_scope;technical_comm;service_status;pid_count;pids;message
+2026-07-19 22:00:00;CPTM2_LDOM1;CPTM2;IHM;LDOM1;192.0.2.35;evtreport;evtreport|xEvtreport|cutreport;SINGLE_ACTIVE;OK;RUNNING;1;1234;Servico evtreport ativo nesta maquina
+2026-07-19 22:00:00;CPTM2_LDOM2;CPTM2;IHM;LDOM2;192.0.2.35;evtreport;evtreport|xEvtreport|cutreport;SINGLE_ACTIVE;OK;LOCKED;1;29664;Existe outra instancia em execucao de PID 29664
+2026-07-19 22:00:00;CPTM4_LDOM1;CPTM4;IHM;LDOM1;192.0.2.39;painel;painel|painelcon|blinker|gmstimer;MULTI_ACTIVE;OK;RUNNING;2;2201,2202;Painel operacional carregado nesta maquina
+2026-07-19 22:00:00;CONS1_LDOM1;CONS1;IHM;LDOM1;192.0.2.29;painel;painel|painelcon|blinker|gmstimer;MULTI_ACTIVE;OK;RUNNING;1;3301;Painel operacional carregado nesta maquina
