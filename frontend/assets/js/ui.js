@@ -139,11 +139,31 @@ function resolveStatusTargets(row) {
   };
 }
 
+function isMobileIhmStatusRow(row) {
+  const hostname = String(row.hostname || '').trim().toLowerCase();
+  const ldom = String(row.ldom || '').trim().toLowerCase();
+
+  const mobileIhms = new Set([
+    'cptm1', 'cptm2', 'cptm3', 'cptm4',
+    'sme3', 'cons1', 'cons5', 'cptm12',
+  ]);
+
+  return mobileIhms.has(hostname) && (ldom === 'ldom1' || ldom === 'ldom2');
+}
+
 function updateHostStatus(row) {
   const targets = resolveStatusTargets(row);
   const badge = getElement(targets.badgeId);
 
-  setStatusBadge(badge, row.status);
+  /*
+   * IHMs móveis no Dashboard não exibem status técnico do status_ldom.csv.
+   * O badge operacional é responsabilidade do operational_status.csv.
+   * Aqui mantemos apenas o uptime.
+   */
+  if (!isMobileIhmStatusRow(row)) {
+    setStatusBadge(badge, row.status);
+  }
+
   updateUptime(targets.uptimeId, row.status, row.uptime);
 }
 
