@@ -89,3 +89,8 @@ frontend/assets/data/local/
 # Configurações locais/sensíveis
 backend/config/*.local.csv
 backend/config/*.local
+
+# Runtime local gerado automaticamente
+backend/data/runtime/**
+!backend/data/runtime/
+!backend/data/runtime/.gitkeep
