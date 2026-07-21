@@ -154,10 +154,9 @@ function updateUptime(id, status, uptime) {
     return;
   }
 
-  const group = getStatusGroup(status);
   const hasValidUptime = uptime && uptime !== '-';
 
-  if ((group === 'ok' || group === 'standby') && hasValidUptime) {
+  if (hasValidUptime) {
     uptimeTag.textContent = `⏱ ${uptime}`;
     uptimeTag.style.display = 'inline-flex';
     return;

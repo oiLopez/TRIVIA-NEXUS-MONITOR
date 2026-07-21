@@ -142,23 +142,6 @@ function copyElementState(sourceId, targetId) {
 
 function syncServerAssetsView() {
   const badgeMappings = [
-    ["cptm1-ldom1", "srv-cptm1-ldom1"],
-    ["cptm2-ldom1", "srv-cptm2-ldom1"],
-    ["cptm3-ldom1", "srv-cptm3-ldom1"],
-    ["cptm4-ldom1", "srv-cptm4-ldom1"],
-    ["sme3-ldom1", "srv-sme3-ldom1"],
-    ["cons1-ldom1", "srv-cons1-ldom1"],
-    ["cons5-ldom1", "srv-cons5-ldom1"],
-    ["cptm12-ldom1", "srv-cptm12-ldom1"],
-
-    ["cptm1-ldom2", "srv-cptm1-ldom2"],
-    ["cptm2-ldom2", "srv-cptm2-ldom2"],
-    ["cptm3-ldom2", "srv-cptm3-ldom2"],
-    ["cptm4-ldom2", "srv-cptm4-ldom2"],
-    ["sme3-ldom2", "srv-sme3-ldom2"],
-    ["cons1-ldom2", "srv-cons1-ldom2"],
-    ["cons5-ldom2", "srv-cons5-ldom2"],
-    ["cptm12-ldom2", "srv-cptm12-ldom2"],
 
     ["status-ws11", "srv-status-ws11"],
     ["status-ws12", "srv-status-ws12"],
@@ -1771,5 +1754,324 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
   document.addEventListener("DOMContentLoaded", () => {
     loadPainelStatus();
     setInterval(loadPainelStatus, 30000);
+  });
+})();
+
+
+/* ==========================================================================
+ * NEXUS - Dashboard IHM Operational Status Guard
+ *
+ * No Dashboard principal, IHMs móveis representam papel operacional:
+ * ATIVO / STANDBY / CONFLITO / ALERTA.
+ *
+ * Comunicação técnica "OK/PING OK" deve aparecer somente na aba Servidores.
+ * ========================================================================== */
+
+(() => {
+  const DASHBOARD_IHM_IDS = [
+    "cptm1", "cptm2", "cptm3", "cptm4",
+    "sme3", "cons1", "cons5", "cptm12",
+  ];
+
+  const DASHBOARD_ROLE_CLASS_MAP = {
+    ATIVO: "status-ok",
+    STANDBY: "status-standby",
+    CONFLITO: "status-crit",
+    ALERTA: "status-warn",
+    FALHA: "status-crit",
+    DESLIGADO: "status-wait",
+    WAIT: "status-wait",
+  };
+
+  function normalizeDashboardRoleValue(row) {
+    const conflict = String(row?.redundancy_conflict || "").toLowerCase() === "true";
+
+    if (conflict) {
+      return "CONFLITO";
+    }
+
+    const role = String(row?.operational_role || row?.service_status || "WAIT")
+      .trim()
+      .toUpperCase();
+
+    if (role === "ACTIVE") return "ATIVO";
+    if (role === "STANDBY") return "STANDBY";
+    if (role === "CONFLICT") return "CONFLITO";
+    if (role === "WARN" || role === "WARNING") return "ALERTA";
+
+    if (["ATIVO", "STANDBY", "CONFLITO", "ALERTA", "FALHA", "DESLIGADO", "WAIT"].includes(role)) {
+      return role;
+    }
+
+    return "WAIT";
+  }
+
+  function getDashboardIhmRows() {
+    const rows = Array.isArray(window.NEXUS_OPERATIONAL_STATUS)
+      ? window.NEXUS_OPERATIONAL_STATUS
+      : [];
+
+    return rows.filter((row) => {
+      const assetType = String(row.asset_type || "").toUpperCase();
+      return assetType === "MOBILE_IHM" || assetType === "IHM";
+    });
+  }
+
+  function findDashboardIhmRow(ihmId, ldom) {
+    const rows = getDashboardIhmRows();
+    const ihmKey = ihmId.toUpperCase();
+
+    return rows.find((row) => {
+      const logical = String(row.logical_asset_id || "").toUpperCase();
+      const asset = String(row.asset_id || "").toUpperCase();
+      const rowLdom = String(row.ldom || "").toUpperCase();
+
+      return rowLdom === ldom.toUpperCase()
+        && (logical.includes(ihmKey) || asset.includes(ihmKey));
+    });
+  }
+
+  function applyDashboardIhmRole(element, role) {
+    if (!element) {
+      return;
+    }
+
+    const className = DASHBOARD_ROLE_CLASS_MAP[role] || "status-wait";
+
+    element.classList.remove(
+      "status-ok",
+      "status-warn",
+      "status-crit",
+      "status-wait",
+      "status-standby"
+    );
+
+    element.classList.add("badge", className);
+    element.textContent = role;
+  }
+
+  function stabilizeDashboardIhmRoles() {
+    DASHBOARD_IHM_IDS.forEach((ihmId) => {
+      ["ldom1", "ldom2"].forEach((ldom) => {
+        const element = document.getElementById(`${ihmId}-${ldom}`);
+
+        if (!element) {
+          return;
+        }
+
+        const currentText = String(element.textContent || "").trim().toUpperCase();
+
+        /*
+         * Se algum renderizador técnico escreveu OK no dashboard, corrigimos.
+         * OK é comunicação técnica, não papel operacional.
+         */
+        if (currentText === "OK" || currentText === "PING OK") {
+          const row = findDashboardIhmRow(ihmId, ldom);
+          const role = row ? normalizeDashboardRoleValue(row) : "WAIT";
+          applyDashboardIhmRole(element, role);
+          return;
+        }
+
+        /*
+         * Se já está com papel operacional válido, só garante classe coerente.
+         */
+        if (["ATIVO", "STANDBY", "CONFLITO", "ALERTA", "FALHA", "DESLIGADO", "WAIT"].includes(currentText)) {
+          applyDashboardIhmRole(element, currentText);
+        }
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    stabilizeDashboardIhmRoles();
+    setInterval(stabilizeDashboardIhmRoles, 1200);
+  });
+})();
+
+
+/* ==========================================================================
+ * NEXUS - Dashboard IHM Operational Renderer
+ *
+ * No Dashboard principal, IHMs móveis NÃO exibem ping técnico "OK".
+ * Elas exibem o papel operacional:
+ * ATIVO / STANDBY / CONFLITO / ALERTA / WAIT.
+ *
+ * O uptime continua sendo responsabilidade do renderizador original.
+ * ========================================================================== */
+
+(() => {
+  const OPERATIONAL_STATUS_PATH = "../backend/data/runtime/operational_status.csv";
+
+  const DASHBOARD_IHMS = [
+    "cptm1", "cptm2", "cptm3", "cptm4",
+    "sme3", "cons1", "cons5", "cptm12",
+  ];
+
+  const ROLE_CLASS = {
+    ATIVO: "status-ok",
+    STANDBY: "status-standby",
+    CONFLITO: "status-crit",
+    ALERTA: "status-warn",
+    FALHA: "status-crit",
+    DESLIGADO: "status-wait",
+    WAIT: "status-wait",
+  };
+
+  function parseCsvLine(line) {
+    const result = [];
+    let current = "";
+    let quoted = false;
+
+    for (let i = 0; i < line.length; i += 1) {
+      const char = line[i];
+
+      if (char === '"') {
+        quoted = !quoted;
+        continue;
+      }
+
+      if (char === ";" && !quoted) {
+        result.push(current.trim());
+        current = "";
+        continue;
+      }
+
+      current += char;
+    }
+
+    result.push(current.trim());
+    return result;
+  }
+
+  function parseOperationalStatusCsv(text) {
+    const lines = String(text || "")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length <= 1) {
+      return [];
+    }
+
+    const header = parseCsvLine(lines[0]);
+
+    return lines.slice(1).map((line) => {
+      const values = parseCsvLine(line);
+      const row = {};
+
+      header.forEach((key, index) => {
+        row[key] = values[index] || "";
+      });
+
+      return row;
+    });
+  }
+
+  function normalizeDashboardRole(row) {
+    const conflict = String(row.redundancy_conflict || "").toLowerCase() === "true";
+
+    if (conflict) {
+      return "CONFLITO";
+    }
+
+    const health = String(row.health_status || "").trim().toUpperCase();
+    const technical = String(row.technical_comm || "").trim().toUpperCase();
+    const role = String(row.operational_role || "").trim().toUpperCase();
+
+    if (health === "WARN" || technical === "WARN") {
+      return "ALERTA";
+    }
+
+    if (health === "CRIT" || technical === "CRIT") {
+      return "ALERTA";
+    }
+
+    if (role === "ACTIVE") return "ATIVO";
+    if (role === "STANDBY") return "STANDBY";
+    if (role === "CONFLICT") return "CONFLITO";
+
+    if (["ATIVO", "STANDBY", "CONFLITO", "ALERTA", "FALHA", "DESLIGADO", "WAIT"].includes(role)) {
+      return role;
+    }
+
+    return "WAIT";
+  }
+
+  function findIhmRow(rows, ihmId, ldom) {
+    const ihmKey = `${ihmId}_IHM`.toUpperCase();
+    const ldomKey = ldom.toUpperCase();
+
+    return rows.find((row) => {
+      const assetType = String(row.asset_type || "").toUpperCase();
+      const logical = String(row.logical_asset_id || "").toUpperCase();
+      const asset = String(row.asset_id || "").toUpperCase();
+      const rowLdom = String(row.ldom || "").toUpperCase();
+
+      const isIhm = assetType === "MOBILE_IHM" || assetType === "IHM";
+      const sameIhm = logical === ihmKey || logical.includes(ihmKey) || asset.includes(ihmKey);
+
+      return isIhm && sameIhm && rowLdom === ldomKey;
+    });
+  }
+
+  function paintDashboardIhmBadge(id, role) {
+    const element = document.getElementById(id);
+
+    if (!element) {
+      return;
+    }
+
+    const className = ROLE_CLASS[role] || "status-wait";
+
+    element.classList.remove(
+      "status-ok",
+      "status-warn",
+      "status-crit",
+      "status-wait",
+      "status-standby",
+      "status-active"
+    );
+
+    element.classList.add("badge", className);
+
+    if (element.textContent !== role) {
+      element.textContent = role;
+    }
+  }
+
+  async function refreshDashboardIhmOperationalBadges() {
+    try {
+      const response = await fetch(`${OPERATIONAL_STATUS_PATH}?t=${Date.now()}`, {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const text = await response.text();
+      const rows = parseOperationalStatusCsv(text);
+
+      DASHBOARD_IHMS.forEach((ihmId) => {
+        ["ldom1", "ldom2"].forEach((ldom) => {
+          const row = findIhmRow(rows, ihmId, ldom);
+          const role = row ? normalizeDashboardRole(row) : "WAIT";
+
+          paintDashboardIhmBadge(`${ihmId}-${ldom}`, role);
+        });
+      });
+    } catch (error) {
+      console.warn("[NEXUS] Não foi possível atualizar status operacional das IHMs no Dashboard.", error);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    refreshDashboardIhmOperationalBadges();
+
+    /*
+     * Roda pouco depois dos renderizadores antigos para impedir que status técnico
+     * "OK" fique visível no Dashboard principal.
+     */
+    setInterval(refreshDashboardIhmOperationalBadges, 1500);
   });
 })();
