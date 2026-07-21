@@ -231,6 +231,7 @@ check_files() {
         "backend/collectors/collector_operacao_auto.sh"
         "backend/collectors/collector_prodix_operational.sh"
         "backend/collectors/collector_prodix_service_status.sh"
+  "backend/collectors/collector_service_status_events.sh"
         "backend/collectors/collector_rede_ab.sh"
         "backend/collectors/collector_virtualizacao.sh"
         "docs/arquitetura.md"

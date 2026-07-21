@@ -111,6 +111,10 @@ function getViewFromHash() {
     return "topologia";
   }
 
+  if (hash === "painel") {
+    return "painel";
+  }
+
   return "dashboard";
 }
 
@@ -1454,6 +1458,10 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
   }
 
   function renderServiceStatus(rows) {
+    const evtreportRows = rows.filter((row) => {
+      return String(row.service_name || "").toLowerCase() === "evtreport";
+    });
+
     const grid = document.getElementById("service-status-grid");
     const summary = document.getElementById("service-status-summary");
 
@@ -1461,7 +1469,7 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
       return;
     }
 
-    if (!rows.length) {
+    if (!evtreportRows.length) {
       grid.innerHTML = '<div class="events-empty">Aguardando backend/data/runtime/service_status.csv</div>';
 
       if (summary) {
@@ -1489,7 +1497,7 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
       WAIT: 6,
     };
 
-    const sortedRows = [...rows].sort((a, b) => {
+    const sortedRows = [...evtreportRows].sort((a, b) => {
       const statusA = String(a.service_status || "WAIT").toUpperCase();
       const statusB = String(b.service_status || "WAIT").toUpperCase();
 
@@ -1566,5 +1574,202 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
   document.addEventListener("DOMContentLoaded", () => {
     loadServiceStatus();
     setInterval(loadServiceStatus, 30000);
+  });
+})();
+
+/* ==========================================================================
+ * NEXUS - Painel View
+ * ========================================================================== */
+
+(() => {
+  const PAINEL_SERVICE_STATUS_PATH = "../backend/data/runtime/service_status.csv";
+
+  function parsePainelServiceStatusCsv(text) {
+    const lines = String(text || "")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#"));
+
+    if (lines.length < 2) {
+      return [];
+    }
+
+    const headers = lines[0].split(";").map((header) => header.trim());
+
+    return lines.slice(1).map((line) => {
+      const values = line.split(";");
+      const row = {};
+
+      headers.forEach((header, index) => {
+        row[header] = (values[index] || "").trim();
+      });
+
+      return row;
+    });
+  }
+
+  function getPainelBadgeClass(status) {
+    const normalized = String(status || "WAIT").toUpperCase();
+
+    if (normalized === "RUNNING") {
+      return "status-ok";
+    }
+
+    if (normalized === "LOCKED") {
+      return "status-warn";
+    }
+
+    if (normalized === "DUPLICATE" || normalized === "ERROR") {
+      return "status-crit";
+    }
+
+    if (normalized === "STOPPED") {
+      return "status-standby";
+    }
+
+    return "status-wait";
+  }
+
+  function getPainelPriority(status) {
+    const normalized = String(status || "WAIT").toUpperCase();
+
+    const priorities = {
+      RUNNING: 0,
+      LOCKED: 1,
+      DUPLICATE: 2,
+      ERROR: 3,
+      STOPPED: 4,
+      UNKNOWN: 5,
+      WAIT: 6,
+    };
+
+    return priorities[normalized] ?? 99;
+  }
+
+  function renderPainelStatus(rows) {
+    const painelRows = rows.filter((row) => {
+      return String(row.service_name || "").toLowerCase() === "painel";
+    });
+
+    const grid = document.getElementById("painel-status-grid");
+    const summary = document.getElementById("painel-status-summary");
+    const badge = document.getElementById("painel-service-badge");
+    const runningCountEl = document.getElementById("painel-running-count");
+    const pidCountEl = document.getElementById("painel-pid-count");
+
+    if (!grid) {
+      return;
+    }
+
+    if (!painelRows.length) {
+      grid.innerHTML = '<div class="events-empty">Aguardando dados de painel em service_status.csv</div>';
+
+      if (summary) summary.textContent = "AGUARDANDO";
+      if (badge) {
+        badge.textContent = "AGUARDANDO";
+        badge.className = "badge status-wait";
+      }
+      if (runningCountEl) runningCountEl.textContent = "0";
+      if (pidCountEl) pidCountEl.textContent = "0";
+
+      return;
+    }
+
+    const runningRows = painelRows.filter((row) => {
+      return String(row.service_status || "").toUpperCase() === "RUNNING";
+    });
+
+    const totalPids = runningRows.reduce((total, row) => {
+      const count = Number.parseInt(row.pid_count || "0", 10);
+      return total + (Number.isNaN(count) ? 0 : count);
+    }, 0);
+
+    const sortedRows = [...painelRows].sort((a, b) => {
+      const priorityA = getPainelPriority(a.service_status);
+      const priorityB = getPainelPriority(b.service_status);
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      return String(a.host_id || "").localeCompare(String(b.host_id || ""));
+    });
+
+    const summaryLabel = runningRows.length > 0
+      ? `${runningRows.length} MÁQUINA(S)`
+      : "NÃO LOCALIZADO";
+
+    const summaryClass = runningRows.length > 0 ? "status-ok" : "status-wait";
+
+    if (summary) summary.textContent = summaryLabel;
+
+    if (badge) {
+      badge.textContent = runningRows.length > 0 ? "PAINEL ATIVO" : "SEM PAINEL";
+      badge.className = `badge ${summaryClass}`;
+    }
+
+    if (runningCountEl) runningCountEl.textContent = String(runningRows.length);
+    if (pidCountEl) pidCountEl.textContent = String(totalPids);
+
+    grid.innerHTML = sortedRows
+      .map((row) => {
+        const status = String(row.service_status || "WAIT").toUpperCase();
+        const badgeClass = getPainelBadgeClass(status);
+        const hostName = row.host_name || row.host_id || "HOST";
+        const ldom = row.ldom || "N/A";
+        const hostTitle = ldom && ldom !== "N/A" ? `${hostName} / ${ldom}` : hostName;
+        const pidCount = row.pid_count || "0";
+        const pids = row.pids || "N/A";
+        const ip = row.ip_address || "N/A";
+        const message = row.message || "Sem mensagem operacional.";
+
+        return `
+          <article class="service-status-card service-status-card-${status.toLowerCase()} ${status === "RUNNING" ? "service-status-card-painel-running" : ""}">
+            <div class="service-status-card-header">
+              <div>
+                <div class="service-status-host">${hostTitle}</div>
+                <div class="service-status-pids">PID(s): ${pids}</div>
+              </div>
+              <span class="badge ${badgeClass}">${status}</span>
+            </div>
+
+            <div class="service-status-meta">
+              <span>IP: ${ip}</span>
+              <span>Qtd: ${pidCount}</span>
+              <span>Escopo: MULTI_ACTIVE</span>
+            </div>
+
+            <div class="service-status-message">${message}</div>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  async function loadPainelStatus() {
+    try {
+      const response = await fetch(`${PAINEL_SERVICE_STATUS_PATH}?t=${Date.now()}`, {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const text = await response.text();
+      const rows = parsePainelServiceStatusCsv(text);
+
+      renderPainelStatus(rows);
+
+      console.info(`[NEXUS] Painel service_status carregado: ${rows.length} registros`);
+    } catch (error) {
+      renderPainelStatus([]);
+      console.warn("[NEXUS] service_status.csv indisponível para aba Painel.", error);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadPainelStatus();
+    setInterval(loadPainelStatus, 30000);
   });
 })();

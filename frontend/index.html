@@ -46,6 +46,10 @@
         <span class="nav-label">Topologia</span>
       </a>
       </a>
+      <a href="#painel" data-view-link="painel">
+        <span class="nav-icon">▦</span>
+        <span class="nav-label">Painel</span>
+      </a>
       <a href="#alertas" data-view-link="alertas">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
         <span class="nav-label">Alertas</span>
@@ -914,15 +918,15 @@
     <div class="topology-hero">
       <div class="topology-hero-content">
         <span class="metric-label">TOPOLOGIA</span>
-        <h2>Serviços Prodix em execução</h2>
-        <p>Mapeamento operacional de serviços por máquina, LDOM e evidência de processo.</p>
+        <h2>EVTREPORT / CUTREPORT em execução</h2>
+        <p>Mapeamento operacional do serviço de geração de eventos por máquina, LDOM e evidência de processo.</p>
       </div>
     </div>
 
     <div class="topology-service-panel">
       <div class="topology-service-header">
         <div>
-          <span class="metric-label">SERVIÇO MONITORADO</span>
+          <span class="metric-label">EVTREPORT</span>
           <h3>evtreport / cutreport</h3>
           <p>Responsável pela geração da tabela de eventos consumida pelos supervisores/controladores.</p>
         </div>
@@ -930,6 +934,51 @@
       </div>
 
       <div id="service-status-grid" class="service-status-grid">
+        <div class="events-empty">Aguardando backend/data/runtime/service_status.csv</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="painel" class="view-panel painel-view-panel" data-view-panel="painel">
+  <div class="painel-container">
+    <div class="painel-hero">
+      <div class="painel-hero-content">
+        <span class="metric-label">PAINEL</span>
+        <h2>Painéis operacionais carregados</h2>
+        <p>Visão operacional dos painéis ALSTOM/Prodix disponíveis nas máquinas virtuais das Linhas 11 e 12.</p>
+      </div>
+    </div>
+
+    <div class="painel-summary-grid">
+      <div class="painel-summary-card">
+        <span class="metric-label">STATUS GERAL</span>
+        <strong id="painel-status-summary">AGUARDANDO</strong>
+      </div>
+
+      <div class="painel-summary-card">
+        <span class="metric-label">MÁQUINAS COM PAINEL</span>
+        <strong id="painel-running-count">0</strong>
+      </div>
+
+      <div class="painel-summary-card">
+        <span class="metric-label">PIDs DETECTADOS</span>
+        <strong id="painel-pid-count">0</strong>
+      </div>
+    </div>
+
+    <div class="topology-service-panel painel-service-panel">
+      <div class="topology-service-header">
+        <div>
+          <span class="metric-label">PROCESSOS MONITORADOS</span>
+          <h3>painel / painelcon / blinker / gmstimer</h3>
+          <p>Processos associados aos painéis visualizados pelos controladores do CCO.</p>
+        </div>
+        <span id="painel-service-badge" class="badge status-wait">AGUARDANDO</span>
+      </div>
+
+      <div id="painel-status-grid" class="service-status-grid">
         <div class="events-empty">Aguardando backend/data/runtime/service_status.csv</div>
       </div>
     </div>
