@@ -1,0 +1,4 @@
+host_id;host_name;ldom;access_method;gateway;target;output_file;enabled
+CPTM4_LDOM1;CPTM4;LDOM1;ssh;;cptm4;backend/data/runtime/prodix_ps/CPTM4_LDOM1.ps;false
+CPTM2_LDOM1;CPTM2;LDOM1;ssh_gateway_rsh;cptm4;cptm2;backend/data/runtime/prodix_ps/CPTM2_LDOM1.ps;false
+CPTM2_LDOM2;CPTM2;LDOM2;manual_rlogin;cptm4;cptm2;backend/data/runtime/prodix_ps/CPTM2_LDOM2.ps;false

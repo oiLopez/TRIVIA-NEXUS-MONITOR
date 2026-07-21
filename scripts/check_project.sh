@@ -223,6 +223,7 @@ check_files() {
         "ROADMAP.md"
         "VERSION"
         "backend/config/nexus_hosts.config"
+  "backend/config/prodix_remote_targets.sample.csv"
 	"backend/core/nexus_paths.sh"
 	"backend/core/nexus_csv.sh"
         "backend/core/nexus_db.sh"
@@ -231,13 +232,16 @@ check_files() {
         "backend/collectors/collector_operacao_auto.sh"
         "backend/collectors/collector_prodix_operational.sh"
         "backend/collectors/collector_prodix_service_status.sh"
+  "backend/collectors/collector_prodix_remote_ps_snapshot.sh"
   "backend/collectors/collector_service_status_events.sh"
         "backend/collectors/collector_rede_ab.sh"
         "backend/collectors/collector_virtualizacao.sh"
         "docs/arquitetura.md"
         "docs/padroes.md"
         "docs/inventario.md"
+  "docs/data-contract-prodix-remote-targets.md"
         "tools/validators/validate_inventory.sh"
+  "tools/validators/validate_prodix_remote_targets_config.sh"
     )
 
     local file

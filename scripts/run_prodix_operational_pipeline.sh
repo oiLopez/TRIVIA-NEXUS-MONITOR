@@ -27,6 +27,7 @@ echo "[NEXUS] Iniciando pipeline operacional Prodix..."
 
 echo
 echo "[NEXUS] 1/7 - Gerando raw snapshot Prodix"
+backend/collectors/collector_prodix_remote_ps_snapshot.sh
 backend/collectors/collector_prodix_raw_snapshot.sh
 
 echo
