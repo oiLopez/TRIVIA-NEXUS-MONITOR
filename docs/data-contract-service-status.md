@@ -80,6 +80,9 @@ service_status:
     STOPPED
     UNKNOWN
     WAIT
+    LOCKED
+    DUPLICATE
+    ERROR
 
 ## Segurança
 
@@ -118,3 +121,25 @@ A aba Topologia deve usar esse CSV para exibir:
 Exemplo:
 
     evtreport rodando em CPTM2 / LDOM1
+
+
+## Estados especiais para evtreport
+
+O serviço `evtreport` pode apresentar situações em que o script local informa que existe outra instância em execução.
+
+Exemplo observado:
+
+    Existe outra instancia em execucao de PID 29664
+
+Nesse caso, o NEXUS deve representar:
+
+    service_status=LOCKED
+    pid_count=1
+    pids=29664
+
+Esse estado indica que a máquina consultada reconhece uma instância já em execução, mas a topologia deve continuar verificando as demais máquinas para identificar a localização operacional real do serviço.
+
+Se o mesmo serviço for detectado como ativo em mais de uma máquina simultaneamente, o status agregado na Topologia deve indicar:
+
+    service_status=DUPLICATE
+

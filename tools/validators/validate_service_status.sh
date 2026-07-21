@@ -69,7 +69,7 @@ NF != 13 {
     errors++
   }
 
-  if (service_status !~ /^(RUNNING|STOPPED|UNKNOWN|WAIT)$/) {
+  if (service_status !~ /^(RUNNING|STOPPED|UNKNOWN|WAIT|LOCKED|DUPLICATE|ERROR)$/) {
     printf("[NEXUS][ERRO] Linha %d: service_status inválido: %s\n", NR, service_status) > "/dev/stderr"
     errors++
   }
@@ -79,12 +79,12 @@ NF != 13 {
     errors++
   }
 
-  if (service_status == "RUNNING" && pid_count == "0") {
+  if ((service_status == "RUNNING" || service_status == "LOCKED" || service_status == "DUPLICATE") && pid_count == "0") {
     printf("[NEXUS][ERRO] Linha %d: RUNNING com pid_count=0\n", NR) > "/dev/stderr"
     errors++
   }
 
-  if (service_status == "STOPPED" && pid_count != "0") {
+  if ((service_status == "STOPPED" || service_status == "WAIT") && pid_count != "0") {
     printf("[NEXUS][ERRO] Linha %d: STOPPED com pid_count diferente de 0: %s\n", NR, pid_count) > "/dev/stderr"
     errors++
   }

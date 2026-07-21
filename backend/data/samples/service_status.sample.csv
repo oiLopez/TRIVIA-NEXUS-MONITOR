@@ -1,3 +1,4 @@
 timestamp;host_id;host_name;host_type;ldom;ip_address;service_name;service_pattern;technical_comm;service_status;pid_count;pids;message
 2026-07-19 22:00:00;CPTM2_LDOM1;CPTM2;IHM;LDOM1;192.0.2.35;evtreport;evtreport;OK;RUNNING;1;1234;Servico evtreport ativo nesta maquina
 2026-07-19 22:00:00;CPTM2_LDOM2;CPTM2;IHM;LDOM2;192.0.2.35;evtreport;evtreport;OK;STOPPED;0;N/A;Servico evtreport nao encontrado nesta maquina
+2026-07-19 22:00:00;SFT1;SFT1;FIXED_SERVER;LDOM1;192.0.2.19;evtreport;evtreport;OK;LOCKED;1;29664;Existe outra instancia em execucao de PID 29664
