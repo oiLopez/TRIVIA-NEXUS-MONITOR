@@ -87,6 +87,41 @@ check_optional_file() {
 
 
 
+
+check_service_status() {
+    print_header "Validando service_status.csv"
+
+    local sample_file="backend/data/samples/service_status.sample.csv"
+    local runtime_file="backend/data/runtime/service_status.csv"
+    local validator="tools/validators/validate_service_status.sh"
+
+    if [[ ! -f "$validator" ]]; then
+        print_error "Validador não encontrado: $validator"
+        return 0
+    fi
+
+    if [[ -f "$sample_file" ]]; then
+        if bash "$validator" "$sample_file"; then
+            print_ok "Sample service_status validado."
+        else
+            print_error "Sample service_status apresentou erro(s)."
+        fi
+    else
+        print_error "Sample service_status não encontrado: $sample_file"
+    fi
+
+    if [[ -f "$runtime_file" ]]; then
+        if bash "$validator" "$runtime_file"; then
+            print_ok "Runtime service_status validado."
+        else
+            print_error "Runtime service_status apresentou erro(s)."
+        fi
+    else
+        print_warn "Runtime service_status não encontrado; validação local ignorada."
+    fi
+}
+
+
 check_public_repo_safety() {
     print_header "Validando segurança do repositório público"
 
@@ -444,4 +479,5 @@ check_prodix_process_snapshot() {
 check_operational_status
 check_prodix_assets_config
 check_prodix_process_snapshot
+check_service_status
 check_public_repo_safety
