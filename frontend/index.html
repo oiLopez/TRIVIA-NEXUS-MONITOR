@@ -41,7 +41,10 @@
       </a>
       <a href="#rede">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+      <a href="#topologia" data-view-link="topologia">
+        <span class="nav-icon">◎</span>
         <span class="nav-label">Topologia</span>
+      </a>
       </a>
       <a href="#alertas" data-view-link="alertas">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
@@ -905,7 +908,35 @@
   </div>
 </section>
 
-   <section id="alertas" class="view-panel events-view-panel" data-view-panel="alertas">
+   
+<section id="topologia" class="view-panel topology-view-panel" data-view-panel="topologia">
+  <div class="topology-container">
+    <div class="topology-hero">
+      <div class="topology-hero-content">
+        <span class="metric-label">TOPOLOGIA</span>
+        <h2>Serviços Prodix em execução</h2>
+        <p>Mapeamento operacional de serviços por máquina, LDOM e evidência de processo.</p>
+      </div>
+    </div>
+
+    <div class="topology-service-panel">
+      <div class="topology-service-header">
+        <div>
+          <span class="metric-label">SERVIÇO MONITORADO</span>
+          <h3>evtreport / cutreport</h3>
+          <p>Responsável pela geração da tabela de eventos consumida pelos supervisores/controladores.</p>
+        </div>
+        <span id="service-status-summary" class="badge status-wait">AGUARDANDO</span>
+      </div>
+
+      <div id="service-status-grid" class="service-status-grid">
+        <div class="events-empty">Aguardando backend/data/runtime/service_status.csv</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="alertas" class="view-panel events-view-panel" data-view-panel="alertas">
     <div class="events-panel">
       <div class="events-panel-header">
         <div>

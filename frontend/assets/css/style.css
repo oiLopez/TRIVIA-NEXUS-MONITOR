@@ -3478,3 +3478,164 @@ body {
   flex: 0 0 8px;
   border-radius: 999px;
 }
+/* ==========================================================================
+   Topologia - Serviços Prodix
+   ========================================================================== */
+
+.topology-view-panel {
+  width: 100%;
+}
+
+.topology-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.topology-service-panel {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 16px;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.topology-service-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.topology-service-header h3 {
+  margin: 0.25rem 0;
+}
+
+.topology-service-header p {
+  margin: 0;
+  opacity: 0.78;
+}
+
+.service-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.85rem;
+}
+
+.service-status-card {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 14px;
+  padding: 0.85rem;
+  background: rgba(2, 6, 23, 0.52);
+}
+
+.service-status-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.service-status-host {
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.service-status-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+  font-size: 0.78rem;
+  opacity: 0.84;
+}
+
+.service-status-message {
+  margin-top: 0.6rem;
+  font-size: 0.82rem;
+  opacity: 0.86;
+}
+
+.service-status-pids {
+  font-family: monospace;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.service-status-card-wait {
+  opacity: 0.68;
+}
+
+.service-status-card-running {
+  border-color: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.08);
+}
+
+.service-status-card-locked {
+  border-color: rgba(245, 158, 11, 0.55);
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.08);
+}
+
+.service-status-card-duplicate,
+.service-status-card-error {
+  border-color: rgba(239, 68, 68, 0.62);
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.1);
+}
+
+/* ==========================================================================
+   Topologia - Hero / Cabeçalho
+   ========================================================================== */
+
+.topology-view-panel {
+  padding: 1.25rem clamp(1rem, 2vw, 1.75rem);
+}
+
+.topology-container {
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+.topology-hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 118px;
+  padding: 1.35rem 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.10), transparent 42%),
+    rgba(2, 6, 23, 0.46);
+}
+
+.topology-hero-content {
+  max-width: 820px;
+  text-align: center;
+}
+
+.topology-hero .metric-label {
+  display: inline-flex;
+  justify-content: center;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.22em;
+}
+
+.topology-hero h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2vw, 2.15rem);
+  line-height: 1.12;
+}
+
+.topology-hero p {
+  margin: 0.55rem auto 0;
+  max-width: 760px;
+  color: rgba(203, 213, 225, 0.88);
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+.topology-service-panel {
+  margin-top: 0;
+}

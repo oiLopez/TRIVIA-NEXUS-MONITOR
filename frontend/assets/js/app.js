@@ -107,6 +107,10 @@ function getViewFromHash() {
     return "servidores";
   }
 
+  if (hash === "topologia") {
+    return "topologia";
+  }
+
   return "dashboard";
 }
 
@@ -1354,4 +1358,213 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
   } catch (error) {
     console.error("[NEXUS] Falha ao aplicar correção segura de badges operacionais", error);
   }
+})();
+
+/* ==========================================================================
+ * NEXUS - Service Status / Topologia
+ * ========================================================================== */
+
+(() => {
+  const SERVICE_STATUS_PATH = "../backend/data/runtime/service_status.csv";
+
+  function parseServiceStatusCsv(text) {
+    const lines = String(text || "")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#"));
+
+    if (lines.length < 2) {
+      return [];
+    }
+
+    const headers = lines[0].split(";").map((header) => header.trim());
+
+    return lines.slice(1).map((line) => {
+      const values = line.split(";");
+      const row = {};
+
+      headers.forEach((header, index) => {
+        row[header] = (values[index] || "").trim();
+      });
+
+      return row;
+    });
+  }
+
+  function getServiceBadgeClass(status) {
+    const normalized = String(status || "WAIT").toUpperCase();
+
+    if (normalized === "RUNNING") {
+      return "status-ok";
+    }
+
+    if (normalized === "LOCKED") {
+      return "status-warn";
+    }
+
+    if (normalized === "DUPLICATE" || normalized === "ERROR") {
+      return "status-crit";
+    }
+
+    if (normalized === "STOPPED") {
+      return "status-standby";
+    }
+
+    return "status-wait";
+  }
+
+  function getServiceSummary(rows) {
+    if (!rows.length) {
+      return {
+        label: "AGUARDANDO",
+        className: "status-wait",
+      };
+    }
+
+    const hasDuplicate = rows.some((row) => String(row.service_status || "").toUpperCase() === "DUPLICATE");
+    const hasRunning = rows.some((row) => String(row.service_status || "").toUpperCase() === "RUNNING");
+    const hasLocked = rows.some((row) => String(row.service_status || "").toUpperCase() === "LOCKED");
+
+    if (hasDuplicate) {
+      return {
+        label: "DUPLICADO",
+        className: "status-crit",
+      };
+    }
+
+    if (hasRunning) {
+      const runningRow = rows.find((row) => String(row.service_status || "").toUpperCase() === "RUNNING");
+      return {
+        label: `RODANDO EM ${runningRow.host_name || runningRow.host_id || "HOST"}`,
+        className: "status-ok",
+      };
+    }
+
+    if (hasLocked) {
+      return {
+        label: "INSTÂNCIA EXISTENTE",
+        className: "status-warn",
+      };
+    }
+
+    return {
+      label: "NÃO LOCALIZADO",
+      className: "status-wait",
+    };
+  }
+
+  function renderServiceStatus(rows) {
+    const grid = document.getElementById("service-status-grid");
+    const summary = document.getElementById("service-status-summary");
+
+    if (!grid) {
+      return;
+    }
+
+    if (!rows.length) {
+      grid.innerHTML = '<div class="events-empty">Aguardando backend/data/runtime/service_status.csv</div>';
+
+      if (summary) {
+        summary.textContent = "AGUARDANDO";
+        summary.className = "badge status-wait";
+      }
+
+      return;
+    }
+
+    const summaryState = getServiceSummary(rows);
+
+    if (summary) {
+      summary.textContent = summaryState.label;
+      summary.className = `badge ${summaryState.className}`;
+    }
+
+    const statusPriority = {
+      DUPLICATE: 0,
+      ERROR: 1,
+      RUNNING: 2,
+      LOCKED: 3,
+      STOPPED: 4,
+      UNKNOWN: 5,
+      WAIT: 6,
+    };
+
+    const sortedRows = [...rows].sort((a, b) => {
+      const statusA = String(a.service_status || "WAIT").toUpperCase();
+      const statusB = String(b.service_status || "WAIT").toUpperCase();
+
+      const priorityA = statusPriority[statusA] ?? 99;
+      const priorityB = statusPriority[statusB] ?? 99;
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      return String(a.host_id || "").localeCompare(String(b.host_id || ""));
+    });
+
+    grid.innerHTML = sortedRows
+      .map((row) => {
+        const status = String(row.service_status || "WAIT").toUpperCase();
+        const badgeClass = getServiceBadgeClass(status);
+        const hostName = row.host_name || row.host_id || "HOST";
+        const ldom = row.ldom || "N/A";
+        const hostTitle = ldom && ldom !== "N/A" ? `${hostName} / ${ldom}` : hostName;
+        const pidCount = row.pid_count || "0";
+        const pids = row.pids || "N/A";
+        const ip = row.ip_address || "N/A";
+        const message = row.message || "Sem mensagem operacional.";
+
+        return `
+          <article class="service-status-card service-status-card-${status.toLowerCase()}">
+            <div class="service-status-card-header">
+              <div>
+                <div class="service-status-host">${hostTitle}</div>
+                <div class="service-status-pids">PID(s): ${pids}</div>
+              </div>
+              <span class="badge ${badgeClass}">${status}</span>
+            </div>
+
+            <div class="service-status-meta">
+              <span>LDOM: ${ldom}</span>
+              <span>IP: ${ip}</span>
+              <span>Qtd: ${pidCount}</span>
+            </div>
+
+            <div class="service-status-message">${message}</div>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  async function loadServiceStatus() {
+    try {
+      const response = await fetch(`${SERVICE_STATUS_PATH}?t=${Date.now()}`, {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const text = await response.text();
+      const rows = parseServiceStatusCsv(text);
+
+      window.NEXUS_SERVICE_STATUS = rows;
+      renderServiceStatus(rows);
+
+      console.info(`[NEXUS] service_status.csv carregado: ${rows.length} registros`);
+    } catch (error) {
+      window.NEXUS_SERVICE_STATUS = [];
+      renderServiceStatus([]);
+
+      console.warn("[NEXUS] service_status.csv indisponível. Mantendo Topologia em WAIT.", error);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadServiceStatus();
+    setInterval(loadServiceStatus, 30000);
+  });
 })();
