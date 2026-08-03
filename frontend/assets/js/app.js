@@ -2160,3 +2160,244 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
 
   setInterval(syncDashboardWsMirror, 3000);
 })();
+
+
+/* NEXUS_DASHBOARD_SERVICE_BINDING_V01_START
+ * Liga o service_status.csv ao Dashboard SCADA.
+ * Objetivo: usar o mesmo dado da aba Painel para atualizar os badges PAINEL ON/OFF
+ * dentro dos cards de Aplicação Prodix.
+ */
+(function initDashboardServiceStatusBindingV01() {
+  const SERVICE_STATUS_PATH = "../backend/data/runtime/service_status.csv";
+  const REFRESH_MS = 15000;
+
+  function parseCsvLine(line, delimiter = ";") {
+    const values = [];
+    let current = "";
+    let inQuotes = false;
+
+    for (let index = 0; index < line.length; index += 1) {
+      const char = line[index];
+      const next = line[index + 1];
+
+      if (char === '"' && next === '"') {
+        current += '"';
+        index += 1;
+        continue;
+      }
+
+      if (char === '"') {
+        inQuotes = !inQuotes;
+        continue;
+      }
+
+      if (char === delimiter && !inQuotes) {
+        values.push(current.trim());
+        current = "";
+        continue;
+      }
+
+      current += char;
+    }
+
+    values.push(current.trim());
+    return values;
+  }
+
+  function parseServiceStatusCsv(csvText) {
+    const lines = String(csvText || "")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length < 2) {
+      return [];
+    }
+
+    const headers = parseCsvLine(lines[0]).map((header) => header.trim());
+
+    return lines.slice(1).map((line) => {
+      const values = parseCsvLine(line);
+      return headers.reduce((row, header, index) => {
+        row[header] = values[index] || "";
+        return row;
+      }, {});
+    });
+  }
+
+  function normalize(value) {
+    return String(value || "").trim().toUpperCase();
+  }
+
+  function getDashboardAppCards() {
+    return Array.from(document.querySelectorAll("#dashboard .map-prodix-layer"));
+  }
+
+  function getAppName(card) {
+    const title = card.querySelector("h4");
+    return normalize(title?.textContent);
+  }
+
+  function getCardLdom(card) {
+    const operationalBadge = card.querySelector(".map-prodix-actions .badge[id]");
+    const id = operationalBadge?.id || "";
+
+    if (id.endsWith("-ldom1")) {
+      return "LDOM1";
+    }
+
+    if (id.endsWith("-ldom2")) {
+      return "LDOM2";
+    }
+
+    return "";
+  }
+
+  function isPainelRow(row) {
+    const serviceName = normalize(row.service_name);
+    const pattern = normalize(row.service_pattern);
+    const message = normalize(row.message);
+
+    return (
+      serviceName === "PAINEL" ||
+      serviceName.includes("PAINEL") ||
+      pattern.includes("PAINEL") ||
+      pattern.includes("PAINELCON") ||
+      message.includes("PAINEL")
+    );
+  }
+
+  function rowMatchesCard(row, appName, ldom) {
+    const rowLdom = normalize(row.ldom);
+    const haystack = [
+      row.host_id,
+      row.host_name,
+      row.asset_id,
+      row.logical_asset_id,
+      row.service_name,
+      row.service_pattern,
+      row.message,
+    ]
+      .map(normalize)
+      .join(" ");
+
+    const ldomMatches = !ldom || !rowLdom || rowLdom === ldom;
+    const appMatches = appName && haystack.includes(appName);
+
+    return ldomMatches && appMatches;
+  }
+
+  function getPanelRenderState(row) {
+    if (!row) {
+      return {
+        text: "WAIT",
+        className: "map-panel-on panel-wait",
+        title: "Aguardando backend/data/runtime/service_status.csv",
+      };
+    }
+
+    const serviceStatus = normalize(row.service_status);
+    const technicalComm = normalize(row.technical_comm);
+    const message = row.message || "";
+
+    if (serviceStatus === "RUNNING") {
+      return {
+        text: "PAINEL ON",
+        className: "map-panel-on panel-running",
+        title: message || "Painel em execução",
+      };
+    }
+
+    if (serviceStatus === "STOPPED") {
+      return {
+        text: "PAINEL OFF",
+        className: "map-panel-on panel-stopped",
+        title: message || "Painel parado",
+      };
+    }
+
+    if (serviceStatus === "DUPLICATE") {
+      return {
+        text: "DUPLICADO",
+        className: "map-panel-on panel-duplicate",
+        title: message || "Mais de uma instância detectada",
+      };
+    }
+
+    if (serviceStatus === "LOCKED") {
+      return {
+        text: "LOCKED",
+        className: "map-panel-on panel-locked",
+        title: message || "Serviço bloqueado",
+      };
+    }
+
+    if (serviceStatus === "ERROR" || technicalComm === "CRIT") {
+      return {
+        text: "ERRO",
+        className: "map-panel-on panel-error",
+        title: message || "Erro na leitura do serviço",
+      };
+    }
+
+    return {
+      text: serviceStatus || "WAIT",
+      className: "map-panel-on panel-wait",
+      title: message || "Aguardando estado do painel",
+    };
+  }
+
+  function renderDashboardPanelStatus(rows) {
+    const painelRows = rows.filter(isPainelRow);
+    const cards = getDashboardAppCards();
+
+    cards.forEach((card) => {
+      const appName = getAppName(card);
+      const ldom = getCardLdom(card);
+      const panelBadge = card.querySelector(".map-panel-on");
+
+      if (!panelBadge) {
+        return;
+      }
+
+      const row = painelRows.find((candidate) => rowMatchesCard(candidate, appName, ldom));
+      const state = getPanelRenderState(row);
+
+      panelBadge.textContent = state.text;
+      panelBadge.className = state.className;
+      panelBadge.title = state.title;
+    });
+  }
+
+  async function loadDashboardPanelStatus() {
+    try {
+      const response = await fetch(`${SERVICE_STATUS_PATH}?t=${Date.now()}`, {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const csvText = await response.text();
+      const rows = parseServiceStatusCsv(csvText);
+
+      renderDashboardPanelStatus(rows);
+    } catch (error) {
+      renderDashboardPanelStatus([]);
+      console.warn("[NEXUS] service_status.csv indisponível para Dashboard.", error);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadDashboardPanelStatus();
+    setInterval(loadDashboardPanelStatus, REFRESH_MS);
+  });
+
+  window.addEventListener("hashchange", () => {
+    if (window.location.hash === "#dashboard" || !window.location.hash) {
+      loadDashboardPanelStatus();
+    }
+  });
+})();
+/* NEXUS_DASHBOARD_SERVICE_BINDING_V01_END */

@@ -6565,3 +6565,47 @@ body {
   }
 }
 /* NEXUS_DASHBOARD_SUMMARY_LOGO_SIZE_V25_END */
+
+
+/* NEXUS_DASHBOARD_SERVICE_BINDING_V01_START
+   Estados reais do painel Prodix no Dashboard.
+*/
+
+#dashboard .map-panel-on {
+  min-width: 84px !important;
+  min-height: 25px !important;
+  padding: 4px 9px !important;
+  border-radius: 999px !important;
+  font-size: 0.66rem !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.03em !important;
+  text-transform: uppercase !important;
+}
+
+#dashboard .map-panel-on.panel-running {
+  border: 1px solid rgba(16, 185, 129, 0.48) !important;
+  background: rgba(16, 185, 129, 0.22) !important;
+  color: #34d399 !important;
+}
+
+#dashboard .map-panel-on.panel-stopped,
+#dashboard .map-panel-on.panel-error {
+  border: 1px solid rgba(239, 68, 68, 0.48) !important;
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #f87171 !important;
+}
+
+#dashboard .map-panel-on.panel-duplicate,
+#dashboard .map-panel-on.panel-locked {
+  border: 1px solid rgba(245, 158, 11, 0.50) !important;
+  background: rgba(245, 158, 11, 0.18) !important;
+  color: #fbbf24 !important;
+}
+
+#dashboard .map-panel-on.panel-wait {
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+  background: rgba(51, 65, 85, 0.58) !important;
+  color: #cbd5e1 !important;
+}
+/* NEXUS_DASHBOARD_SERVICE_BINDING_V01_END */
