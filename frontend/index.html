@@ -39,7 +39,7 @@
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
         <span class="nav-label">Servidores</span>
       </a>
-      
+
       <a href="#topologia" data-view-link="topologia">
         <span class="nav-icon">◎</span>
         <span class="nav-label">Topologia</span>
@@ -58,9 +58,12 @@
 
   <main class="main-content">
     <header class="dashboard-header">
-      <div class="header-info">
-        <h2>Painel de Alta Disponibilidade</h2>
-        <p>Monitoramento em tempo real das linhas 11 Coral e 12 Safira</p>
+      <div class="header-info nexus-header-brand">
+        <img src="./assets/img/Logo-trivia-branco.png" alt="TRIVIATRENS" class="nexus-header-logo">
+        <div class="nexus-header-title-text">
+          <h2>Painel de Alta Disponibilidade</h2>
+          <p>Monitoramento em tempo real das linhas 11 Coral e 12 Safira</p>
+        </div>
       </div>
       <div class="header-actions">
         <div class="data-freshness-widget data-freshness-wait" id="data-freshness-widget">
@@ -75,381 +78,634 @@
       </div>
     </header>
 
-    <section id="dashboard" class="view-panel active" data-view-panel="dashboard">
-  <div class="dashboard-container">
-    <div class="ha-cluster-layout">
-    <div class="site-column">
-      <div class="node-hardware-premium">
-        <div class="hardware-main-header">
-          <div class="node-title">
-            ILOM 1 (Hardware)
-            <span class="ip-tag">192.0.2.13</span>
-            <span id="up-ilom1" class="uptime-tag"></span>
-          </div>
-          <span id="status-ilom1" class="badge status-wait">Wait</span>
-        </div>
+            <section id="dashboard" class="view-panel active" data-view-panel="dashboard">
+      <div class="dashboard-container map-dashboard-container">
+        <div class="map-summary-row">
+          <article class="map-summary-card map-summary-health">
+            <span class="metric-label">DISPONIBILIDADE DO</span>
+            <strong>SISTEMA</strong>
+            <div class="map-summary-value" id="global-health-percentage">98.4%</div>
+            <div class="progress-bar-linear">
+              <div class="progress-fill" style="width: 98.4%"></div>
+            </div>
+          </article>
 
-        <div class="ilom-telemetry-grid">
-          <div class="tel-item">
-            <span>Ventoinhas</span>
-            <strong id="ilom1-fans">--</strong>
+                    <div class="map-summary-center-logo" aria-label="TRIVIATRENS">
+            <img src="./assets/img/Logo-trivia-branco.png" alt="TRIVIATRENS">
           </div>
-          <div class="tel-item">
-            <span>Temperatura</span>
-            <strong id="ilom1-temp">--</strong>
-          </div>
-          <div class="tel-item">
-            <span>Power Supply</span>
-            <strong id="ilom1-psu">--</strong>
-          </div>
-          <div class="tel-item">
-            <span>Refrigeração</span>
-            <strong id="ilom1-cooling">--</strong>
-          </div>
-        </div>
-      </div>
 
-      <div class="node-control">
-        <div class="node-title">
-          Control Domain 1
-          <span class="ip-tag">192.0.2.11</span>
-          <span id="up-control1" class="uptime-tag"></span>
-        </div>
-        <span id="status-control1" class="badge status-wait">Wait</span>
-      </div>
+<article class="map-summary-card map-summary-alarms">
+            <span class="metric-label">PAINEL RESUMIDO DE</span>
+            <strong>ALARMES ATIVOS</strong>
 
-      <div class="node-ldom border-safira">
-        <div class="ldom-main-header">
-          <div class="node-title">
-            LDOM 1 (Virtualização)
-            <span class="ip-tag">192.0.2.15</span>
-            <span id="up-ldom1" class="uptime-tag"></span>
-          </div>
-          <span id="status-ldom1" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="zone-divider">SERVIDORES (FIXOS)</div>
-
-        <div class="fixed-zones">
-          <div class="card-mini server-fixed-card">
-            <div class="server-fixed-info">
-              <div class="server-fixed-title">
-                <span class="server-fixed-name">SFT1</span>
-                <span id="up-sft1-ldom1" class="uptime-tag"></span>
+            <div class="map-alarm-grid">
+              <div class="alarm-box critico">
+                <span class="alarm-count" id="count-crit">0</span>
+                <span class="alarm-tag">CRÍTICO</span>
               </div>
-              <span class="server-fixed-ip">192.0.2.19</span>
-            </div>
 
-            <div class="server-fixed-meta">
-              <span id="role-sft1-ldom1" class="server-role-badge server-role-active">Ativo</span>
-              <span id="sft1-ldom1" class="badge status-wait">Wait</span>
-            </div>
-          </div>
-
-          <div class="card-mini server-fixed-card">
-            <div class="server-fixed-info">
-              <div class="server-fixed-title">
-                <span class="server-fixed-name">METROSP44</span>
-                <span id="up-metrosp44-ldom1" class="uptime-tag"></span>
+              <div class="alarm-box alto">
+                <span class="alarm-count" id="count-alto">0</span>
+                <span class="alarm-tag">ALTO</span>
               </div>
-              <span class="server-fixed-ip">192.0.2.23</span>
-            </div>
 
-            <div class="server-fixed-meta">
-              <span id="role-metrosp44-ldom1" class="server-role-badge server-role-active">Ativo</span>
-              <span id="metrosp44-ldom1" class="badge status-wait">Wait</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="zone-divider">CONSOLAS (MÓVEIS)</div>
-
-        <div class="mobile-zones-grid">
-          <div class="mz-item">
-            <span>CPTM1 (CONA) <span id="up-cptm1-ldom1" class="uptime-tag"></span></span>
-            <span id="cptm1-ldom1" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CPTM2 (CONB) <span id="up-cptm2-ldom1" class="uptime-tag"></span></span>
-            <span id="cptm2-ldom1" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CPTM3 (CONC) <span id="up-cptm3-ldom1" class="uptime-tag"></span></span>
-            <span id="cptm3-ldom1" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CPTM4 (Manut) <span id="up-cptm4-ldom1" class="uptime-tag"></span></span>
-            <span id="cptm4-ldom1" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>SME3 (Eng) <span id="up-sme3-ldom1" class="uptime-tag"></span></span>
-            <span id="sme3-ldom1" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CONS1 (Ebilock) <span id="up-cons1-ldom1" class="uptime-tag"></span></span>
-            <span id="cons1-ldom1" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CONS5 (Micro) <span id="up-cons5-ldom1" class="uptime-tag"></span></span>
-            <span id="cons5-ldom1" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CPTM12 (CONS) <span id="up-cptm12-ldom1" class="uptime-tag"></span></span>
-            <span id="cptm12-ldom1" class="badge status-wait">Wait</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ha-divider">
-      <div class="ha-line"></div>
-      <div class="ha-badge">HA SYNC</div>
-      <div class="ha-line"></div>
-    </div>
-
-    <div class="site-column">
-      <div class="node-hardware-premium">
-        <div class="hardware-main-header">
-          <div class="node-title">
-            ILOM 2 (Hardware)
-            <span class="ip-tag">192.0.2.14</span>
-            <span id="up-ilom2" class="uptime-tag"></span>
-          </div>
-          <span id="status-ilom2" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="ilom-telemetry-grid">
-          <div class="tel-item">
-            <span>Ventoinhas</span>
-            <strong id="ilom2-fans">--</strong>
-          </div>
-          <div class="tel-item">
-            <span>Temperatura</span>
-            <strong id="ilom2-temp">--</strong>
-          </div>
-          <div class="tel-item">
-            <span>Power Supply</span>
-            <strong id="ilom2-psu">--</strong>
-          </div>
-          <div class="tel-item">
-            <span>Refrigeração</span>
-            <strong id="ilom2-cooling">--</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="node-control">
-        <div class="node-title">
-          Control Domain 2
-          <span class="ip-tag">192.0.2.12</span>
-          <span id="up-control2" class="uptime-tag"></span>
-        </div>
-        <span id="status-control2" class="badge status-wait">Wait</span>
-      </div>
-
-      <div class="node-ldom border-coral">
-        <div class="ldom-main-header">
-          <div class="node-title">
-            LDOM 2 (Virtualização)
-            <span class="ip-tag">192.0.2.17</span>
-            <span id="up-ldom2" class="uptime-tag"></span>
-          </div>
-          <span id="status-ldom2" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="zone-divider">SERVIDORES (FIXOS)</div>
-
-        <div class="fixed-zones">
-          <div class="card-mini server-fixed-card">
-            <div class="server-fixed-info">
-              <div class="server-fixed-title">
-                <span class="server-fixed-name">SFT2</span>
-                <span id="up-sft2-ldom2" class="uptime-tag"></span>
+              <div class="alarm-box medio">
+                <span class="alarm-count" id="count-medio">0</span>
+                <span class="alarm-tag">MÉDIO</span>
               </div>
-              <span class="server-fixed-ip">192.0.2.21</span>
-            </div>
 
-            <div class="server-fixed-meta">
-              <span id="role-sft2-ldom2" class="server-role-badge server-role-standby">Standby</span>
-              <span id="sft2-ldom2" class="badge status-wait">Wait</span>
-            </div>
-          </div>
-
-          <div class="card-mini server-fixed-card">
-            <div class="server-fixed-info">
-              <div class="server-fixed-title">
-                <span class="server-fixed-name">METROSP45</span>
-                <span id="up-metrosp45-ldom2" class="uptime-tag"></span>
+              <div class="alarm-box info">
+                <span class="alarm-count" id="count-info">0</span>
+                <span class="alarm-tag">INFO</span>
               </div>
-              <span class="server-fixed-ip">192.0.2.25</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="map-ha-stack">
+
+          <section class="map-ha-row map-row-safira">
+            <div class="map-ilom-frame">
+            <div class="map-ilom-layer">
+              <div class="map-layer-info">
+                <span class="map-info-chip map-ip-value">IP 192.0.2.13</span>
+                <span class="map-info-chip map-uptime-value"><span id="up-ilom1" class="uptime-tag">--</span></span>
+              </div>
+
+              <strong>ILOM 1</strong>
+
+              <span id="status-ilom1" class="badge status-wait">WAIT</span>
             </div>
 
-            <div class="server-fixed-meta">
-              <span id="role-metrosp45-ldom2" class="server-role-badge server-role-standby">Standby</span>
-              <span id="metrosp45-ldom2" class="badge status-wait">Wait</span>
+            <div class="map-control-layer">
+              <div class="map-control-head">
+                <div class="map-layer-info">
+                  <span class="map-info-chip map-ip-value">IP 192.0.2.15</span>
+                  <span class="map-info-chip map-uptime-value"><span id="up-control1" class="uptime-tag">--</span></span>
+                </div>
+
+                <strong>CONTROL DOMAIN 1</strong>
+
+                <div class="map-layer-info">
+                  <span id="status-control1" class="badge status-wait">WAIT</span>
+                </div>
+              </div>
+
+              <div class="map-ldom-layer">
+                <div class="map-ldom-head">
+                  <div class="map-layer-info">
+                    <span class="map-info-chip map-ip-value">IP 192.0.2.19</span>
+                    <span class="map-info-chip map-uptime-value"><span id="up-ldom1" class="uptime-tag">--</span></span>
+                  </div>
+
+                  <strong>LDOM 1</strong>
+
+                  <div class="map-layer-info">
+                    <span id="status-ldom1" class="badge status-wait">WAIT</span>
+                  </div>
+                </div>
+
+                <div class="map-floor">
+                  <aside class="map-fixed-card">
+                    <span class="map-section-label">SERVIDORES</span>
+
+                    <article class="map-fixed-server-card">
+                      <div class="map-fixed-server-head">
+                        <strong>SFT1</strong>
+                </div>
+
+                      <div class="map-fixed-server-meta">
+                        <span class="map-info-chip map-uptime-value"><span id="up-sft1-ldom1" class="uptime-tag">--</span></span>
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.19</span>
+                      </div>
+
+                      <div class="map-status-pair">
+                        <span id="role-sft1-ldom1" class="server-role-badge server-role-standby">STANDBY</span>
+                        <span id="sft1-ldom1" class="badge status-wait">WAIT</span>
+                      </div>
+                    </article>
+                    <article class="map-fixed-server-card">
+                      <div class="map-fixed-server-head">
+                        <strong>METROSP44</strong>
+                </div>
+
+                      <div class="map-fixed-server-meta">
+                        <span class="map-info-chip map-uptime-value"><span id="up-metrosp44-ldom1" class="uptime-tag">--</span></span>
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.23</span>
+                      </div>
+
+                      <div class="map-status-pair">
+                        <span id="role-metrosp44-ldom1" class="server-role-badge server-role-standby">STANDBY</span>
+                        <span id="metrosp44-ldom1" class="badge status-wait">WAIT</span>
+                      </div>
+                    </article>
+                  </aside>
+
+                  <div class="map-app-grid">
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS24</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="up-ws24" class="uptime-tag">--</span></span>
+                        <span id="status-ws24" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CPTM2</h4>
+                      <p>CONB L-12</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.35</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cptm2-ldom1" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cptm2-ldom1" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS22</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="up-ws22" class="uptime-tag">--</span></span>
+                        <span id="status-ws22" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CPTM12</h4>
+                      <p>CONS L-11 EXT</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.41</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cptm12-ldom1" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cptm12-ldom1" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS23</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="up-ws23" class="uptime-tag">--</span></span>
+                        <span id="status-ws23" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CPTM1</h4>
+                      <p>CONA L-11 EXP</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.33</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cptm1-ldom1" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cptm1-ldom1" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS25</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="up-ws25" class="uptime-tag">--</span></span>
+                        <span id="status-ws25" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CPTM3</h4>
+                      <p>CONC CAB. ROTAS</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.37</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cptm3-ldom1" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cptm3-ldom1" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS12</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="up-ws12" class="uptime-tag">--</span></span>
+                        <span id="status-ws12" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CONS1</h4>
+                      <p>EBILOCK - BAS-LUZ</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.29</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cons1-ldom1" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cons1-ldom1" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS13</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="up-ws13" class="uptime-tag">--</span></span>
+                        <span id="status-ws13" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CONS5</h4>
+                      <p>MICROLOCK - BFU</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.31</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cons5-ldom1" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cons5-ldom1" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card map-ws21-card">
+                    <span class="map-maintenance-badge">MANUTENÇÃO</span>
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS21</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="up-ws21" class="uptime-tag">--</span></span>
+                        <span id="status-ws21" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>SME3</h4>
+                      <p>Console de engenharia</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.27</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-sme3-ldom1" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="sme3-ldom1" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+            </div>
+          </section>
 
-        <div class="zone-divider">CONSOLAS (MÓVEIS)</div>
+          <section class="map-ha-row map-row-coral">
+            <div class="map-ilom-frame">
+            <div class="map-ilom-layer">
+              <div class="map-layer-info">
+                <span class="map-info-chip map-ip-value">IP 192.0.2.13</span>
+                <span class="map-info-chip map-uptime-value"><span id="up-ilom2" class="uptime-tag">--</span></span>
+              </div>
 
-        <div class="mobile-zones-grid">
-          <div class="mz-item">
-            <span>CPTM1 (CONA) <span id="up-cptm1-ldom2" class="uptime-tag"></span></span>
-            <span id="cptm1-ldom2" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CPTM2 (CONB) <span id="up-cptm2-ldom2" class="uptime-tag"></span></span>
-            <span id="cptm2-ldom2" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CPTM3 (CONC) <span id="up-cptm3-ldom2" class="uptime-tag"></span></span>
-            <span id="cptm3-ldom2" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CPTM4 (Manut) <span id="up-cptm4-ldom2" class="uptime-tag"></span></span>
-            <span id="cptm4-ldom2" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>SME3 (Eng) <span id="up-sme3-ldom2" class="uptime-tag"></span></span>
-            <span id="sme3-ldom2" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CONS1 (Ebilock) <span id="up-cons1-ldom2" class="uptime-tag"></span></span>
-            <span id="cons1-ldom2" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CONS5 (Micro) <span id="up-cons5-ldom2" class="uptime-tag"></span></span>
-            <span id="cons5-ldom2" class="badge status-wait">Wait</span>
-          </div>
-          <div class="mz-item">
-            <span>CPTM12 (CONS) <span id="up-cptm12-ldom2" class="uptime-tag"></span></span>
-            <span id="cptm12-ldom2" class="badge status-wait">Wait</span>
-          </div>
+              <strong>ILOM 2</strong>
+
+              <span id="status-ilom2" class="badge status-wait">WAIT</span>
+            </div>
+
+            <div class="map-control-layer">
+              <div class="map-control-head">
+                <div class="map-layer-info">
+                  <span class="map-info-chip map-ip-value">IP 192.0.2.15</span>
+                  <span class="map-info-chip map-uptime-value"><span id="up-control2" class="uptime-tag">--</span></span>
+                </div>
+
+                <strong>CONTROL DOMAIN 2</strong>
+
+                <div class="map-layer-info">
+                  <span id="status-control2" class="badge status-wait">WAIT</span>
+                </div>
+              </div>
+
+              <div class="map-ldom-layer">
+                <div class="map-ldom-head">
+                  <div class="map-layer-info">
+                    <span class="map-info-chip map-ip-value">IP 192.0.2.21</span>
+                    <span class="map-info-chip map-uptime-value"><span id="up-ldom2" class="uptime-tag">--</span></span>
+                  </div>
+
+                  <strong>LDOM 2</strong>
+
+                  <div class="map-layer-info">
+                    <span id="status-ldom2" class="badge status-wait">WAIT</span>
+                  </div>
+                </div>
+
+                <div class="map-floor">
+                  <aside class="map-fixed-card">
+                    <span class="map-section-label">SERVIDORES</span>
+
+                    <article class="map-fixed-server-card">
+                      <div class="map-fixed-server-head">
+                        <strong>SFT2</strong>
+                </div>
+
+                      <div class="map-fixed-server-meta">
+                        <span class="map-info-chip map-uptime-value"><span id="up-sft2-ldom2" class="uptime-tag">--</span></span>
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.21</span>
+                      </div>
+
+                      <div class="map-status-pair">
+                        <span id="role-sft2-ldom2" class="server-role-badge server-role-standby">STANDBY</span>
+                        <span id="sft2-ldom2" class="badge status-wait">WAIT</span>
+                      </div>
+                    </article>
+                    <article class="map-fixed-server-card">
+                      <div class="map-fixed-server-head">
+                        <strong>METROSP45</strong>
+                </div>
+
+                      <div class="map-fixed-server-meta">
+                        <span class="map-info-chip map-uptime-value"><span id="up-metrosp45-ldom2" class="uptime-tag">--</span></span>
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.25</span>
+                      </div>
+
+                      <div class="map-status-pair">
+                        <span id="role-metrosp45-ldom2" class="server-role-badge server-role-standby">STANDBY</span>
+                        <span id="metrosp45-ldom2" class="badge status-wait">WAIT</span>
+                      </div>
+                    </article>
+                  </aside>
+
+                  <div class="map-app-grid">
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS24</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="map-up-ws24-ldom2" class="uptime-tag">--</span></span>
+                        <span id="map-status-ws24-ldom2" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CPTM2</h4>
+                      <p>CONB L-12</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.35</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cptm2-ldom2" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cptm2-ldom2" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS22</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="map-up-ws22-ldom2" class="uptime-tag">--</span></span>
+                        <span id="map-status-ws22-ldom2" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CPTM12</h4>
+                      <p>CONS L-11 EXT</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.41</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cptm12-ldom2" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cptm12-ldom2" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS23</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="map-up-ws23-ldom2" class="uptime-tag">--</span></span>
+                        <span id="map-status-ws23-ldom2" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CPTM1</h4>
+                      <p>CONA L-11 EXP</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.33</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cptm1-ldom2" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cptm1-ldom2" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS25</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="map-up-ws25-ldom2" class="uptime-tag">--</span></span>
+                        <span id="map-status-ws25-ldom2" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CPTM3</h4>
+                      <p>CONC CAB. ROTAS</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.37</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cptm3-ldom2" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cptm3-ldom2" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS12</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="map-up-ws12-ldom2" class="uptime-tag">--</span></span>
+                        <span id="map-status-ws12-ldom2" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CONS1</h4>
+                      <p>EBILOCK - BAS-LUZ</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.29</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cons1-ldom2" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cons1-ldom2" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card">
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS13</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="map-up-ws13-ldom2" class="uptime-tag">--</span></span>
+                        <span id="map-status-ws13-ldom2" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>CONS5</h4>
+                      <p>MICROLOCK - BFU</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.31</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-cons5-ldom2" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="cons5-ldom2" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="map-workstation-card map-ws21-card">
+                    <span class="map-maintenance-badge">MANUTENÇÃO</span>
+                    <div class="map-workstation-layer">
+                      <div class="map-layer-title">
+                        <strong>WS21</strong>
+                      </div>
+
+                      <div class="map-layer-status">
+                        <span class="map-info-chip map-uptime-value"><span id="map-up-ws21-ldom2" class="uptime-tag">--</span></span>
+                        <span id="map-status-ws21-ldom2" class="badge status-wait">WAIT</span>
+                      </div>
+                    </div>
+
+                    <div class="map-prodix-layer">
+                      <span class="map-layer-label">APLICAÇÃO PRODIX</span>
+<h4>SME3</h4>
+                      <p>Console de engenharia</p>
+
+                      <div class="map-prodix-meta">
+                        <span class="map-info-chip map-ip-value">IP 192.0.2.27</span>
+                        <span class="map-info-chip map-uptime-value"><span id="up-sme3-ldom2" class="uptime-tag">--</span></span>
+                      </div>
+
+                      <div class="map-prodix-actions">
+                        <span id="sme3-ldom2" class="badge status-wait">WAIT</span>
+                        <span class="map-panel-on">PAINEL ON</span>
+                      </div>
+                    </div>
+                  </article>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </section>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="right-status-column">
-    <div class="trivia-logo-card" aria-label="Logo TRIVIA Trens">
-      <img src="./assets/img/trivia-logo.png" alt="TRIVIA Trens">
-    </div>
 
-    <div class="summary-card health-card">
-      <div class="card-inner">
-        <div class="metric-info">
-          <span class="metric-label">DISPONIBILIDADE GLOBAL DO SISTEMA</span>
-          <h3 class="metric-value" id="global-health-percentage">98.4%</h3>
-        </div>
-
-        <div class="progress-radial-container">
-          <div class="progress-bar-linear">
-            <div class="progress-fill" style="width: 98.4%"></div>
-          </div>
-          <span class="status-subtext">Todos os subsistemas críticos operacionais</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="summary-card alarms-matrix-card">
-      <span class="metric-label">PAINEL RESUMIDO DE ALARMES ATIVOS</span>
-
-      <div class="alarm-grid-matrix">
-        <div class="alarm-box critico animate-pulse-light">
-          <span class="alarm-count" id="count-crit">0</span>
-          <span class="alarm-tag">CRÍTICO</span>
-        </div>
-
-        <div class="alarm-box alto">
-          <span class="alarm-count" id="count-alto">0</span>
-          <span class="alarm-tag">ALTO</span>
-        </div>
-
-        <div class="alarm-box medio">
-          <span class="alarm-count" id="count-medio">0</span>
-          <span class="alarm-tag">MÉDIO</span>
-        </div>
-
-        <div class="alarm-box info">
-          <span class="alarm-count" id="count-info">0</span>
-          <span class="alarm-tag">INFO</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="ws-column">
-      <div class="zone-divider">ESTAÇÕES FÍSICAS (WS)</div>
-
-      <div class="ws-vertical-grid">
-        <div class="ws-card-row">
-          <div class="ws-info">
-            <div class="ws-name">WS11 <span id="up-ws11" class="uptime-tag"></span></div>
-            <div class="ws-app-desc">SME3 ENG</div>
-          </div>
-          <span id="status-ws11" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="ws-card-row">
-          <div class="ws-info">
-            <div class="ws-name">WS12 <span id="up-ws12" class="uptime-tag"></span></div>
-            <div class="ws-app-desc">CONS1 (EBILOCK)</div>
-          </div>
-          <span id="status-ws12" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="ws-card-row">
-          <div class="ws-info">
-            <div class="ws-name">WS13 <span id="up-ws13" class="uptime-tag"></span></div>
-            <div class="ws-app-desc">CONS5 (MICROLOCK)</div>
-          </div>
-          <span id="status-ws13" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="ws-card-row">
-          <div class="ws-info">
-            <div class="ws-name">WS21 <span id="up-ws21" class="uptime-tag"></span></div>
-            <div class="ws-app-desc">CPTM 4 MANUT</div>
-          </div>
-          <span id="status-ws21" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="ws-card-row">
-          <div class="ws-info">
-            <div class="ws-name">WS22 <span id="up-ws22" class="uptime-tag"></span></div>
-            <div class="ws-app-desc">CONS (CPTM12)</div>
-          </div>
-          <span id="status-ws22" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="ws-card-row">
-          <div class="ws-info">
-            <div class="ws-name">WS23 <span id="up-ws23" class="uptime-tag"></span></div>
-            <div class="ws-app-desc">CONA (CPTM1)</div>
-          </div>
-          <span id="status-ws23" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="ws-card-row">
-          <div class="ws-info">
-            <div class="ws-name">WS24 <span id="up-ws24" class="uptime-tag"></span></div>
-            <div class="ws-app-desc">CONB (CPTM2)</div>
-          </div>
-          <span id="status-ws24" class="badge status-wait">Wait</span>
-        </div>
-
-        <div class="ws-card-row">
-          <div class="ws-info">
-            <div class="ws-name">WS25 <span id="up-ws25" class="uptime-tag"></span></div>
-            <div class="ws-app-desc">CONC (CPTM3)</div>
-          </div>
-          <span id="status-ws25" class="badge status-wait">Wait</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</section>
 
 <section id="servidores" class="view-panel servers-view-panel" data-view-panel="servidores">
   <div class="servers-panel">
@@ -550,7 +806,7 @@
                 <strong>SFT2</strong>
                 <span>IP 192.0.2.21</span>
               </div>
-              
+
               <div class="server-detail-status-group">
                 <span id="role-sft2-server-view" class="server-role-badge server-role-standby">Standby</span>
                 <span id="sft2-server-view" class="badge status-wait">Wait</span>
@@ -911,7 +1167,7 @@
   </div>
 </section>
 
-   
+
 <section id="topologia" class="view-panel topology-view-panel" data-view-panel="topologia">
   <div class="topology-container">
     <div class="topology-hero">

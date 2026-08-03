@@ -570,7 +570,7 @@ async function loadNexusOperationalStatus() {
     console.info(
       `[NEXUS] operational_status.csv carregado: ${rows.length} registros`
     );
-    
+
     nexusRenderFixedServerOperationalRoles();
       nexusRenderIhmOperationalStatus();
 
@@ -2074,4 +2074,89 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
      */
     setInterval(refreshDashboardIhmOperationalBadges, 1500);
   });
+})();
+
+
+/*
+ * NEXUS - Dashboard WS Mirror V06
+ * Espelha PING e uptime das mesmas workstations na LDOM2 sem MutationObserver.
+ * Evita travamento do navegador.
+ */
+(function initDashboardWsMirrorV06() {
+  const pairs = [
+    ["ws24", "map-status-ws24-ldom2", "map-up-ws24-ldom2"],
+    ["ws22", "map-status-ws22-ldom2", "map-up-ws22-ldom2"],
+    ["ws23", "map-status-ws23-ldom2", "map-up-ws23-ldom2"],
+    ["ws25", "map-status-ws25-ldom2", "map-up-ws25-ldom2"],
+    ["ws12", "map-status-ws12-ldom2", "map-up-ws12-ldom2"],
+    ["ws13", "map-status-ws13-ldom2", "map-up-ws13-ldom2"],
+    ["ws21", "map-status-ws21-ldom2", "map-up-ws21-ldom2"],
+  ];
+
+  function copyBadge(source, target) {
+    if (!source || !target) {
+      return;
+    }
+
+    const nextText = source.textContent || "WAIT";
+    const nextClass = source.className || "badge status-wait";
+
+    if (target.textContent !== nextText) {
+      target.textContent = nextText;
+    }
+
+    if (target.className !== nextClass) {
+      target.className = nextClass;
+    }
+  }
+
+  function copyUptime(source, target) {
+    if (!source || !target) {
+      return;
+    }
+
+    const nextText = source.textContent && source.textContent.trim()
+      ? source.textContent
+      : "--";
+
+    if (target.textContent !== nextText) {
+      target.textContent = nextText;
+    }
+
+    if (!target.classList.contains("uptime-tag")) {
+      target.className = "uptime-tag";
+    }
+
+    target.style.display = "inline-flex";
+  }
+
+  function syncDashboardWsMirror() {
+    pairs.forEach(([ws, targetStatusId, targetUptimeId]) => {
+      copyBadge(
+        document.getElementById(`status-${ws}`),
+        document.getElementById(targetStatusId)
+      );
+
+      copyUptime(
+        document.getElementById(`up-${ws}`),
+        document.getElementById(targetUptimeId)
+      );
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    syncDashboardWsMirror();
+    setTimeout(syncDashboardWsMirror, 250);
+    setTimeout(syncDashboardWsMirror, 1000);
+  });
+
+  window.addEventListener("load", () => {
+    setTimeout(syncDashboardWsMirror, 250);
+  });
+
+  window.addEventListener("hashchange", () => {
+    setTimeout(syncDashboardWsMirror, 250);
+  });
+
+  setInterval(syncDashboardWsMirror, 3000);
 })();
