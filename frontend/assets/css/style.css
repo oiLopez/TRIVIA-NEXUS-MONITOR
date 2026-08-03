@@ -6609,3 +6609,386 @@ body {
   color: #cbd5e1 !important;
 }
 /* NEXUS_DASHBOARD_SERVICE_BINDING_V01_END */
+
+
+/* NEXUS_DASHBOARD_CPTM4_BINDING_V01_START
+   CPTM4 no card de manutenção WS21.
+*/
+
+#dashboard .map-ws21-card .map-prodix-layer-secondary {
+  margin-top: 9px !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.16) !important;
+}
+
+#dashboard .map-cptm4-prodix-layer {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.88)) !important;
+}
+
+#dashboard .dashboard-map-role {
+  min-width: 76px !important;
+  min-height: 25px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+/* NEXUS_DASHBOARD_CPTM4_BINDING_V01_END */
+
+
+/* NEXUS_DASHBOARD_MAINT_CONSOLES_V02_START
+   Consoles de manutenção separados:
+   - WS11 / SME3
+   - WS21 / CPTM4
+*/
+
+#dashboard .map-maintenance-card {
+  position: relative !important;
+}
+
+#dashboard .map-maintenance-card .map-maintenance-badge {
+  top: -10px !important;
+}
+
+#dashboard .map-ws11-card .map-workstation-layer,
+#dashboard .map-ws21-card .map-workstation-layer {
+  border-color: rgba(168, 85, 247, 0.28) !important;
+}
+
+#dashboard .map-ws11-card .map-prodix-layer,
+#dashboard .map-ws21-card .map-prodix-layer {
+  background:
+    radial-gradient(circle at top left, rgba(168, 85, 247, 0.12), transparent 42%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.88)) !important;
+}
+
+#dashboard .dashboard-map-role {
+  min-width: 76px !important;
+  min-height: 25px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+/* NEXUS_DASHBOARD_MAINT_CONSOLES_V02_END */
+
+
+/* NEXUS_DASHBOARD_MAINT_CLEAN_V03_START
+   Consoles de manutenção corretos:
+   - WS11 / SME3
+   - WS21 / CPTM4
+*/
+
+#dashboard .map-maintenance-card {
+  position: relative !important;
+}
+
+#dashboard .map-maintenance-card .map-maintenance-badge {
+  top: -10px !important;
+}
+
+#dashboard .map-ws11-card .map-workstation-layer,
+#dashboard .map-ws21-card .map-workstation-layer {
+  border-color: rgba(168, 85, 247, 0.28) !important;
+}
+
+#dashboard .map-ws11-card .map-prodix-layer,
+#dashboard .map-ws21-card .map-prodix-layer {
+  background:
+    radial-gradient(circle at top left, rgba(168, 85, 247, 0.12), transparent 42%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.88)) !important;
+}
+/* NEXUS_DASHBOARD_MAINT_CLEAN_V03_END */
+
+
+/* NEXUS_DASHBOARD_SINGLE_ROW_WS_V04_START
+   Ajuste leve, somente CSS:
+   - reduz cards de WS e Aplicação Prodix
+   - mantém todos em uma única fileira
+   - não altera JS nem backend
+*/
+
+#dashboard .map-floor {
+  grid-template-columns: 220px minmax(0, 1fr) !important;
+  gap: 12px !important;
+}
+
+#dashboard .map-app-grid {
+  display: grid !important;
+  grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#dashboard .map-workstation-card {
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 6px !important;
+  border-radius: 10px !important;
+}
+
+#dashboard .map-workstation-layer {
+  min-height: 58px !important;
+  padding: 7px 8px !important;
+  border-radius: 9px !important;
+}
+
+#dashboard .map-prodix-layer {
+  min-height: 142px !important;
+  padding: 8px 8px !important;
+  border-radius: 9px !important;
+}
+
+#dashboard .map-layer-title strong {
+  font-size: 0.88rem !important;
+  line-height: 1 !important;
+}
+
+#dashboard .map-prodix-layer h4 {
+  font-size: 0.98rem !important;
+  line-height: 1.05 !important;
+  margin: 5px 0 4px !important;
+}
+
+#dashboard .map-prodix-layer p {
+  font-size: 0.62rem !important;
+  line-height: 1.15 !important;
+  margin: 0 0 6px !important;
+  min-height: 22px !important;
+}
+
+#dashboard .map-layer-label {
+  font-size: 0.58rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+#dashboard .map-layer-status,
+#dashboard .map-prodix-meta,
+#dashboard .map-prodix-actions {
+  gap: 5px !important;
+}
+
+#dashboard .map-info-chip {
+  min-height: 20px !important;
+  padding: 3px 7px !important;
+  font-size: 0.58rem !important;
+  line-height: 1 !important;
+}
+
+#dashboard .badge,
+#dashboard .server-role-badge,
+#dashboard .map-panel-on {
+  min-height: 21px !important;
+  padding: 3px 7px !important;
+  font-size: 0.58rem !important;
+  line-height: 1 !important;
+}
+
+#dashboard .map-maintenance-badge {
+  top: -9px !important;
+  padding: 3px 10px !important;
+  font-size: 0.55rem !important;
+}
+
+#dashboard .map-fixed-card {
+  padding: 10px !important;
+}
+
+#dashboard .map-fixed-server-card {
+  padding: 9px !important;
+}
+
+/* Em telas menores, ainda evita sumir: reduz mais um pouco antes de quebrar */
+@media (max-width: 1600px) {
+  #dashboard .map-floor {
+    grid-template-columns: 205px minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  #dashboard .map-app-grid {
+    gap: 8px !important;
+  }
+
+  #dashboard .map-workstation-layer {
+    padding: 6px !important;
+  }
+
+  #dashboard .map-prodix-layer {
+    padding: 7px !important;
+  }
+
+  #dashboard .map-prodix-layer h4 {
+    font-size: 0.9rem !important;
+  }
+
+  #dashboard .map-prodix-layer p {
+    font-size: 0.56rem !important;
+  }
+
+  #dashboard .map-info-chip,
+  #dashboard .badge,
+  #dashboard .server-role-badge,
+  #dashboard .map-panel-on {
+    font-size: 0.52rem !important;
+    padding: 3px 5px !important;
+  }
+}
+/* NEXUS_DASHBOARD_SINGLE_ROW_WS_V04_END */
+
+
+/* NEXUS_DASHBOARD_MAINT_BADGE_ALIGN_V06_START
+   Alinha o badge MANUTENÇÃO na altura das informações do card,
+   sem flutuar acima da workstation.
+*/
+
+#dashboard .map-maintenance-card {
+  position: relative !important;
+}
+
+#dashboard .map-maintenance-card .map-maintenance-badge {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  left: auto !important;
+  transform: none !important;
+  z-index: 3 !important;
+
+  min-height: 20px !important;
+  padding: 3px 9px !important;
+  border-radius: 999px !important;
+
+  font-size: 0.54rem !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* Dá respiro para o nome WS11/WS21 não bater no badge */
+#dashboard .map-maintenance-card .map-layer-title {
+  padding-right: 84px !important;
+}
+
+/* Mantém o padrão dos demais cards: WS sem IP, só uptime/status */
+#dashboard .map-maintenance-card .map-workstation-layer .map-ip-value {
+  display: none !important;
+}
+/* NEXUS_DASHBOARD_MAINT_BADGE_ALIGN_V06_END */
+
+
+/* NEXUS_DASHBOARD_MAINT_BADGE_FLOATING_V07_START
+   MANUTENÇÃO fora do card de informações da WS,
+   centralizado acima de cada quadro WS/Aplicação Prodix.
+*/
+
+#dashboard .map-app-grid,
+#dashboard .map-workstation-card,
+#dashboard .map-maintenance-card {
+  overflow: visible !important;
+}
+
+#dashboard .map-maintenance-card {
+  position: relative !important;
+  padding-top: 8px !important;
+}
+
+/* Etiqueta flutuante acima do quadro, não dentro da WS */
+#dashboard .map-maintenance-card .map-maintenance-badge {
+  position: absolute !important;
+  top: -18px !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  z-index: 8 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-height: 20px !important;
+  padding: 3px 12px !important;
+  border-radius: 999px !important;
+
+  font-size: 0.54rem !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.06em !important;
+  white-space: nowrap !important;
+
+  border: 1px solid rgba(168, 85, 247, 0.45) !important;
+  background: rgba(88, 28, 135, 0.92) !important;
+  color: #e9d5ff !important;
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.85),
+    0 6px 14px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Desfaz respiro do patch anterior */
+#dashboard .map-maintenance-card .map-layer-title {
+  padding-right: 0 !important;
+}
+
+/* Mantém padrão dos demais cards: WS sem IP */
+#dashboard .map-maintenance-card .map-workstation-layer .map-ip-value {
+  display: none !important;
+}
+/* NEXUS_DASHBOARD_MAINT_BADGE_FLOATING_V07_END */
+
+
+/* NEXUS_DASHBOARD_MAINT_BADGE_LDOM_LINE_V08_START
+   Coloca MANUTENÇÃO fora do card da WS, na altura visual das informações da LDOM,
+   centralizado acima de cada quadro WS11/SME3 e WS21/CPTM4.
+*/
+
+#dashboard .map-ldom-layer,
+#dashboard .map-floor,
+#dashboard .map-app-grid,
+#dashboard .map-workstation-card,
+#dashboard .map-maintenance-card {
+  overflow: visible !important;
+}
+
+#dashboard .map-maintenance-card {
+  position: relative !important;
+}
+
+/* Etiqueta sobe para a linha superior da LDOM, fora do card da WS */
+#dashboard .map-maintenance-card .map-maintenance-badge {
+  position: absolute !important;
+  top: -38px !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  z-index: 20 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-height: 20px !important;
+  padding: 3px 13px !important;
+  border-radius: 999px !important;
+
+  font-size: 0.54rem !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.06em !important;
+  white-space: nowrap !important;
+
+  border: 1px solid rgba(168, 85, 247, 0.48) !important;
+  background: rgba(88, 28, 135, 0.92) !important;
+  color: #e9d5ff !important;
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.88),
+    0 8px 18px rgba(0, 0, 0, 0.32) !important;
+}
+
+/* Mantém padrão dos cards comuns: WS sem IP */
+#dashboard .map-maintenance-card .map-workstation-layer .map-ip-value {
+  display: none !important;
+}
+
+/* Remove qualquer respiro lateral herdado de patch anterior */
+#dashboard .map-maintenance-card .map-layer-title {
+  padding-right: 0 !important;
+}
+/* NEXUS_DASHBOARD_MAINT_BADGE_LDOM_LINE_V08_END */

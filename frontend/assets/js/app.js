@@ -2089,6 +2089,7 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
     ["ws23", "map-status-ws23-ldom2", "map-up-ws23-ldom2"],
     ["ws25", "map-status-ws25-ldom2", "map-up-ws25-ldom2"],
     ["ws12", "map-status-ws12-ldom2", "map-up-ws12-ldom2"],
+    ["ws11", "map-status-ws11-ldom2", "map-up-ws11-ldom2"],
     ["ws13", "map-status-ws13-ldom2", "map-up-ws13-ldom2"],
     ["ws21", "map-status-ws21-ldom2", "map-up-ws21-ldom2"],
   ];
@@ -2239,7 +2240,7 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
   }
 
   function getCardLdom(card) {
-    const operationalBadge = card.querySelector(".map-prodix-actions .badge[id]");
+    const operationalBadge = card.querySelector(".map-prodix-actions [id]");
     const id = operationalBadge?.id || "";
 
     if (id.endsWith("-ldom1")) {
@@ -2401,3 +2402,143 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
   });
 })();
 /* NEXUS_DASHBOARD_SERVICE_BINDING_V01_END */
+
+
+/* NEXUS_DASHBOARD_CPTM4_BINDING_V01_START
+ * Espelha no Dashboard a CPTM4 que já existe na aba Servidores.
+ */
+(function initDashboardCptm4BindingV01() {
+  const pairs = [
+    ["srv-cptm4-ldom1", "cptm4-ldom1"],
+    ["srv-cptm4-ldom2", "cptm4-ldom2"],
+  ];
+
+  const uptimePairs = [
+    ["srv-up-cptm4-ldom1", "up-cptm4-ldom1"],
+    ["srv-up-cptm4-ldom2", "up-cptm4-ldom2"],
+  ];
+
+  function copyRole(sourceId, targetId) {
+    const source = document.getElementById(sourceId);
+    const target = document.getElementById(targetId);
+
+    if (!source || !target) {
+      return;
+    }
+
+    const nextText = source.textContent && source.textContent.trim()
+      ? source.textContent.trim()
+      : "STANDBY";
+
+    target.textContent = nextText;
+    target.className = `${source.className || "server-role-badge server-role-standby"} dashboard-map-role`.trim();
+  }
+
+  function copyUptime(sourceId, targetId) {
+    const source = document.getElementById(sourceId);
+    const target = document.getElementById(targetId);
+
+    if (!source || !target) {
+      return;
+    }
+
+    const nextText = source.textContent && source.textContent.trim()
+      ? source.textContent.trim()
+      : "--";
+
+    target.textContent = nextText;
+    target.style.display = "inline-flex";
+  }
+
+  function syncCptm4Dashboard() {
+    pairs.forEach(([sourceId, targetId]) => copyRole(sourceId, targetId));
+    uptimePairs.forEach(([sourceId, targetId]) => copyUptime(sourceId, targetId));
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    syncCptm4Dashboard();
+    setTimeout(syncCptm4Dashboard, 250);
+    setTimeout(syncCptm4Dashboard, 1000);
+  });
+
+  window.addEventListener("load", () => setTimeout(syncCptm4Dashboard, 250));
+  window.addEventListener("hashchange", () => setTimeout(syncCptm4Dashboard, 250));
+
+  setInterval(syncCptm4Dashboard, 3000);
+})();
+/* NEXUS_DASHBOARD_CPTM4_BINDING_V01_END */
+
+
+/* NEXUS_DASHBOARD_MAINT_CONSOLES_BINDING_V02_START
+ * Correção de arquitetura:
+ * - WS11 hospeda SME3
+ * - WS21 hospeda CPTM4
+ * Espelha para o Dashboard os dados que já existem na aba Servidores.
+ */
+(function initDashboardMaintenanceConsolesBindingV02() {
+  const rolePairs = [
+    ["srv-cptm4-ldom1", "cptm4-ldom1"],
+    ["srv-cptm4-ldom2", "cptm4-ldom2"],
+  ];
+
+  const uptimePairs = [
+    ["srv-up-cptm4-ldom1", "up-cptm4-ldom1"],
+    ["srv-up-cptm4-ldom2", "up-cptm4-ldom2"],
+  ];
+
+  function copyRole(sourceId, targetId) {
+    const source = document.getElementById(sourceId);
+    const target = document.getElementById(targetId);
+
+    if (!target) {
+      return;
+    }
+
+    if (!source) {
+      target.textContent = target.textContent && target.textContent.trim()
+        ? target.textContent.trim()
+        : "WAIT";
+      return;
+    }
+
+    const nextText = source.textContent && source.textContent.trim()
+      ? source.textContent.trim()
+      : "STANDBY";
+
+    target.textContent = nextText;
+    target.className = `${source.className || "server-role-badge server-role-standby"} dashboard-map-role`.trim();
+  }
+
+  function copyUptime(sourceId, targetId) {
+    const source = document.getElementById(sourceId);
+    const target = document.getElementById(targetId);
+
+    if (!target) {
+      return;
+    }
+
+    const nextText = source && source.textContent && source.textContent.trim()
+      ? source.textContent.trim()
+      : "--";
+
+    target.textContent = nextText;
+    target.style.display = "inline-flex";
+  }
+
+  function syncMaintenanceConsolesDashboard() {
+    rolePairs.forEach(([sourceId, targetId]) => copyRole(sourceId, targetId));
+    uptimePairs.forEach(([sourceId, targetId]) => copyUptime(sourceId, targetId));
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    syncMaintenanceConsolesDashboard();
+    setTimeout(syncMaintenanceConsolesDashboard, 250);
+    setTimeout(syncMaintenanceConsolesDashboard, 1000);
+  });
+
+  window.addEventListener("load", () => setTimeout(syncMaintenanceConsolesDashboard, 250));
+  window.addEventListener("hashchange", () => setTimeout(syncMaintenanceConsolesDashboard, 250));
+
+  setInterval(syncMaintenanceConsolesDashboard, 3000);
+})();
+/* NEXUS_DASHBOARD_MAINT_CONSOLES_BINDING_V02_END */
