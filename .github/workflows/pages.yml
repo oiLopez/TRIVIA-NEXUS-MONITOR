@@ -1,4 +1,4 @@
-name: Deploy NEXUS Monitor to GitHub Pages
+name: Deploy NEXUS Monitor
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload frontend
+      - name: Upload NEXUS frontend
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./frontend
