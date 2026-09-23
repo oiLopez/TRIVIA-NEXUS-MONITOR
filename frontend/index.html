@@ -1229,32 +1229,948 @@
 
 
 <section id="topologia" class="view-panel topology-view-panel" data-view-panel="topologia">
-  <div class="topology-container">
-    <div class="topology-hero">
-      <div class="topology-hero-content">
+  <div class="nexus-net-page">
+    <div class="nexus-net-hero">
+      <div>
         <span class="metric-label">TOPOLOGIA</span>
-        <h2>EVTREPORT / CUTREPORT em execução</h2>
-        <p>Mapeamento operacional do serviço de geração de eventos por máquina, LDOM e evidência de processo.</p>
+        <h2>Topologia de Rede e Comunicação</h2>
+        <p>Monitoramento independente das Redes A/B de workstations e aplicações Prodix.</p>
+      </div>
+      <div class="nexus-net-hero-summary">
+        <span><strong>8</strong> workstations</span>
+        <span><strong>8</strong> aplicações</span>
+        <span><strong>32</strong> canais A/B</span>
       </div>
     </div>
 
-    <div class="topology-service-panel">
-      <div class="topology-service-header">
-        <div>
-          <span class="metric-label">EVTREPORT</span>
-          <h3>evtreport / cutreport</h3>
-          <p>Responsável pela geração da tabela de eventos consumida pelos supervisores/controladores.</p>
-        </div>
-        <span id="service-status-summary" class="badge status-wait">AGUARDANDO</span>
-      </div>
+    <div class="nexus-net-ldom-stack">
+      <section class="nexus-net-ldom nexus-net-ldom-1">
+  <div class="nexus-net-ldom-head">
+    <div>
+      <span class="metric-label">LDOM 1</span>
+      <h3>Topologia de comunicação</h3>
+      <p>METROSP44 &nbsp;•&nbsp; SFT1 &nbsp;•&nbsp; 8 pares monitorados</p>
+    </div>
+    <span class="nexus-net-ldom-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <div class="nexus-net-pairs">
+<div class="nexus-net-pair" data-ws="ws11" data-app="sme3">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS11</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
 
-      <div id="service-status-grid" class="service-status-grid">
-        <div class="events-empty">Aguardando backend/data/runtime/service_status.csv</div>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.71</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.71</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>SME3</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">MANUTENÇÃO</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.7</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.7</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws12" data-app="cons1">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS12</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.72</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.72</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CONS1</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">EBILOCK • Brás - Luz</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.9</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.9</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws13" data-app="cons5">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS13</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.73</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.73</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CONS5</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">MICROLOCK • Luz - BFU</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.13</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.13</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws21" data-app="cptm4">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS21</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.41</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.41</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM4</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">MANUTENÇÃO</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.104</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.104</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws22" data-app="cptm12">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS22</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.42</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.42</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM12</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">CONS • L-11 EXT</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.112</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.112</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws23" data-app="cptm1">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS23</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.43</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.43</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM1</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">CONA • L-11 EXP</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.101</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.101</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws24" data-app="cptm2">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS24</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.44</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.44</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM2</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">CONB • L-12</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.102</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.102</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws25" data-app="cptm3">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS25</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.45</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.45</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM3</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">CONC • Cabine de rotas (TAT - SGU)</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.103</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.103</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+  </div>
+</section>
+      <section class="nexus-net-ldom nexus-net-ldom-2">
+  <div class="nexus-net-ldom-head">
+    <div>
+      <span class="metric-label">LDOM 2</span>
+      <h3>Topologia de comunicação</h3>
+      <p>METROSP45 &nbsp;•&nbsp; SFT2 &nbsp;•&nbsp; 8 pares monitorados</p>
+    </div>
+    <span class="nexus-net-ldom-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <div class="nexus-net-pairs">
+<div class="nexus-net-pair" data-ws="ws11" data-app="sme3">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS11</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.71</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.71</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>SME3</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">MANUTENÇÃO</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.7</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.7</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws12" data-app="cons1">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS12</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.72</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.72</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CONS1</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">EBILOCK • Brás - Luz</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.9</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.9</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws13" data-app="cons5">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS13</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.73</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.73</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CONS5</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">MICROLOCK • Luz - BFU</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.13</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.13</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws21" data-app="cptm4">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS21</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.41</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.41</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM4</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">MANUTENÇÃO</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.104</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.104</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws22" data-app="cptm12">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS22</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.42</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.42</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM12</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">CONS • L-11 EXT</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.112</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.112</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws23" data-app="cptm1">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS23</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.43</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.43</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM1</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">CONA • L-11 EXP</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.101</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.101</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws24" data-app="cptm2">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS24</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.44</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.44</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM2</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">CONB • L-12</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.102</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.102</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+<div class="nexus-net-pair" data-ws="ws25" data-app="cptm3">
+<article class="nexus-net-asset nexus-net-workstation">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>WS25</strong>
+      <span>WORKSTATION</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.45</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.45</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+<div class="nexus-net-pair-link" aria-hidden="true"></div>
+<article class="nexus-net-asset nexus-net-prodix">
+  <div class="nexus-net-asset-head">
+    <div>
+      <strong>CPTM3</strong>
+      <span>APLICAÇÃO PRODIX</span>
+    </div>
+    <span class="nexus-net-asset-state nexus-net-state-wait">AGUARDANDO</span>
+  </div>
+  <p class="nexus-net-asset-desc">CONC • Cabine de rotas (TAT - SGU)</p>
+  <div class="nexus-net-channels">
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede A</span>
+      <code>192.0.2.103</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+    <div class="nexus-net-channel">
+      <span class="nexus-net-channel-name">Rede B</span>
+      <code>198.51.100.103</code>
+      <span class="nexus-net-channel-status nexus-net-state-wait"><i></i>WAIT</span>
+    </div>
+  </div>
+  <div class="nexus-net-redundancy">
+    <span>Redundância</span>
+    <strong class="nexus-net-state-wait">AGUARDANDO</strong>
+  </div>
+</article>
+</div>
+  </div>
+</section>
+    </div>
+
+    <div class="nexus-net-legend">
+      <div>
+        <strong>Status do canal</strong>
+        <span><i class="nexus-net-dot ok"></i>OK</span>
+        <span><i class="nexus-net-dot unstable"></i>INSTÁVEL</span>
+        <span><i class="nexus-net-dot fail"></i>FALHA</span>
+        <span><i class="nexus-net-dot wait"></i>AGUARDANDO</span>
+      </div>
+      <div>
+        <strong>Redundância</strong>
+        <span>OK — A e B disponíveis</span>
+        <span>DEGRADADA — apenas um canal saudável</span>
+        <span>INDISPONÍVEL — A e B indisponíveis</span>
+      </div>
+      <div>
+        <strong>Privacidade</strong>
+        <span>IPs públicos são documentais/sanitizados. Dados reais ficam fora do repositório público.</span>
       </div>
     </div>
   </div>
 </section>
-
 
 <section id="painel" class="view-panel painel-view-panel" data-view-panel="painel">
   <div class="painel-container">

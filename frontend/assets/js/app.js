@@ -804,7 +804,6 @@ function nexusNormalizeBoolean(value) {
 }
 
 
-
 function nexusRenderIhmOperationalStatus() {
   const targets = [
     "CPTM1",
@@ -1348,13 +1347,14 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
 })();
 
 /* ==========================================================================
- * NEXUS - Service Status / Topologia
+ * NEXUS - Network Channel Status / Topologia
  * ========================================================================== */
 
 (() => {
-  const SERVICE_STATUS_PATH = "../backend/data/runtime/service_status.csv";
+  const NETWORK_CHANNEL_STATUS_PATH = "../backend/data/runtime/network_channel_status.csv";
+  const NETWORK_REFRESH_MS = 5000;
 
-  function parseServiceStatusCsv(text) {
+  function parseNetworkChannelStatusCsv(text) {
     const lines = String(text || "")
       .split(/\r?\n/)
       .map((line) => line.trim())
@@ -1378,185 +1378,260 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
     });
   }
 
-  function getServiceBadgeClass(status) {
-    const normalized = String(status || "WAIT").toUpperCase();
-
-    if (normalized === "RUNNING") {
-      return "status-ok";
+  function getChannelVisual(row) {
+    if (!row) {
+      return { label: "WAIT", className: "nexus-net-state-wait", level: "WAIT" };
     }
 
-    if (normalized === "LOCKED") {
-      return "status-warn";
+    const technical = String(row.technical_comm || "WAIT").toUpperCase();
+    const stability = String(row.stability_status || "WAIT").toUpperCase();
+
+    if (technical === "FALHA" || stability === "FALHA") {
+      return { label: "FALHA", className: "nexus-net-state-fail", level: "FALHA" };
     }
 
-    if (normalized === "DUPLICATE" || normalized === "ERROR") {
-      return "status-crit";
+    if (stability === "INSTAVEL" || stability === "INSTÁVEL") {
+      return { label: "INSTÁVEL", className: "nexus-net-state-unstable", level: "INSTAVEL" };
     }
 
-    if (normalized === "STOPPED") {
-      return "status-standby";
+    if (technical === "OK" && stability === "OK") {
+      return { label: "OK", className: "nexus-net-state-ok", level: "OK" };
     }
 
-    return "status-wait";
+    return { label: "WAIT", className: "nexus-net-state-wait", level: "WAIT" };
   }
 
-  function getServiceSummary(rows) {
-    if (!rows.length) {
-      return {
+  function getRedundancyVisual(channelA, channelB) {
+    const stateA = getChannelVisual(channelA).level;
+    const stateB = getChannelVisual(channelB).level;
+
+    if (stateA === "WAIT" || stateB === "WAIT") {
+      return { label: "AGUARDANDO", className: "nexus-net-state-wait", level: "WAIT" };
+    }
+
+    if (stateA === "FALHA" && stateB === "FALHA") {
+      return { label: "INDISPONÍVEL", className: "nexus-net-state-fail", level: "FALHA" };
+    }
+
+    if (
+      stateA === "FALHA" ||
+      stateB === "FALHA" ||
+      stateA === "INSTAVEL" ||
+      stateB === "INSTAVEL"
+    ) {
+      return { label: "DEGRADADA", className: "nexus-net-state-unstable", level: "INSTAVEL" };
+    }
+
+    return { label: "OK", className: "nexus-net-state-ok", level: "OK" };
+  }
+
+  function setChannelStatus(element, visual) {
+    if (!element) return;
+    element.className = `nexus-net-channel-status ${visual.className}`;
+    element.innerHTML = `<i></i>${visual.label}`;
+  }
+
+  function setAssetState(element, visual) {
+    if (!element) return;
+    element.className = `nexus-net-asset-state ${visual.className}`;
+    element.textContent = visual.label;
+  }
+
+  function setRedundancyState(element, visual) {
+    if (!element) return;
+    element.className = visual.className;
+    element.textContent = visual.label;
+  }
+
+  function resetTopologyWaitState() {
+    document.querySelectorAll("#topologia .nexus-net-asset").forEach((card) => {
+      setAssetState(card.querySelector(".nexus-net-asset-state"), {
         label: "AGUARDANDO",
-        className: "status-wait",
-      };
-    }
-
-    const hasDuplicate = rows.some((row) => String(row.service_status || "").toUpperCase() === "DUPLICATE");
-    const hasRunning = rows.some((row) => String(row.service_status || "").toUpperCase() === "RUNNING");
-    const hasLocked = rows.some((row) => String(row.service_status || "").toUpperCase() === "LOCKED");
-
-    if (hasDuplicate) {
-      return {
-        label: "DUPLICADO",
-        className: "status-crit",
-      };
-    }
-
-    if (hasRunning) {
-      const runningRow = rows.find((row) => String(row.service_status || "").toUpperCase() === "RUNNING");
-      return {
-        label: `RODANDO EM ${runningRow.host_name || runningRow.host_id || "HOST"}`,
-        className: "status-ok",
-      };
-    }
-
-    if (hasLocked) {
-      return {
-        label: "INSTÂNCIA EXISTENTE",
-        className: "status-warn",
-      };
-    }
-
-    return {
-      label: "NÃO LOCALIZADO",
-      className: "status-wait",
-    };
-  }
-
-  function renderServiceStatus(rows) {
-    const evtreportRows = rows.filter((row) => {
-      return String(row.service_name || "").toLowerCase() === "evtreport";
-    });
-
-    const grid = document.getElementById("service-status-grid");
-    const summary = document.getElementById("service-status-summary");
-
-    if (!grid) {
-      return;
-    }
-
-    if (!evtreportRows.length) {
-      grid.innerHTML = '<div class="events-empty">Aguardando backend/data/runtime/service_status.csv</div>';
-
-      if (summary) {
-        summary.textContent = "AGUARDANDO";
-        summary.className = "badge status-wait";
-      }
-
-      return;
-    }
-
-    const summaryState = getServiceSummary(rows);
-
-    if (summary) {
-      summary.textContent = summaryState.label;
-      summary.className = `badge ${summaryState.className}`;
-    }
-
-    const statusPriority = {
-      DUPLICATE: 0,
-      ERROR: 1,
-      RUNNING: 2,
-      LOCKED: 3,
-      STOPPED: 4,
-      UNKNOWN: 5,
-      WAIT: 6,
-    };
-
-    const sortedRows = [...evtreportRows].sort((a, b) => {
-      const statusA = String(a.service_status || "WAIT").toUpperCase();
-      const statusB = String(b.service_status || "WAIT").toUpperCase();
-
-      const priorityA = statusPriority[statusA] ?? 99;
-      const priorityB = statusPriority[statusB] ?? 99;
-
-      if (priorityA !== priorityB) {
-        return priorityA - priorityB;
-      }
-
-      return String(a.host_id || "").localeCompare(String(b.host_id || ""));
-    });
-
-    grid.innerHTML = sortedRows
-      .map((row) => {
-        const status = String(row.service_status || "WAIT").toUpperCase();
-        const badgeClass = getServiceBadgeClass(status);
-        const hostName = row.host_name || row.host_id || "HOST";
-        const ldom = row.ldom || "N/A";
-        const hostTitle = ldom && ldom !== "N/A" ? `${hostName} / ${ldom}` : hostName;
-        const pidCount = row.pid_count || "0";
-        const pids = row.pids || "N/A";
-        const ip = row.ip_address || "N/A";
-        const message = row.message || "Sem mensagem operacional.";
-
-        return `
-          <article class="service-status-card service-status-card-${status.toLowerCase()}">
-            <div class="service-status-card-header">
-              <div>
-                <div class="service-status-host">${hostTitle}</div>
-                <div class="service-status-pids">PID(s): ${pids}</div>
-              </div>
-              <span class="badge ${badgeClass}">${status}</span>
-            </div>
-
-            <div class="service-status-meta">
-              <span>LDOM: ${ldom}</span>
-              <span>IP: ${ip}</span>
-              <span>Qtd: ${pidCount}</span>
-            </div>
-
-            <div class="service-status-message">${message}</div>
-          </article>
-        `;
-      })
-      .join("");
-  }
-
-  async function loadServiceStatus() {
-    try {
-      const response = await fetch(`${SERVICE_STATUS_PATH}?t=${Date.now()}`, {
-        cache: "no-store",
+        className: "nexus-net-state-wait",
       });
+
+      card.querySelectorAll(".nexus-net-channel-status").forEach((status) => {
+        setChannelStatus(status, {
+          label: "WAIT",
+          className: "nexus-net-state-wait",
+        });
+      });
+
+      setRedundancyState(card.querySelector(".nexus-net-redundancy strong"), {
+        label: "AGUARDANDO",
+        className: "nexus-net-state-wait",
+      });
+    });
+
+    document.querySelectorAll("#topologia .nexus-net-ldom-state").forEach((badge) => {
+      badge.className = "nexus-net-ldom-state nexus-net-state-wait";
+      badge.textContent = "AGUARDANDO";
+    });
+  }
+
+  function findChannelElement(card, channel) {
+    return [...card.querySelectorAll(".nexus-net-channel")].find((item) => {
+      const name = item.querySelector(".nexus-net-channel-name");
+      return String(name?.textContent || "").trim().toUpperCase().endsWith(channel);
+    });
+  }
+
+  function renderAsset(assetName, assetType, channels) {
+    const key = String(assetName || "").trim().toLowerCase();
+    if (!key) return null;
+
+    const workstation = assetType === "WORKSTATION";
+    const pairSelector = workstation
+      ? `.nexus-net-pair[data-ws="${key}"]`
+      : `.nexus-net-pair[data-app="${key}"]`;
+    const cardSelector = workstation ? ".nexus-net-workstation" : ".nexus-net-prodix";
+
+    const channelA = channels.A || null;
+    const channelB = channels.B || null;
+    const redundancy = getRedundancyVisual(channelA, channelB);
+
+    document.querySelectorAll(pairSelector).forEach((pair) => {
+      const card = pair.querySelector(cardSelector);
+      if (!card) return;
+
+      [
+        ["A", channelA],
+        ["B", channelB],
+      ].forEach(([channelName, row]) => {
+        const channelElement = findChannelElement(card, channelName);
+        if (!channelElement) return;
+
+        const code = channelElement.querySelector("code");
+        const status = channelElement.querySelector(".nexus-net-channel-status");
+
+        if (row?.ip_address && code) {
+          code.textContent = row.ip_address;
+        }
+
+        setChannelStatus(status, getChannelVisual(row));
+
+        if (row?.message) {
+          channelElement.title = row.message;
+        } else {
+          channelElement.removeAttribute("title");
+        }
+      });
+
+      setAssetState(card.querySelector(".nexus-net-asset-state"), redundancy);
+      setRedundancyState(card.querySelector(".nexus-net-redundancy strong"), redundancy);
+    });
+
+    return redundancy;
+  }
+
+  function renderTopologySummary(assetStates) {
+    const levels = assetStates.filter(Boolean).map((state) => state.level);
+
+    let visual = { label: "AGUARDANDO", className: "nexus-net-state-wait" };
+
+    if (levels.length) {
+      if (levels.includes("FALHA")) {
+        visual = { label: "CRÍTICO", className: "nexus-net-state-fail" };
+      } else if (levels.includes("INSTAVEL")) {
+        visual = { label: "DEGRADADA", className: "nexus-net-state-unstable" };
+      } else if (levels.every((level) => level === "OK")) {
+        visual = { label: "OK", className: "nexus-net-state-ok" };
+      }
+    }
+
+    document.querySelectorAll("#topologia .nexus-net-ldom-state").forEach((badge) => {
+      badge.className = `nexus-net-ldom-state ${visual.className}`;
+      badge.textContent = visual.label;
+    });
+  }
+
+  function renderNetworkChannelStatus(rows) {
+    resetTopologyWaitState();
+    if (!rows.length) return;
+
+    const assets = new Map();
+
+    rows.forEach((row) => {
+      const assetName = String(row.asset_name || "").trim().toUpperCase();
+      const assetType = String(row.asset_type || "").trim().toUpperCase();
+      const channel = String(row.channel || "").trim().toUpperCase();
+
+      if (
+        !assetName ||
+        !["WORKSTATION", "PRODIX"].includes(assetType) ||
+        !["A", "B"].includes(channel)
+      ) {
+        return;
+      }
+
+      const assetKey = `${assetType}:${assetName}`;
+
+      if (!assets.has(assetKey)) {
+        assets.set(assetKey, { assetName, assetType, channels: {} });
+      }
+
+      assets.get(assetKey).channels[channel] = row;
+    });
+
+    const assetStates = [];
+
+    assets.forEach((asset) => {
+      assetStates.push(renderAsset(asset.assetName, asset.assetType, asset.channels));
+    });
+
+    renderTopologySummary(assetStates);
+  }
+
+  async function loadNetworkChannelStatus() {
+    try {
+      const response = await fetch(
+        `${NETWORK_CHANNEL_STATUS_PATH}?t=${Date.now()}`,
+        { cache: "no-store" }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
 
       const text = await response.text();
-      const rows = parseServiceStatusCsv(text);
+      const rows = parseNetworkChannelStatusCsv(text);
 
-      window.NEXUS_SERVICE_STATUS = rows;
-      renderServiceStatus(rows);
+      window.NEXUS_NETWORK_CHANNEL_STATUS = rows;
+      renderNetworkChannelStatus(rows);
 
-      console.info(`[NEXUS] service_status.csv carregado: ${rows.length} registros`);
+      console.info(
+        `[NEXUS] network_channel_status.csv carregado: ${rows.length} canais`
+      );
     } catch (error) {
-      window.NEXUS_SERVICE_STATUS = [];
-      renderServiceStatus([]);
+      window.NEXUS_NETWORK_CHANNEL_STATUS = [];
+      resetTopologyWaitState();
 
-      console.warn("[NEXUS] service_status.csv indisponível. Mantendo Topologia em WAIT.", error);
+      console.warn(
+        "[NEXUS] network_channel_status.csv indisponível. Mantendo Topologia em WAIT.",
+        error
+      );
     }
   }
 
+  function topologyIsVisible() {
+    const panel = document.getElementById("topologia");
+    return Boolean(panel?.classList.contains("active"));
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
-    loadServiceStatus();
-    setInterval(loadServiceStatus, 30000);
+    loadNetworkChannelStatus();
+
+    setInterval(() => {
+      if (topologyIsVisible()) {
+        loadNetworkChannelStatus();
+      }
+    }, NETWORK_REFRESH_MS);
+  });
+
+  window.addEventListener("hashchange", () => {
+    if (window.location.hash === "#topologia") {
+      loadNetworkChannelStatus();
+    }
   });
 })();
 
@@ -1759,324 +1834,28 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
 
 
 /* ==========================================================================
- * NEXUS - Dashboard IHM Operational Status Guard
+ * NEXUS - Dashboard Operational Role Single Source
  *
- * No Dashboard principal, IHMs móveis representam papel operacional:
- * ATIVO / STANDBY / CONFLITO / ALERTA.
+ * Fonte única para ATIVO / STANDBY / FALHA / DESLIGADO / CONFLITO:
+ *   backend/data/runtime/operational_status.csv
+ *       -> loadNexusOperationalStatus()
+ *       -> nexusRenderIhmOperationalStatus()
  *
- * Comunicação técnica "OK/PING OK" deve aparecer somente na aba Servidores.
+ * O safe renderer já atualiza Dashboard e aba Servidores com classes próprias
+ * de cada camada. Nenhum mirror deve sobrescrever papel operacional.
  * ========================================================================== */
-
-(() => {
-  const DASHBOARD_IHM_IDS = [
-    "cptm1", "cptm2", "cptm3", "cptm4",
-    "sme3", "cons1", "cons5", "cptm12",
-  ];
-
-  const DASHBOARD_ROLE_CLASS_MAP = {
-    ATIVO: "status-ok",
-    STANDBY: "status-standby",
-    CONFLITO: "status-crit",
-    ALERTA: "status-warn",
-    FALHA: "status-crit",
-    DESLIGADO: "status-wait",
-    WAIT: "status-wait",
-  };
-
-  function normalizeDashboardRoleValue(row) {
-    const conflict = String(row?.redundancy_conflict || "").toLowerCase() === "true";
-
-    if (conflict) {
-      return "CONFLITO";
-    }
-
-    const role = String(row?.operational_role || row?.service_status || "WAIT")
-      .trim()
-      .toUpperCase();
-
-    if (role === "ACTIVE") return "ATIVO";
-    if (role === "STANDBY") return "STANDBY";
-    if (role === "CONFLICT") return "CONFLITO";
-    if (role === "WARN" || role === "WARNING") return "ALERTA";
-
-    if (["ATIVO", "STANDBY", "CONFLITO", "ALERTA", "FALHA", "DESLIGADO", "WAIT"].includes(role)) {
-      return role;
-    }
-
-    return "WAIT";
-  }
-
-  function getDashboardIhmRows() {
-    const rows = Array.isArray(window.NEXUS_OPERATIONAL_STATUS)
-      ? window.NEXUS_OPERATIONAL_STATUS
-      : [];
-
-    return rows.filter((row) => {
-      const assetType = String(row.asset_type || "").toUpperCase();
-      return assetType === "MOBILE_IHM" || assetType === "IHM";
-    });
-  }
-
-  function findDashboardIhmRow(ihmId, ldom) {
-    const rows = getDashboardIhmRows();
-    const ihmKey = ihmId.toUpperCase();
-
-    return rows.find((row) => {
-      const logical = String(row.logical_asset_id || "").toUpperCase();
-      const asset = String(row.asset_id || "").toUpperCase();
-      const rowLdom = String(row.ldom || "").toUpperCase();
-
-      return rowLdom === ldom.toUpperCase()
-        && (logical.includes(ihmKey) || asset.includes(ihmKey));
-    });
-  }
-
-  function applyDashboardIhmRole(element, role) {
-    if (!element) {
-      return;
-    }
-
-    const className = DASHBOARD_ROLE_CLASS_MAP[role] || "status-wait";
-
-    element.classList.remove(
-      "status-ok",
-      "status-warn",
-      "status-crit",
-      "status-wait",
-      "status-standby"
-    );
-
-    element.classList.add("badge", className);
-    element.textContent = role;
-  }
-
-  function stabilizeDashboardIhmRoles() {
-    DASHBOARD_IHM_IDS.forEach((ihmId) => {
-      ["ldom1", "ldom2"].forEach((ldom) => {
-        const element = document.getElementById(`${ihmId}-${ldom}`);
-
-        if (!element) {
-          return;
-        }
-
-        const currentText = String(element.textContent || "").trim().toUpperCase();
-
-        /*
-         * Se algum renderizador técnico escreveu OK no dashboard, corrigimos.
-         * OK é comunicação técnica, não papel operacional.
-         */
-        if (currentText === "OK" || currentText === "PING OK") {
-          const row = findDashboardIhmRow(ihmId, ldom);
-          const role = row ? normalizeDashboardRoleValue(row) : "WAIT";
-          applyDashboardIhmRole(element, role);
-          return;
-        }
-
-        /*
-         * Se já está com papel operacional válido, só garante classe coerente.
-         */
-        if (["ATIVO", "STANDBY", "CONFLITO", "ALERTA", "FALHA", "DESLIGADO", "WAIT"].includes(currentText)) {
-          applyDashboardIhmRole(element, currentText);
-        }
-      });
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    stabilizeDashboardIhmRoles();
-    setInterval(stabilizeDashboardIhmRoles, 1200);
-  });
-})();
-
 
 /* ==========================================================================
- * NEXUS - Dashboard IHM Operational Renderer
+ * NEXUS - Dashboard Operational Role Single Source
  *
- * No Dashboard principal, IHMs móveis NÃO exibem ping técnico "OK".
- * Elas exibem o papel operacional:
- * ATIVO / STANDBY / CONFLITO / ALERTA / WAIT.
+ * Fonte única para ATIVO / STANDBY / FALHA / DESLIGADO / CONFLITO:
+ *   backend/data/runtime/operational_status.csv
+ *       -> loadNexusOperationalStatus()
+ *       -> nexusRenderIhmOperationalStatus()
  *
- * O uptime continua sendo responsabilidade do renderizador original.
+ * O safe renderer já atualiza Dashboard e aba Servidores com classes próprias
+ * de cada camada. Nenhum mirror deve sobrescrever papel operacional.
  * ========================================================================== */
-
-(() => {
-  const OPERATIONAL_STATUS_PATH = "../backend/data/runtime/operational_status.csv";
-
-  const DASHBOARD_IHMS = [
-    "cptm1", "cptm2", "cptm3", "cptm4",
-    "sme3", "cons1", "cons5", "cptm12",
-  ];
-
-  const ROLE_CLASS = {
-    ATIVO: "status-ok",
-    STANDBY: "status-standby",
-    CONFLITO: "status-crit",
-    ALERTA: "status-warn",
-    FALHA: "status-crit",
-    DESLIGADO: "status-wait",
-    WAIT: "status-wait",
-  };
-
-  function parseCsvLine(line) {
-    const result = [];
-    let current = "";
-    let quoted = false;
-
-    for (let i = 0; i < line.length; i += 1) {
-      const char = line[i];
-
-      if (char === '"') {
-        quoted = !quoted;
-        continue;
-      }
-
-      if (char === ";" && !quoted) {
-        result.push(current.trim());
-        current = "";
-        continue;
-      }
-
-      current += char;
-    }
-
-    result.push(current.trim());
-    return result;
-  }
-
-  function parseOperationalStatusCsv(text) {
-    const lines = String(text || "")
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean);
-
-    if (lines.length <= 1) {
-      return [];
-    }
-
-    const header = parseCsvLine(lines[0]);
-
-    return lines.slice(1).map((line) => {
-      const values = parseCsvLine(line);
-      const row = {};
-
-      header.forEach((key, index) => {
-        row[key] = values[index] || "";
-      });
-
-      return row;
-    });
-  }
-
-  function normalizeDashboardRole(row) {
-    const conflict = String(row.redundancy_conflict || "").toLowerCase() === "true";
-
-    if (conflict) {
-      return "CONFLITO";
-    }
-
-    const health = String(row.health_status || "").trim().toUpperCase();
-    const technical = String(row.technical_comm || "").trim().toUpperCase();
-    const role = String(row.operational_role || "").trim().toUpperCase();
-
-    if (health === "WARN" || technical === "WARN") {
-      return "ALERTA";
-    }
-
-    if (health === "CRIT" || technical === "CRIT") {
-      return "ALERTA";
-    }
-
-    if (role === "ACTIVE") return "ATIVO";
-    if (role === "STANDBY") return "STANDBY";
-    if (role === "CONFLICT") return "CONFLITO";
-
-    if (["ATIVO", "STANDBY", "CONFLITO", "ALERTA", "FALHA", "DESLIGADO", "WAIT"].includes(role)) {
-      return role;
-    }
-
-    return "WAIT";
-  }
-
-  function findIhmRow(rows, ihmId, ldom) {
-    const ihmKey = `${ihmId}_IHM`.toUpperCase();
-    const ldomKey = ldom.toUpperCase();
-
-    return rows.find((row) => {
-      const assetType = String(row.asset_type || "").toUpperCase();
-      const logical = String(row.logical_asset_id || "").toUpperCase();
-      const asset = String(row.asset_id || "").toUpperCase();
-      const rowLdom = String(row.ldom || "").toUpperCase();
-
-      const isIhm = assetType === "MOBILE_IHM" || assetType === "IHM";
-      const sameIhm = logical === ihmKey || logical.includes(ihmKey) || asset.includes(ihmKey);
-
-      return isIhm && sameIhm && rowLdom === ldomKey;
-    });
-  }
-
-  function paintDashboardIhmBadge(id, role) {
-    const element = document.getElementById(id);
-
-    if (!element) {
-      return;
-    }
-
-    const className = ROLE_CLASS[role] || "status-wait";
-
-    element.classList.remove(
-      "status-ok",
-      "status-warn",
-      "status-crit",
-      "status-wait",
-      "status-standby",
-      "status-active"
-    );
-
-    element.classList.add("badge", className);
-
-    if (element.textContent !== role) {
-      element.textContent = role;
-    }
-  }
-
-  async function refreshDashboardIhmOperationalBadges() {
-    try {
-      const response = await fetch(`${OPERATIONAL_STATUS_PATH}?t=${Date.now()}`, {
-        cache: "no-store",
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const text = await response.text();
-      const rows = parseOperationalStatusCsv(text);
-
-      DASHBOARD_IHMS.forEach((ihmId) => {
-        ["ldom1", "ldom2"].forEach((ldom) => {
-          const row = findIhmRow(rows, ihmId, ldom);
-          const role = row ? normalizeDashboardRole(row) : "WAIT";
-
-          paintDashboardIhmBadge(`${ihmId}-${ldom}`, role);
-        });
-      });
-    } catch (error) {
-      console.warn("[NEXUS] Não foi possível atualizar status operacional das IHMs no Dashboard.", error);
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    refreshDashboardIhmOperationalBadges();
-
-    /*
-     * Roda pouco depois dos renderizadores antigos para impedir que status técnico
-     * "OK" fique visível no Dashboard principal.
-     */
-    setInterval(refreshDashboardIhmOperationalBadges, 1500);
-  });
-})();
-
-
 /*
  * NEXUS - Dashboard WS Mirror V06
  * Espelha PING e uptime das mesmas workstations na LDOM2 sem MutationObserver.
@@ -2163,12 +1942,16 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
 })();
 
 
-/* NEXUS_DASHBOARD_SERVICE_BINDING_V01_START
- * Liga o service_status.csv ao Dashboard SCADA.
- * Objetivo: usar o mesmo dado da aba Painel para atualizar os badges PAINEL ON/OFF
- * dentro dos cards de Aplicação Prodix.
+/* NEXUS_DASHBOARD_SERVICE_BINDING_V02_START
+ * Liga service_status.csv ao Dashboard.
+ *
+ * Regra:
+ * - snapshot carregado + sem registro PAINEL para a VM => PAINEL OFF
+ * - RUNNING => PAINEL ON
+ * - STOPPED => PAINEL OFF
+ * - arquivo indisponível/erro de leitura => WAIT
  */
-(function initDashboardServiceStatusBindingV01() {
+(function initDashboardServiceStatusBindingV02() {
   const SERVICE_STATUS_PATH = "../backend/data/runtime/service_status.csv";
   const REFRESH_MS = 15000;
 
@@ -2209,16 +1992,21 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
     const lines = String(csvText || "")
       .split(/\r?\n/)
       .map((line) => line.trim())
-      .filter(Boolean);
+      .filter((line) => line && !line.startsWith("#"));
 
-    if (lines.length < 2) {
+    if (!lines.length) {
       return [];
     }
 
     const headers = parseCsvLine(lines[0]).map((header) => header.trim());
 
+    if (!headers.includes("service_status")) {
+      throw new Error("Cabeçalho service_status.csv inválido");
+    }
+
     return lines.slice(1).map((line) => {
       const values = parseCsvLine(line);
+
       return headers.reduce((row, header, index) => {
         row[header] = values[index] || "";
         return row;
@@ -2231,25 +2019,23 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
   }
 
   function getDashboardAppCards() {
-    return Array.from(document.querySelectorAll("#dashboard .map-prodix-layer"));
+    return Array.from(
+      document.querySelectorAll("#dashboard .map-prodix-layer")
+    );
   }
 
   function getAppName(card) {
-    const title = card.querySelector("h4");
-    return normalize(title?.textContent);
+    return normalize(card.querySelector("h4")?.textContent);
   }
 
   function getCardLdom(card) {
-    const operationalBadge = card.querySelector(".map-prodix-actions [id]");
+    const operationalBadge = card.querySelector(
+      ".map-prodix-actions [id]"
+    );
     const id = operationalBadge?.id || "";
 
-    if (id.endsWith("-ldom1")) {
-      return "LDOM1";
-    }
-
-    if (id.endsWith("-ldom2")) {
-      return "LDOM2";
-    }
+    if (id.endsWith("-ldom1")) return "LDOM1";
+    if (id.endsWith("-ldom2")) return "LDOM2";
 
     return "";
   }
@@ -2270,6 +2056,7 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
 
   function rowMatchesCard(row, appName, ldom) {
     const rowLdom = normalize(row.ldom);
+
     const haystack = [
       row.host_id,
       row.host_name,
@@ -2288,12 +2075,20 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
     return ldomMatches && appMatches;
   }
 
-  function getPanelRenderState(row) {
+  function getPanelRenderState(row, snapshotAvailable) {
     if (!row) {
+      if (snapshotAvailable) {
+        return {
+          text: "PAINEL OFF",
+          className: "map-panel-on panel-stopped",
+          title: "Painel não está em execução nesta máquina.",
+        };
+      }
+
       return {
         text: "WAIT",
         className: "map-panel-on panel-wait",
-        title: "Aguardando backend/data/runtime/service_status.csv",
+        title: "Não foi possível consultar service_status.csv.",
       };
     }
 
@@ -2305,7 +2100,7 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
       return {
         text: "PAINEL ON",
         className: "map-panel-on panel-running",
-        title: message || "Painel em execução",
+        title: message || "Painel em execução.",
       };
     }
 
@@ -2313,7 +2108,7 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
       return {
         text: "PAINEL OFF",
         className: "map-panel-on panel-stopped",
-        title: message || "Painel parado",
+        title: message || "Painel não está em execução.",
       };
     }
 
@@ -2321,7 +2116,7 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
       return {
         text: "DUPLICADO",
         className: "map-panel-on panel-duplicate",
-        title: message || "Mais de uma instância detectada",
+        title: message || "Mais de uma instância indevida detectada.",
       };
     }
 
@@ -2329,26 +2124,30 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
       return {
         text: "LOCKED",
         className: "map-panel-on panel-locked",
-        title: message || "Serviço bloqueado",
+        title: message || "Serviço bloqueado.",
       };
     }
 
-    if (serviceStatus === "ERROR" || technicalComm === "CRIT") {
+    if (
+      serviceStatus === "ERROR" ||
+      technicalComm === "CRIT" ||
+      technicalComm === "CRITICAL"
+    ) {
       return {
         text: "ERRO",
         className: "map-panel-on panel-error",
-        title: message || "Erro na leitura do serviço",
+        title: message || "Erro na leitura do serviço.",
       };
     }
 
     return {
-      text: serviceStatus || "WAIT",
+      text: "WAIT",
       className: "map-panel-on panel-wait",
-      title: message || "Aguardando estado do painel",
+      title: message || "Estado do painel ainda indefinido.",
     };
   }
 
-  function renderDashboardPanelStatus(rows) {
+  function renderDashboardPanelStatus(rows, snapshotAvailable) {
     const painelRows = rows.filter(isPainelRow);
     const cards = getDashboardAppCards();
 
@@ -2361,8 +2160,11 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
         return;
       }
 
-      const row = painelRows.find((candidate) => rowMatchesCard(candidate, appName, ldom));
-      const state = getPanelRenderState(row);
+      const row = painelRows.find((candidate) =>
+        rowMatchesCard(candidate, appName, ldom)
+      );
+
+      const state = getPanelRenderState(row, snapshotAvailable);
 
       panelBadge.textContent = state.text;
       panelBadge.className = state.className;
@@ -2372,9 +2174,10 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
 
   async function loadDashboardPanelStatus() {
     try {
-      const response = await fetch(`${SERVICE_STATUS_PATH}?t=${Date.now()}`, {
-        cache: "no-store",
-      });
+      const response = await fetch(
+        `${SERVICE_STATUS_PATH}?t=${Date.now()}`,
+        { cache: "no-store" }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -2383,10 +2186,14 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
       const csvText = await response.text();
       const rows = parseServiceStatusCsv(csvText);
 
-      renderDashboardPanelStatus(rows);
+      renderDashboardPanelStatus(rows, true);
     } catch (error) {
-      renderDashboardPanelStatus([]);
-      console.warn("[NEXUS] service_status.csv indisponível para Dashboard.", error);
+      renderDashboardPanelStatus([], false);
+
+      console.warn(
+        "[NEXUS] service_status.csv indisponível para Dashboard.",
+        error
+      );
     }
   }
 
@@ -2396,118 +2203,29 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
   });
 
   window.addEventListener("hashchange", () => {
-    if (window.location.hash === "#dashboard" || !window.location.hash) {
+    if (
+      window.location.hash === "#dashboard" ||
+      !window.location.hash
+    ) {
       loadDashboardPanelStatus();
     }
   });
 })();
-/* NEXUS_DASHBOARD_SERVICE_BINDING_V01_END */
+/* NEXUS_DASHBOARD_SERVICE_BINDING_V02_END */
 
 
-/* NEXUS_DASHBOARD_CPTM4_BINDING_V01_START
- * Espelha no Dashboard a CPTM4 que já existe na aba Servidores.
+/* NEXUS_DASHBOARD_MAINT_UPTIME_BINDING_V03_START
+ * A função operacional ATIVO/STANDBY é atualizada exclusivamente por
+ * operational_status.csv através de nexusRenderIhmOperationalStatus().
+ *
+ * Este bloco mantém apenas o espelhamento de uptime da CPTM4 para o Dashboard.
+ * Não escreve mais classes/textos de papel operacional.
  */
-(function initDashboardCptm4BindingV01() {
-  const pairs = [
-    ["srv-cptm4-ldom1", "cptm4-ldom1"],
-    ["srv-cptm4-ldom2", "cptm4-ldom2"],
-  ];
-
+(function initDashboardMaintenanceUptimeBindingV03() {
   const uptimePairs = [
     ["srv-up-cptm4-ldom1", "up-cptm4-ldom1"],
     ["srv-up-cptm4-ldom2", "up-cptm4-ldom2"],
   ];
-
-  function copyRole(sourceId, targetId) {
-    const source = document.getElementById(sourceId);
-    const target = document.getElementById(targetId);
-
-    if (!source || !target) {
-      return;
-    }
-
-    const nextText = source.textContent && source.textContent.trim()
-      ? source.textContent.trim()
-      : "STANDBY";
-
-    target.textContent = nextText;
-    target.className = `${source.className || "server-role-badge server-role-standby"} dashboard-map-role`.trim();
-  }
-
-  function copyUptime(sourceId, targetId) {
-    const source = document.getElementById(sourceId);
-    const target = document.getElementById(targetId);
-
-    if (!source || !target) {
-      return;
-    }
-
-    const nextText = source.textContent && source.textContent.trim()
-      ? source.textContent.trim()
-      : "--";
-
-    target.textContent = nextText;
-    target.style.display = "inline-flex";
-  }
-
-  function syncCptm4Dashboard() {
-    pairs.forEach(([sourceId, targetId]) => copyRole(sourceId, targetId));
-    uptimePairs.forEach(([sourceId, targetId]) => copyUptime(sourceId, targetId));
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    syncCptm4Dashboard();
-    setTimeout(syncCptm4Dashboard, 250);
-    setTimeout(syncCptm4Dashboard, 1000);
-  });
-
-  window.addEventListener("load", () => setTimeout(syncCptm4Dashboard, 250));
-  window.addEventListener("hashchange", () => setTimeout(syncCptm4Dashboard, 250));
-
-  setInterval(syncCptm4Dashboard, 3000);
-})();
-/* NEXUS_DASHBOARD_CPTM4_BINDING_V01_END */
-
-
-/* NEXUS_DASHBOARD_MAINT_CONSOLES_BINDING_V02_START
- * Correção de arquitetura:
- * - WS11 hospeda SME3
- * - WS21 hospeda CPTM4
- * Espelha para o Dashboard os dados que já existem na aba Servidores.
- */
-(function initDashboardMaintenanceConsolesBindingV02() {
-  const rolePairs = [
-    ["srv-cptm4-ldom1", "cptm4-ldom1"],
-    ["srv-cptm4-ldom2", "cptm4-ldom2"],
-  ];
-
-  const uptimePairs = [
-    ["srv-up-cptm4-ldom1", "up-cptm4-ldom1"],
-    ["srv-up-cptm4-ldom2", "up-cptm4-ldom2"],
-  ];
-
-  function copyRole(sourceId, targetId) {
-    const source = document.getElementById(sourceId);
-    const target = document.getElementById(targetId);
-
-    if (!target) {
-      return;
-    }
-
-    if (!source) {
-      target.textContent = target.textContent && target.textContent.trim()
-        ? target.textContent.trim()
-        : "WAIT";
-      return;
-    }
-
-    const nextText = source.textContent && source.textContent.trim()
-      ? source.textContent.trim()
-      : "STANDBY";
-
-    target.textContent = nextText;
-    target.className = `${source.className || "server-role-badge server-role-standby"} dashboard-map-role`.trim();
-  }
 
   function copyUptime(sourceId, targetId) {
     const source = document.getElementById(sourceId);
@@ -2517,28 +2235,424 @@ function nexusUpdateIhmDashboardBadge(elementId, role, message) {
       return;
     }
 
-    const nextText = source && source.textContent && source.textContent.trim()
-      ? source.textContent.trim()
-      : "--";
+    const nextText =
+      source && source.textContent && source.textContent.trim()
+        ? source.textContent.trim()
+        : "--";
 
-    target.textContent = nextText;
+    if (target.textContent !== nextText) {
+      target.textContent = nextText;
+    }
+
     target.style.display = "inline-flex";
   }
 
-  function syncMaintenanceConsolesDashboard() {
-    rolePairs.forEach(([sourceId, targetId]) => copyRole(sourceId, targetId));
+  function syncMaintenanceUptimeDashboard() {
     uptimePairs.forEach(([sourceId, targetId]) => copyUptime(sourceId, targetId));
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    syncMaintenanceConsolesDashboard();
-    setTimeout(syncMaintenanceConsolesDashboard, 250);
-    setTimeout(syncMaintenanceConsolesDashboard, 1000);
+    syncMaintenanceUptimeDashboard();
+    setTimeout(syncMaintenanceUptimeDashboard, 250);
+    setTimeout(syncMaintenanceUptimeDashboard, 1000);
   });
 
-  window.addEventListener("load", () => setTimeout(syncMaintenanceConsolesDashboard, 250));
-  window.addEventListener("hashchange", () => setTimeout(syncMaintenanceConsolesDashboard, 250));
+  window.addEventListener("load", () => {
+    setTimeout(syncMaintenanceUptimeDashboard, 250);
+  });
 
-  setInterval(syncMaintenanceConsolesDashboard, 3000);
+  window.addEventListener("hashchange", () => {
+    setTimeout(syncMaintenanceUptimeDashboard, 250);
+  });
+
+  setInterval(syncMaintenanceUptimeDashboard, 3000);
 })();
-/* NEXUS_DASHBOARD_MAINT_CONSOLES_BINDING_V02_END */
+/* NEXUS_DASHBOARD_MAINT_UPTIME_BINDING_V03_END */
+
+/* NEXUS_TOPOLOGY_OPERATIONAL_ROLE_V01_START */
+(() => {
+  const OPERATIONAL_STATUS_PATH = "../backend/data/runtime/operational_status.csv";
+  const OPERATIONAL_REFRESH_MS = 5000;
+
+  const PRODIX_APPS = new Set([
+    "SME3", "CONS1", "CONS5", "CPTM4",
+    "CPTM12", "CPTM1", "CPTM2", "CPTM3",
+  ]);
+
+  function parseOperationalCsv(text) {
+    const lines = String(text || "")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#"));
+
+    if (lines.length < 2) return [];
+
+    const headers = lines[0].split(";").map((header) => header.trim());
+
+    return lines.slice(1).map((line) => {
+      const values = line.split(";");
+      const row = {};
+      headers.forEach((header, index) => {
+        row[header] = (values[index] || "").trim();
+      });
+      return row;
+    });
+  }
+
+  function boolValue(value) {
+    return ["TRUE", "1", "SIM", "YES"].includes(
+      String(value || "").trim().toUpperCase()
+    );
+  }
+
+  function normalizeRole(value) {
+    const role = String(value || "WAIT").trim().toUpperCase();
+    if (["ATIVO", "STANDBY", "DESLIGADO", "FALHA"].includes(role)) {
+      return role;
+    }
+    return "WAIT";
+  }
+
+  function appNameFromRow(row) {
+    const logical = String(row.logical_asset_id || "")
+      .trim()
+      .toUpperCase();
+
+    if (logical.endsWith("_IHM")) {
+      return logical.slice(0, -4);
+    }
+
+    const assetId = String(row.asset_id || "")
+      .trim()
+      .toUpperCase();
+
+    const match = assetId.match(/^(.+?)_IHM_LDOM[12]$/);
+    return match ? match[1] : "";
+  }
+
+  function ldomNumber(value) {
+    const normalized = String(value || "")
+      .trim()
+      .toUpperCase()
+      .replace(/\s+/g, "");
+
+    if (normalized === "LDOM1" || normalized === "1") return 1;
+    if (normalized === "LDOM2" || normalized === "2") return 2;
+    return null;
+  }
+
+  function ensureOperationalUi(card) {
+    let box = card.querySelector(".nexus-net-operational");
+    if (box) return box;
+
+    box = document.createElement("div");
+    box.className = "nexus-net-operational";
+    box.innerHTML = `
+      <div class="nexus-net-operational-row">
+        <span>VM nesta LDOM</span>
+        <strong class="nexus-net-vm-role nexus-vm-role-wait">AGUARDANDO</strong>
+      </div>
+      <div class="nexus-net-operational-row">
+        <span>Execução atual</span>
+        <strong class="nexus-net-vm-execution nexus-vm-exec-wait">AGUARDANDO</strong>
+      </div>
+    `;
+
+    const redundancy = card.querySelector(".nexus-net-redundancy");
+    if (redundancy) {
+      redundancy.insertAdjacentElement("afterend", box);
+    } else {
+      card.appendChild(box);
+    }
+
+    return box;
+  }
+
+  function setRoleBadge(element, role) {
+    if (!element) return;
+
+    const normalized = normalizeRole(role);
+    element.className = "nexus-net-vm-role";
+
+    switch (normalized) {
+      case "ATIVO":
+        element.classList.add("nexus-vm-role-active");
+        element.textContent = "ATIVO";
+        break;
+      case "STANDBY":
+        element.classList.add("nexus-vm-role-standby");
+        element.textContent = "STANDBY";
+        break;
+      case "FALHA":
+        element.classList.add("nexus-vm-role-fail");
+        element.textContent = "FALHA";
+        break;
+      case "DESLIGADO":
+        element.classList.add("nexus-vm-role-off");
+        element.textContent = "DESLIGADO";
+        break;
+      default:
+        element.classList.add("nexus-vm-role-wait");
+        element.textContent = "AGUARDANDO";
+    }
+  }
+
+  function executionVisual(group) {
+    const rows = [group[1], group[2]].filter(Boolean);
+
+    if (!rows.length) {
+      return {
+        label: "AGUARDANDO",
+        className: "nexus-vm-exec-wait",
+        level: "WAIT",
+      };
+    }
+
+    const activeRows = rows.filter(
+      (row) => normalizeRole(row.operational_role) === "ATIVO"
+    );
+
+    const hasConflict =
+      rows.some((row) => boolValue(row.redundancy_conflict)) ||
+      activeRows.length > 1;
+
+    if (hasConflict) {
+      return {
+        label: "CONFLITO DE IP",
+        className: "nexus-vm-exec-conflict",
+        level: "CONFLICT",
+      };
+    }
+
+    if (activeRows.length === 1) {
+      const activeLdom = ldomNumber(activeRows[0].ldom);
+
+      return {
+        label: activeLdom ? `LDOM${activeLdom}` : "ATIVO",
+        className: "nexus-vm-exec-active",
+        level: "OK",
+      };
+    }
+
+    const hasWait = rows.some(
+      (row) => normalizeRole(row.operational_role) === "WAIT"
+    );
+
+    if (hasWait) {
+      return {
+        label: "AGUARDANDO",
+        className: "nexus-vm-exec-wait",
+        level: "WAIT",
+      };
+    }
+
+    return {
+      label: "SEM ATIVO",
+      className: "nexus-vm-exec-no-active",
+      level: "WARN",
+    };
+  }
+
+  function setExecutionBadge(element, visual) {
+    if (!element) return;
+    element.className = `nexus-net-vm-execution ${visual.className}`;
+    element.textContent = visual.label;
+  }
+
+  function buildGroups(rows) {
+    const groups = new Map();
+
+    rows.forEach((row) => {
+      const app = appNameFromRow(row);
+      const ldom = ldomNumber(row.ldom);
+
+      if (!PRODIX_APPS.has(app) || !ldom) return;
+
+      if (!groups.has(app)) groups.set(app, {});
+      groups.get(app)[ldom] = row;
+    });
+
+    return groups;
+  }
+
+  function renderOperationalRows(rows) {
+    const groups = buildGroups(rows);
+
+    PRODIX_APPS.forEach((app) => {
+      const group = groups.get(app) || {};
+      const execution = executionVisual(group);
+      const key = app.toLowerCase();
+
+      [1, 2].forEach((ldom) => {
+        const card = document.querySelector(
+          `#topologia .nexus-net-ldom-${ldom} .nexus-net-pair[data-app="${key}"] .nexus-net-prodix`
+        );
+
+        if (!card) return;
+
+        const box = ensureOperationalUi(card);
+        const row = group[ldom] || null;
+
+        setRoleBadge(
+          box.querySelector(".nexus-net-vm-role"),
+          row ? row.operational_role : "WAIT"
+        );
+
+        setExecutionBadge(
+          box.querySelector(".nexus-net-vm-execution"),
+          execution
+        );
+
+        if (row?.message) {
+          box.title = row.message;
+        } else {
+          box.removeAttribute("title");
+        }
+
+        card.classList.toggle(
+          "nexus-net-prodix-conflict",
+          execution.level === "CONFLICT"
+        );
+      });
+    });
+
+    renderOperationalBalance(groups);
+  }
+
+  function ensureBalanceSummary() {
+    const hero = document.querySelector("#topologia .nexus-net-hero-summary");
+    if (!hero) return null;
+
+    let summary = hero.querySelector(".nexus-net-balance-summary");
+
+    if (!summary) {
+      summary = document.createElement("span");
+      summary.className = "nexus-net-balance-summary";
+      hero.appendChild(summary);
+    }
+
+    return summary;
+  }
+
+  function renderOperationalBalance(groups) {
+    let ldom1 = 0;
+    let ldom2 = 0;
+    let conflicts = 0;
+    let noActive = 0;
+
+    groups.forEach((group) => {
+      const visual = executionVisual(group);
+
+      if (visual.level === "CONFLICT") {
+        conflicts += 1;
+        return;
+      }
+
+      if (visual.label === "LDOM1") {
+        ldom1 += 1;
+      } else if (visual.label === "LDOM2") {
+        ldom2 += 1;
+      } else if (visual.level === "WARN") {
+        noActive += 1;
+      }
+    });
+
+    const summary = ensureBalanceSummary();
+    if (!summary) return;
+
+    summary.classList.toggle("has-conflict", conflicts > 0);
+    summary.classList.toggle("has-warning", conflicts === 0 && noActive > 0);
+
+    summary.innerHTML = `
+      <strong>${ldom1}</strong> ativas LDOM1
+      <span class="nexus-net-balance-sep">•</span>
+      <strong>${ldom2}</strong> ativas LDOM2
+      <span class="nexus-net-balance-sep">•</span>
+      <strong>${conflicts}</strong> conflitos
+    `;
+  }
+
+  function resetOperationalWait() {
+    document
+      .querySelectorAll("#topologia .nexus-net-prodix")
+      .forEach((card) => {
+        const box = ensureOperationalUi(card);
+
+        setRoleBadge(
+          box.querySelector(".nexus-net-vm-role"),
+          "WAIT"
+        );
+
+        setExecutionBadge(
+          box.querySelector(".nexus-net-vm-execution"),
+          {
+            label: "AGUARDANDO",
+            className: "nexus-vm-exec-wait",
+          }
+        );
+
+        card.classList.remove("nexus-net-prodix-conflict");
+      });
+
+    const summary = ensureBalanceSummary();
+    if (summary) {
+      summary.classList.remove("has-conflict", "has-warning");
+      summary.textContent = "papel operacional aguardando";
+    }
+  }
+
+  async function loadOperationalTopologyStatus() {
+    try {
+      const response = await fetch(
+        `${OPERATIONAL_STATUS_PATH}?t=${Date.now()}`,
+        { cache: "no-store" }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const text = await response.text();
+      const rows = parseOperationalCsv(text);
+
+      window.NEXUS_TOPOLOGY_OPERATIONAL_STATUS = rows;
+      renderOperationalRows(rows);
+
+      console.info(
+        `[NEXUS] operational_status.csv aplicado à Topologia: ${rows.length} registros`
+      );
+    } catch (error) {
+      window.NEXUS_TOPOLOGY_OPERATIONAL_STATUS = [];
+      resetOperationalWait();
+
+      console.warn(
+        "[NEXUS] operational_status.csv indisponível na Topologia.",
+        error
+      );
+    }
+  }
+
+  function topologyIsVisibleForOperational() {
+    return Boolean(
+      document.getElementById("topologia")?.classList.contains("active")
+    );
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    resetOperationalWait();
+    loadOperationalTopologyStatus();
+
+    setInterval(() => {
+      if (topologyIsVisibleForOperational()) {
+        loadOperationalTopologyStatus();
+      }
+    }, OPERATIONAL_REFRESH_MS);
+  });
+
+  window.addEventListener("hashchange", () => {
+    if (window.location.hash === "#topologia") {
+      loadOperationalTopologyStatus();
+    }
+  });
+})();
+/* NEXUS_TOPOLOGY_OPERATIONAL_ROLE_V01_END */

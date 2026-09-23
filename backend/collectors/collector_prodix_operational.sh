@@ -106,7 +106,7 @@ derive_prodix_health() {
     return 0
   fi
 
-  echo "CRIT"
+  echo "OK"
 }
 
 derive_prodix_role() {
@@ -275,7 +275,7 @@ mark_redundancy_conflicts() {
       current_role = f[11]
 
       if (current_group != "" && current_group != "NONE" && current_group != "N/A" && current_role == "ATIVO" && active_count[current_group] > 1) {
-        f[10] = "CRITICAL"
+        f[10] = "CRIT"
         f[13] = "true"
         f[14] = "Conflito operacional: mais de uma instancia ATIVA no grupo " current_group
       }
