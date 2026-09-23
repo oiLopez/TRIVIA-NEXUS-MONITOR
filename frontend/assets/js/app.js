@@ -366,6 +366,28 @@ initSidebarToggle();
 
 function syncServerDetailView() {
   const mappings = [
+    ["ilom1-fans", "srv-ilom1-fans"],
+    ["ilom1-temp", "srv-ilom1-temp"],
+    ["ilom1-psu", "srv-ilom1-psu"],
+    ["ilom1-cooling", "srv-ilom1-cooling"],
+    ["ilom2-fans", "srv-ilom2-fans"],
+    ["ilom2-temp", "srv-ilom2-temp"],
+    ["ilom2-psu", "srv-ilom2-psu"],
+    ["ilom2-cooling", "srv-ilom2-cooling"],
+    ["status-control1", "srv-status-control1"],
+    ["status-control2", "srv-status-control2"],
+    ["up-control1", "srv-up-control1"],
+    ["up-control2", "srv-up-control2"],
+    ["status-ilom1", "srv-status-ilom1"],
+    ["status-ilom2", "srv-status-ilom2"],
+    ["up-ilom1", "srv-up-ilom1"],
+    ["up-ilom2", "srv-up-ilom2"],
+    ["up-ldom1", "srv-up-ldom1"],
+    ["up-ldom2", "srv-up-ldom2"],
+    ["up-sft1-ldom1", "srv-up-sft1"],
+    ["up-metrosp44-ldom1", "srv-up-metrosp44"],
+    ["up-sft2-ldom2", "srv-up-sft2"],
+    ["up-metrosp45-ldom2", "srv-up-metrosp45"],
     ["status-ldom1", "status-ldom1-server-view"],
     ["status-ldom2", "status-ldom2-server-view"],
 

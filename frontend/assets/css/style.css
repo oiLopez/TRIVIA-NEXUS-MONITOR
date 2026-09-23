@@ -7623,3 +7623,576 @@ body {
   }
 }
 /* NEXUS_TOPOLOGY_SCALE_UP_V03_END */
+
+/* NEXUS_SERVERS_TOPOLOGY_V02_START */
+/*
+ * Aba Servidores.
+ * Escopo propositalmente restrito a #servidores para preservar
+ * sidebar, header, Dashboard, Topologia, Painel e Alertas.
+ */
+#servidores {
+  --servers-line: #22c55e;
+  --servers-cyan: #38bdf8;
+  --servers-purple: #a78bfa;
+  --servers-panel: rgba(8, 19, 35, 0.92);
+  --servers-card: rgba(10, 25, 43, 0.92);
+  --servers-border: rgba(56, 189, 248, 0.25);
+  --servers-muted: #91a7bd;
+}
+
+#servidores .nexus-servers-topology {
+  width: 100%;
+}
+
+#servidores .nexus-servers-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 22px;
+  margin-bottom: 18px;
+}
+
+#servidores .nexus-servers-title h2 {
+  margin: 4px 0 3px;
+  color: var(--nexus-text);
+  font-size: 1.35rem;
+}
+
+#servidores .nexus-servers-title p {
+  margin: 0;
+  color: var(--servers-muted);
+  font-size: 0.76rem;
+}
+
+#servidores .nexus-servers-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  flex-wrap: wrap;
+  color: var(--servers-muted);
+  font-size: 0.67rem;
+}
+
+#servidores .nexus-servers-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#servidores .nexus-servers-legend-line {
+  width: 24px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--servers-line);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.24);
+}
+
+#servidores .nexus-servers-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+#servidores .nexus-servers-dot-ok { background: #22c55e; }
+#servidores .nexus-servers-dot-warn { background: #f59e0b; }
+#servidores .nexus-servers-dot-off { background: #ef4444; }
+
+#servidores .nexus-servers-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+#servidores .nexus-host-stack {
+  min-width: 0;
+  padding: 14px 10px 10px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05), transparent 30%),
+    linear-gradient(180deg, rgba(8, 20, 37, 0.95), rgba(5, 14, 27, 0.96));
+}
+
+#servidores .nexus-host-stack-title {
+  margin: 0 0 12px;
+  text-align: center;
+  color: var(--nexus-text);
+  font-size: 0.84rem;
+  letter-spacing: 0.015em;
+}
+
+#servidores .nexus-host-stack-title span {
+  color: var(--servers-muted);
+  font-weight: 700;
+}
+
+#servidores .nexus-layer-card {
+  position: relative;
+  z-index: 2;
+  width: min(92%, 620px);
+  min-width: 0;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  padding: 13px 14px;
+  border: 1px solid var(--servers-border);
+  border-radius: 11px;
+  background:
+    linear-gradient(180deg, rgba(12, 31, 52, 0.95), rgba(7, 21, 38, 0.95));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.025),
+    0 10px 24px rgba(0,0,0,0.16);
+}
+
+#servidores .nexus-layer-card:hover {
+  border-color: rgba(56, 189, 248, 0.42);
+}
+
+#servidores .nexus-layer-ilom {
+  grid-template-columns: 44px minmax(0, 1fr) minmax(145px, 0.65fr);
+  border-color: rgba(34, 197, 94, 0.55);
+}
+
+#servidores .nexus-layer-control {
+  border-color: rgba(56, 189, 248, 0.62);
+}
+
+#servidores .nexus-layer-ldom {
+  border-color: rgba(167, 139, 250, 0.68);
+  background:
+    linear-gradient(180deg, rgba(24, 27, 69, 0.72), rgba(10, 22, 48, 0.94));
+}
+
+#servidores .nexus-layer-server {
+  width: 100%;
+  border-color: rgba(34, 197, 94, 0.46);
+}
+
+#servidores .nexus-layer-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 9px;
+  color: #dcecff;
+  background: rgba(8, 20, 35, 0.75);
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+#servidores .nexus-layer-icon-disk {
+  color: #ddd6fe;
+}
+
+#servidores .nexus-layer-main {
+  min-width: 0;
+}
+
+#servidores .nexus-layer-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#servidores .nexus-layer-heading h4 {
+  margin: 2px 0 0;
+  color: var(--nexus-text);
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+}
+
+#servidores .nexus-layer-kicker {
+  color: var(--servers-muted);
+  font-size: 0.52rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+}
+
+#servidores .nexus-layer-description {
+  margin: 4px 0 9px;
+  color: #bfcee0;
+  font-size: 0.64rem;
+}
+
+#servidores .nexus-layer-details,
+#servidores .nexus-ilom-hardware dl {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+
+#servidores .nexus-layer-details > div,
+#servidores .nexus-ilom-hardware dl > div {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(90px, auto) minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+
+#servidores .nexus-layer-details dt,
+#servidores .nexus-ilom-hardware dt {
+  color: var(--servers-muted);
+  font-size: 0.6rem;
+  font-weight: 650;
+}
+
+#servidores .nexus-layer-details dd,
+#servidores .nexus-ilom-hardware dd {
+  min-width: 0;
+  margin: 0;
+  color: #dce9f7;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 0.61rem;
+  overflow-wrap: anywhere;
+}
+
+#servidores .nexus-ilom-hardware {
+  min-width: 0;
+  align-self: stretch;
+  padding-left: 13px;
+  border-left: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+#servidores .nexus-ilom-hardware dl {
+  margin-top: 8px;
+}
+
+#servidores .nexus-ilom-hardware dl > div {
+  grid-template-columns: minmax(76px, auto) minmax(0, 1fr);
+}
+
+#servidores .nexus-topology-link {
+  width: 4px;
+  height: 28px;
+  margin-inline: auto;
+  background: var(--servers-line);
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.28);
+}
+
+#servidores .nexus-topology-branch {
+  position: relative;
+  width: 58%;
+  height: 34px;
+  margin: 0 auto;
+}
+
+#servidores .nexus-topology-branch::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4px;
+  height: 17px;
+  transform: translateX(-50%);
+  background: var(--servers-line);
+  border-radius: 999px 999px 0 0;
+}
+
+#servidores .nexus-topology-branch::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--servers-line);
+  border-radius: 999px;
+}
+
+#servidores .nexus-topology-branch > span {
+  position: absolute;
+  top: 14px;
+  width: 4px;
+  height: 20px;
+  background: var(--servers-line);
+}
+
+#servidores .nexus-topology-branch > span:first-child { left: 0; }
+#servidores .nexus-topology-branch > span:last-child { right: 0; }
+
+#servidores .nexus-virtual-servers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+#servidores .nexus-layer-role-row {
+  margin-top: 10px;
+  padding-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+#servidores .nexus-layer-role-row > span:first-child {
+  color: var(--servers-muted);
+  font-size: 0.58rem;
+  font-weight: 750;
+}
+
+#servidores .nexus-servers-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.95fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+#servidores .nexus-servers-info-card {
+  padding: 14px 16px;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 12px;
+  background: rgba(8, 21, 38, 0.75);
+}
+
+#servidores .nexus-servers-info-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #dcecff;
+  font-size: 0.76rem;
+}
+
+#servidores .nexus-servers-info-card ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #b7c8da;
+  font-size: 0.63rem;
+  line-height: 1.55;
+}
+
+#servidores .nexus-servers-info-card li::marker {
+  color: var(--servers-cyan);
+}
+
+#servidores .nexus-servers-hierarchy {
+  margin-top: 10px;
+  padding: 11px 12px;
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 9px;
+  background: rgba(2, 10, 20, 0.28);
+}
+
+#servidores .nexus-servers-hierarchy > span {
+  display: block;
+  color: var(--servers-muted);
+  font-size: 0.56rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+#servidores .nexus-servers-hierarchy strong {
+  display: block;
+  margin-top: 5px;
+  color: #dcecff;
+  font-size: 0.68rem;
+}
+
+#servidores .nexus-servers-hierarchy p {
+  margin: 8px 0 0;
+  color: var(--servers-muted);
+  font-size: 0.61rem;
+  line-height: 1.45;
+}
+
+/* Evita estilos legados da antiga listagem de IHMs/WS dentro desta nova tela. */
+#servidores .servers-assets-grid,
+#servidores .server-asset-card,
+#servidores .server-asset-subgrid,
+#servidores .workstation-status-grid {
+  min-width: 0;
+}
+
+@media (max-width: 1500px) {
+  #servidores .nexus-layer-card {
+    width: 96%;
+  }
+
+  #servidores .nexus-layer-ilom {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  #servidores .nexus-ilom-hardware {
+    grid-column: 2;
+    padding: 10px 0 0;
+    border-left: 0;
+    border-top: 1px solid rgba(148, 163, 184, 0.16);
+  }
+}
+
+@media (max-width: 1120px) {
+  #servidores .nexus-servers-columns,
+  #servidores .nexus-servers-footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #servidores .nexus-host-stack {
+    padding-inline: 14px;
+  }
+}
+
+@media (max-width: 720px) {
+  #servidores .nexus-servers-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #servidores .nexus-servers-legend {
+    justify-content: flex-start;
+  }
+
+  #servidores .nexus-virtual-servers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #servidores .nexus-topology-branch {
+    display: none;
+  }
+
+  #servidores .nexus-virtual-servers-grid::before {
+    content: "";
+    width: 4px;
+    height: 24px;
+    margin: -1px auto 0;
+    background: var(--servers-line);
+    border-radius: 999px;
+  }
+
+  #servidores .nexus-layer-card,
+  #servidores .nexus-layer-ilom {
+    width: 100%;
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  #servidores .nexus-ilom-hardware {
+    grid-column: 1 / -1;
+    padding: 10px 0 0;
+  }
+
+  #servidores .nexus-layer-details > div,
+  #servidores .nexus-ilom-hardware dl > div {
+    grid-template-columns: 1fr;
+    gap: 1px;
+  }
+}
+/* NEXUS_SERVERS_TOPOLOGY_V02_END */
+
+/* NEXUS_SERVERS_TEXT_SCALE_V03_START */
+/* Aumenta a legibilidade exclusivamente na aba Servidores. */
+
+#servidores .nexus-servers-title h2 {
+  font-size: 1.6rem;
+}
+
+#servidores .nexus-servers-title p {
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+#servidores .nexus-servers-legend {
+  font-size: 0.8rem;
+}
+
+#servidores .nexus-host-stack-title {
+  font-size: 1rem;
+}
+
+#servidores .nexus-layer-kicker {
+  font-size: 0.64rem;
+  letter-spacing: 0.085em;
+}
+
+#servidores .nexus-layer-heading h4 {
+  font-size: 1.08rem;
+}
+
+#servidores .nexus-layer-description {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  margin-bottom: 11px;
+}
+
+#servidores .nexus-layer-details dt,
+#servidores .nexus-ilom-hardware dt {
+  font-size: 0.72rem;
+}
+
+#servidores .nexus-layer-details dd,
+#servidores .nexus-ilom-hardware dd {
+  font-size: 0.74rem;
+}
+
+#servidores .nexus-layer-role-row > span:first-child {
+  font-size: 0.7rem;
+}
+
+#servidores .badge,
+#servidores .server-role-badge {
+  font-size: 0.7rem;
+  line-height: 1.2;
+}
+
+#servidores .uptime-tag,
+#servidores [id^="srv-up-"] {
+  font-size: 0.72rem;
+}
+
+#servidores .nexus-servers-info-title {
+  font-size: 0.9rem;
+}
+
+#servidores .nexus-servers-info-card ul {
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+#servidores .nexus-servers-hierarchy > span {
+  font-size: 0.66rem;
+}
+
+#servidores .nexus-servers-hierarchy strong {
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+#servidores .nexus-servers-hierarchy p {
+  font-size: 0.73rem;
+  line-height: 1.55;
+}
+
+#servidores .nexus-layer-card {
+  padding: 16px;
+}
+
+#servidores .nexus-layer-details,
+#servidores .nexus-ilom-hardware dl {
+  gap: 6px;
+}
+
+@media (max-width: 900px) {
+  #servidores .nexus-servers-title h2 {
+    font-size: 1.4rem;
+  }
+
+  #servidores .nexus-layer-heading h4 {
+    font-size: 1rem;
+  }
+
+  #servidores .nexus-layer-details dt,
+  #servidores .nexus-layer-details dd,
+  #servidores .nexus-ilom-hardware dt,
+  #servidores .nexus-ilom-hardware dd {
+    font-size: 0.7rem;
+  }
+}
+/* NEXUS_SERVERS_TEXT_SCALE_V03_END */
